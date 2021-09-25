@@ -9,7 +9,7 @@ interface HardwareClass {
     fun init(ahwMap: HardwareMap)
 }
 
-interface TankHardware: HardwareClass {
+interface sixWDrive: HardwareClass {
     val lDrive: DcMotor
     val rDrive: DcMotor
 }
@@ -21,7 +21,7 @@ interface MecanumHardware: HardwareClass {
     val rBDrive: DcMotor
 }
 
-interface TankOdometryHardware: TankHardware {
+interface TankOdometryHardware: sixWDrive {
     val lOdom: DcMotor
     val rOdom: DcMotor
     val cOdom: DcMotor

@@ -1,5 +1,0 @@
-package bigGuy
-
-class lookNoHands {
-    
-}
