@@ -180,7 +180,7 @@ public class ConceptVuforiaFieldNavigation extends LinearOpMode {
          *
          * The phone starts out lying flat, with the screen facing Up and with the physical top of the phone
          * pointing to the LEFT side of the Robot.
-         * The two examples below assume that the camera is facing forward out the front of the robot.
+         * The two us.brainstormz.examples below assume that the camera is facing forward out the front of the robot.
          */
 
         // We need to rotate the camera around its long axis to bring the correct camera forward.
