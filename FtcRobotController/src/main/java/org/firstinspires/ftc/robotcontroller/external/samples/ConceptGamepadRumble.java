@@ -60,7 +60,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  *   4) Rumble on non-overlapping mechanical actions. e.g. arm fully-extended or fully-retracted.
  *   5) Use isRumbling() to hold off on a new rumble if one is already in progress.
  *
- * The examples shown here are representstive of how to invoke a gamepad rumble.
+ * The us.brainstormz.examples shown here are representstive of how to invoke a gamepad rumble.
  * It is assumed that these will be modified to suit the specific robot and team strategy needs.
  *
  * ########   Read the telemetry display on the Driver Station Screen for instructions.   ######
