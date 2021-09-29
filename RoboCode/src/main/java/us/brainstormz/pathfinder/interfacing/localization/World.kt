@@ -1,7 +1,7 @@
 package interfacing.localization
 
-import locationTracking.PositionAndRotation
+import locationTracking.PosAndRot
 
 interface World {
-    fun currentPositionAndRotation(): PositionAndRotation
+    fun currentPositionAndRotation(): PosAndRot
 }

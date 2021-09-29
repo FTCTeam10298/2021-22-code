@@ -1,11 +1,11 @@
 package posePlanner
 
-import locationTracking.PositionAndRotation
+import locationTracking.PosAndRot
 
 
 class PosePlanner {
-    var aStar = AStar(PositionAndRotation(), PositionAndRotation(), listOf(), this)
-    var hitPoints = listOf<PositionAndRotation>()
+    var aStar = AStar(PosAndRot(), PosAndRot(), listOf(), this)
+    var hitPoints = listOf<PosAndRot>()
 
     val preLoadedPaths = listOf(BezierPath())
     val undesirableAreas: List<UndesirableArea> = listOf()
@@ -15,7 +15,7 @@ class PosePlanner {
     /**
     PATH GEN
      */
-    fun generatePath(start: PositionAndRotation, target: PositionAndRotation): List<PositionAndRotation> {
+    fun generatePath(start: PosAndRot, target: PosAndRot): List<PosAndRot> {
         println("\n\n\nNew Path=\n")
 
         val aStar = AStar(start, target, obstructions, this)
@@ -66,7 +66,7 @@ class PosePlanner {
     }
 
 
-    private fun findAround(current: PositionAndRotation, obstruction: Obstruction): List<PositionAndRotation> {
+    private fun findAround(current: PosAndRot, obstruction: Obstruction): List<PosAndRot> {
         val edges = obstruction.poly.getLines()
 
         val centroid = obstruction.poly.centroid()
@@ -77,7 +77,7 @@ class PosePlanner {
             collisionEdge = it
         }
 
-        val farthestPoint = obstruction.poly.points.minBy{ it.distance(current) }!!
+        val farthestPoint = obstruction.poly.points.minBy { it.distance(current) }!!
         val movedPoints = listOf(collisionEdge.start, collisionEdge.end).map {
             it.coordinateAlongLine(-.2, centroid).coordinateAlongLine(-.2, farthestPoint)
         }
@@ -86,11 +86,11 @@ class PosePlanner {
     }
 
 
-    private fun cutCorners(path: List<PositionAndRotation>): List<PositionAndRotation> {
+    private fun cutCorners(path: List<PosAndRot>): List<PosAndRot> {
         println("\n")
         println(path)
 
-        val efficientPath: MutableList<PositionAndRotation> = path.toMutableList()
+        val efficientPath: MutableList<PosAndRot> = path.toMutableList()
 
         var current = path.first()
 
@@ -116,8 +116,8 @@ class PosePlanner {
         return efficientPath
     }
 
-    fun firstIntersection(l: Line, obstructions: List<Obstruction>): Pair<PositionAndRotation, Obstruction>? {
-        var result: PositionAndRotation? = null
+    fun firstIntersection(l: Line, obstructions: List<Obstruction>): Pair<PosAndRot, Obstruction>? {
+        var result: PosAndRot? = null
         var intersect: Obstruction? = null
         obstructions.forEach {
             val newIntersect = it.poly.intersection(l)
@@ -182,15 +182,15 @@ class PosePlanner {
 //    }
 
     val pointToPositionAndRotation = Point3D(0.0, 0.0, 0.0)
-    private fun Point3D.toPositionAndRotation(): PositionAndRotation {
+    private fun Point3D.toPositionAndRotation(): PosAndRot {
         val adjusted = this.copy(x = pointToPositionAndRotation.x,
                                  y = pointToPositionAndRotation.y,
                                  z = pointToPositionAndRotation.z)
-        return PositionAndRotation(x = adjusted.x,
+        return PosAndRot(x = adjusted.x,
                           y = adjusted.y,
                           r = adjusted.z)
     }
-    private fun PositionAndRotation.toPoint3D(): Point3D {
+    private fun PosAndRot.toPoint3D(): Point3D {
         val adjusted = this.copy(x = pointToPositionAndRotation.x,
                                  y = pointToPositionAndRotation.y,
                                  r = pointToPositionAndRotation.z)

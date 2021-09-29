@@ -1,6 +1,5 @@
 package locationTracking
 
-import kotlin.math.atan2
 import kotlin.math.hypot
 
 /**
@@ -9,7 +8,7 @@ import kotlin.math.hypot
  * @param y Y position
  * @param r Angle, in radians
  */
-open class PositionAndRotation(var x: Double = 0.0, var y: Double = 0.0, var r: Double = 0.0) {
+open class PosAndRot(var x: Double = 0.0, var y: Double = 0.0, var r: Double = 0.0) {
 
     /**
      * Sets the parameters of the PositionAndRotation.
@@ -50,11 +49,11 @@ open class PositionAndRotation(var x: Double = 0.0, var y: Double = 0.0, var r: 
 
     /**
      * Gives the absolute value of the distance between the given PositionAndRotation and the current PositionAndRotation.
-     * @param PositionAndRotation PositionAndRotation to compare
+     * @param PosAndRot PositionAndRotation to compare
      * @return distance from current PositionAndRotation
      */
-    fun distance(PositionAndRotation: PositionAndRotation): Double {
-        return hypot(PositionAndRotation.x - x, PositionAndRotation.y - y)
+    fun distance(PosAndRot: PosAndRot): Double {
+        return hypot(PosAndRot.x - x, PosAndRot.y - y)
     }
 
     /**
@@ -78,22 +77,22 @@ open class PositionAndRotation(var x: Double = 0.0, var y: Double = 0.0, var r: 
 
     /**
      * Gives the error of the angle from the given PositionAndRotation and the current PositionAndRotation.
-     * @param PositionAndRotation PositionAndRotation to compare
+     * @param PosAndRot PositionAndRotation to compare
      * @return angle error from current PositionAndRotation
      */
-    fun theta(PositionAndRotation: PositionAndRotation): Double {
-        return theta(PositionAndRotation.r)
+    fun theta(PosAndRot: PosAndRot): Double {
+        return theta(PosAndRot.r)
     }
 
-    fun direction(PositionAndRotation: PositionAndRotation): Double {
-        return Math.atan2(PositionAndRotation.y-this.y, PositionAndRotation.x-this.x)
+    fun direction(PosAndRot: PosAndRot): Double {
+        return Math.atan2(PosAndRot.y-this.y, PosAndRot.x-this.x)
     }
 
-    fun coordinateAlongLine(distance: Double, p2: PositionAndRotation): PositionAndRotation {
+    fun coordinateAlongLine(distance: Double, p2: PosAndRot): PosAndRot {
 
         val d = this.distance(p2)
 
-        return PositionAndRotation(
+        return PosAndRot(
             this.x + ((distance / d) * (p2.x - this.x)),
             this.y + ((distance / d) * (p2.y - this.y))
         )
@@ -114,24 +113,24 @@ open class PositionAndRotation(var x: Double = 0.0, var y: Double = 0.0, var r: 
 
     override fun hashCode(): Int = x.hashCode() + y.hashCode() + r.hashCode()
 
-    fun copy(x: Double, y: Double, r: Double): PositionAndRotation {
+    fun copy(x: Double, y: Double, r: Double): PosAndRot {
         val thisPlaceHolder = this
         thisPlaceHolder.addPositionAndRotation(x, y, r)
         return thisPlaceHolder
     }
 
-    operator fun plus(n: Double): PositionAndRotation {
-        return PositionAndRotation(this.x + n, this.y + n, this.r + n)
+    operator fun plus(n: Double): PosAndRot {
+        return PosAndRot(this.x + n, this.y + n, this.r + n)
     }
 
-    operator fun plus(n: PositionAndRotation): PositionAndRotation {
-        return PositionAndRotation(this.x + n.x, this.y + n.y, this.r + n.r)
+    operator fun plus(n: PosAndRot): PosAndRot {
+        return PosAndRot(this.x + n.x, this.y + n.y, this.r + n.r)
     }
-    operator fun times(n: Double): PositionAndRotation {
-        return PositionAndRotation(this.x * n, this.y * n, this.r * n)
+    operator fun times(n: Double): PosAndRot {
+        return PosAndRot(this.x * n, this.y * n, this.r * n)
     }
 
-    operator fun compareTo(n: PositionAndRotation): Int {
+    operator fun compareTo(n: PosAndRot): Int {
         val avgN = n.x + n.y + n.r / 3
         val avgThis = this.x + this.y + this.r / 3
 
@@ -144,7 +143,7 @@ open class PositionAndRotation(var x: Double = 0.0, var y: Double = 0.0, var r: 
         }
     }
 
-    operator fun div(n: Int): PositionAndRotation {
-        return PositionAndRotation(x / n, y / n, r / n)
+    operator fun div(n: Int): PosAndRot {
+        return PosAndRot(x / n, y / n, r / n)
     }
 }
