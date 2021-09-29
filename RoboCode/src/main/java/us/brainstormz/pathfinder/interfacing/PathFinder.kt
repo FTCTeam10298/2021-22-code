@@ -1,4 +1,4 @@
-package us.brainstormz.pathfinder
+package interfacing
 
 import us.brainstormz.localization.PositionAndRotation
 import us.brainstormz.localization.World

@@ -1,13 +1,13 @@
-package us.brainstormz.pathfinder.posePlanner
+package posePlanner
 
-import us.brainstormz.pathfinder.Coordinate
+import us.brainstormz.localization.PositionAndRotation
 import kotlin.math.PI
 import kotlin.math.pow
 import kotlin.math.sqrt
 
 //abstract class Plot(val x: Double, val y: Double, val width: Double, val height: Double)
 
-class Poly(p1: Coordinate, p2: Coordinate, p3:Coordinate, vararg  points: Coordinate) {
+class Poly(p1: PositionAndRotation, p2: PositionAndRotation, p3:PositionAndRotation, vararg  points: PositionAndRotation) {
     val points = listOf(p1, p2, p3, *points)
 
     fun getLines(): List<Line> {
@@ -21,9 +21,9 @@ class Poly(p1: Coordinate, p2: Coordinate, p3:Coordinate, vararg  points: Coordi
         }
     }
 
-    fun centroid(): Coordinate {
+    fun centroid(): PositionAndRotation {
 
-        val result = points.fold(Coordinate()){ acc, it ->
+        val result = points.fold(PositionAndRotation()){ acc, it ->
             acc + it
         }
         result.x /= points.size
@@ -39,8 +39,8 @@ class Poly(p1: Coordinate, p2: Coordinate, p3:Coordinate, vararg  points: Coordi
             n
 
 
-    fun intersection(l: Line): Pair<Coordinate, Line>? {
-        var result: Pair<Coordinate, Line>? = null
+    fun intersection(l:Line): Pair<PositionAndRotation, Line>? {
+        var result: Pair<PositionAndRotation, Line>? = null
 
 //        println("\nnew obs")
         getLines().forEach {
@@ -59,7 +59,7 @@ class Poly(p1: Coordinate, p2: Coordinate, p3:Coordinate, vararg  points: Coordi
     }
 
 
-    fun isPointInBounds(point: Coordinate): Boolean {
+    fun isPointInBounds(point: PositionAndRotation): Boolean {
 
         val nextList = (points+points.first()).drop(1)
         val prevList = (listOf(points.last())+points).dropLast(1)
@@ -92,20 +92,20 @@ class Poly(p1: Coordinate, p2: Coordinate, p3:Coordinate, vararg  points: Coordi
 }
 
 interface FieldElement{
-    val poly: Poly
+    val poly:Poly
 }
-class Obstruction(override val poly: Poly): FieldElement {
-    constructor() : this(Poly(Coordinate(), Coordinate(), Coordinate()))
+class Obstruction(override val poly:Poly):FieldElement {
+    constructor() : this(Poly(PositionAndRotation(), PositionAndRotation(), PositionAndRotation()))
 
     fun codeString(): String {
         val interior: String = poly.points.map {
-            "Coordinate$it"
+            "PositionAndRotation$it"
         }.toString().drop(1).dropLast(1).replace(" angle:", "").replace(" y:", "").replace("x: ", "")
 
         return "Obstruction(Poly(${interior})),\n"
     }
 }
-class UndesirableArea(override val poly: Poly, val cost: Double): FieldElement
+class UndesirableArea(override val poly:Poly, val cost: Double):FieldElement
 
 open class Point3D(val x: Double, val y: Double, val z: Double) {
 
@@ -153,7 +153,7 @@ open class Point3D(val x: Double, val y: Double, val z: Double) {
         return "($x, $y, $z)"
     }
 
-    fun distanceTo(p1: Coordinate): Double =
+    fun distanceTo(p1: PositionAndRotation): Double =
         sqrt((p1.x - x).pow(2.0) +
                 (p1.y - y).pow(2.0) * 1.0)
 
@@ -166,9 +166,9 @@ class Point2D(x: Double, y: Double): Point3D(x, y, 0.0) {
     fun toPoint3D(): Point3D = Point3D(this.x, this.y, this.z)
 }
 
-class Line(val start: Coordinate, val end: Coordinate) {
+class Line(val start: PositionAndRotation, val end: PositionAndRotation) {
 
-    fun lineIntersection(line: Line): Coordinate? {
+    fun lineIntersection(line: Line): PositionAndRotation? {
 
         val p1 = this.start
         val p2 = this.end
@@ -198,13 +198,13 @@ class Line(val start: Coordinate, val end: Coordinate) {
             t in 0.0..1.0 -> {
                 val tx = x1 + t*(x2 - x1)
                 val ty = y1 + t*(y2 - y1)
-                val tIntersect = Coordinate(tx, ty)
+                val tIntersect = PositionAndRotation(tx, ty)
                 tIntersect
             }
             u in 0.0..1.0 -> {
                 val ux = x3 + u * (x4 - x3)
                 val uy = y3 + u * (y4 - y3)
-                val uIntersect = Coordinate(ux, uy)
+                val uIntersect = PositionAndRotation(ux, uy)
                 uIntersect
             }
             else -> null
@@ -216,7 +216,7 @@ class Line(val start: Coordinate, val end: Coordinate) {
             null
     }
 
-    private fun doSegmentsIntersect(p1: Coordinate, q1: Coordinate, p2: Coordinate, q2: Coordinate): Boolean {
+    private fun doSegmentsIntersect(p1: PositionAndRotation, q1: PositionAndRotation, p2: PositionAndRotation, q2: PositionAndRotation): Boolean {
         val o1 = orientation(p1, q1, p2)
         val o2 = orientation(p1, q1, q2)
         val o3 = orientation(p2, q2, p1)
@@ -235,7 +235,7 @@ class Line(val start: Coordinate, val end: Coordinate) {
         }
     }
 
-    private fun orientation(p: Coordinate, q: Coordinate, r: Coordinate): Int {
+    private fun orientation(p: PositionAndRotation, q: PositionAndRotation, r: PositionAndRotation): Int {
         val value: Double = (q.y - p.y) * (r.x - q.x) - (q.x - p.x) * (r.y - q.y)
 
         return when {
@@ -251,7 +251,7 @@ class Line(val start: Coordinate, val end: Coordinate) {
         }
     }
 
-    private fun onSegment(p: Coordinate, q: Coordinate, r: Coordinate): Boolean = q.x <= p.x.coerceAtLeast(r.x) && q.x >= p.x.coerceAtMost(r.x) && q.y <= p.y.coerceAtLeast(r.y) && q.y >= p.y.coerceAtMost(r.y)
+    private fun onSegment(p: PositionAndRotation, q: PositionAndRotation, r: PositionAndRotation): Boolean = q.x <= p.x.coerceAtLeast(r.x) && q.x >= p.x.coerceAtMost(r.x) && q.y <= p.y.coerceAtLeast(r.y) && q.y >= p.y.coerceAtMost(r.y)
 
     override fun toString(): String =
         "($start to $end)"

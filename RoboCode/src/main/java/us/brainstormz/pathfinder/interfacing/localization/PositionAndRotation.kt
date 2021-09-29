@@ -1,4 +1,4 @@
-package us.brainstormz.pathfinder
+package us.brainstormz.localization
 
 import kotlin.math.hypot
 
@@ -8,7 +8,7 @@ import kotlin.math.hypot
  * @param y Y position
  * @param r Angle, in radians
  */
-open class Coordinate(var x: Double = 0.0, var y: Double = 0.0, var r: Double = 0.0) {
+open class PositionAndRotation(var x: Double = 0.0, var y: Double = 0.0, var r: Double = 0.0) {
 
     /**
      * Sets the parameters of the Coordinate.
@@ -49,11 +49,11 @@ open class Coordinate(var x: Double = 0.0, var y: Double = 0.0, var r: Double = 
 
     /**
      * Gives the absolute value of the distance between the given Coordinate and the current Coordinate.
-     * @param coordinate Coordinate to compare
+     * @param positionAndRotation Coordinate to compare
      * @return distance from current Coordinate
      */
-    fun distance(coordinate: Coordinate): Double {
-        return hypot(coordinate.x - x, coordinate.y - y)
+    fun distance(positionAndRotation: PositionAndRotation): Double {
+        return hypot(positionAndRotation.x - x, positionAndRotation.y - y)
     }
 
     /**
@@ -77,73 +77,21 @@ open class Coordinate(var x: Double = 0.0, var y: Double = 0.0, var r: Double = 
 
     /**
      * Gives the error of the angle from the given Coordinate and the current Coordinate.
-     * @param coordinate Coordinate to compare
+     * @param positionAndRotation Coordinate to compare
      * @return angle error from current Coordinate
      */
-    fun theta(coordinate: Coordinate): Double {
-        return theta(coordinate.r)
-    }
-
-    fun direction(coordinate: Coordinate): Double {
-        return Math.atan2(coordinate.y-this.y, coordinate.x-this.x)
-    }
-
-    fun coordinateAlongLine(distance: Double, p2: Coordinate): Coordinate {
-
-        val d = this.distance(p2)
-
-        return Coordinate(
-            this.x + ((distance / d) * (p2.x - this.x)),
-            this.y + ((distance / d) * (p2.y - this.y))
-        )
+    fun theta(positionAndRotation: PositionAndRotation): Double {
+        return theta(positionAndRotation.r)
     }
 
     override fun equals(other: Any?): Boolean {
         return super.equals(other)
     }
 
-//    override fun toString(): String {
-//        return "X: $x\nY: $y\nAngle: $r"
-//    }
-
-
     override fun toString(): String {
-        return "(x: $x, y: $y, angle: $r)"
+        return "X: $x\nY: $y\nAngle: $r"
     }
 
     override fun hashCode(): Int = x.hashCode() + y.hashCode() + r.hashCode()
 
-    fun copy(x: Double, y: Double, r: Double): Coordinate {
-        val thisPlaceHolder = this
-        thisPlaceHolder.addCoordinate(x, y, r)
-        return thisPlaceHolder
-    }
-
-    operator fun plus(n: Double): Coordinate {
-        return Coordinate(this.x + n, this.y + n, this.r + n)
-    }
-
-    operator fun plus(n: Coordinate): Coordinate {
-        return Coordinate(this.x + n.x, this.y + n.y, this.r + n.r)
-    }
-    operator fun times(n: Double): Coordinate {
-        return Coordinate(this.x * n, this.y * n, this.r * n)
-    }
-
-    operator fun compareTo(n: Coordinate): Int {
-        val avgN = n.x + n.y + n.r / 3
-        val avgThis = this.x + this.y + this.r / 3
-
-        val difference = avgThis - avgN
-
-        return when{
-            difference == 0.0 -> 0
-            difference > 0 -> 1
-            else -> -1
-        }
-    }
-
-    operator fun div(n: Int): Coordinate {
-        return Coordinate(x / n, y / n, r / n)
-    }
 }

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="73e786fc-26da-472e-bd45-99c9be65dc46" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/java/sdkAbstraction/SdkAbstraction.kt" beforeDir="false" afterPath="$PROJECT_DIR$/java/sdkAbstraction/SdkAbstraction.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/java/us/brainstormz/pathfinder/posePlanner/test.kt" beforeDir="false" afterPath="$PROJECT_DIR$/java/us/brainstormz/pathfinder/posePlanner/test.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../TeamCode/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/../../../TeamCode/build.gradle" afterDir="false" />
+    </list>
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../../.." />
+  </component>
+  <component name="ProjectId" id="1ymv9ikOzTx3rGEFLvgXwnwB2JW" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="PropertiesComponent">
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="73e786fc-26da-472e-bd45-99c9be65dc46" name="Default Changelist" comment="" />
+      <created>1632869428611</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1632869428611</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+</project>

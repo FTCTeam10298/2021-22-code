@@ -1,4 +1,4 @@
-package us.brainstormz.pathfinder.posePlanner
+package posePlanner
 
 import kotlin.math.pow
 
