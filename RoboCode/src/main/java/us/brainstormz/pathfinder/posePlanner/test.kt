@@ -1,6 +1,6 @@
 package posePlanner
 
-import us.brainstormz.localization.PositionAndRotation
+import locationTracking.PositionAndRotation
 import java.awt.*
 import java.lang.Thread.sleep
 import javax.swing.JButton

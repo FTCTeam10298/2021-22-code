@@ -1,6 +1,6 @@
 package posePlanner
 
-import us.brainstormz.localization.PositionAndRotation
+import locationTracking.PositionAndRotation
 import kotlin.math.PI
 import kotlin.math.pow
 import kotlin.math.sqrt
