@@ -21,20 +21,20 @@ fun wrapAngle(n: Double): Double =
 
 
 fun main() {
-//    val poly = Poly(PositionAndRotation(1.0, 1.0), PositionAndRotation(10.0, 10.0), PositionAndRotation(5.0,5.0))
-//    println(poly.getLines())
+    val poly = Poly(PosAndRot(1.0, 1.0), PosAndRot(10.0, 10.0), PosAndRot(5.0,5.0))
+    println(poly.getLines())
 
-//    val test = IntersectTest()
-//
-//    test.init(test)
-//    test.runStuff()
-//    test.post()
+    val test = IntersectTest()
 
-    val ultimateTest = UltimateTest()
-    ultimateTest.init(ultimateTest)
-    ultimateTest.runStuff()
-    ultimateTest.findPath()
-    ultimateTest.post()
+    test.init(test)
+    test.runStuff()
+    test.post()
+
+//    val ultimateTest = UltimateTest()
+//    ultimateTest.init(ultimateTest)
+//    ultimateTest.runStuff()
+//    ultimateTest.findPath()
+//    ultimateTest.post()
 
 //    val bezierTest = BezierTest()
 //    bezierTest.init(bezierTest)
@@ -48,13 +48,13 @@ class UltimateTest: PaintComponent() {
     private val posePlanner = PosePlanner()
     private val start = PosAndRot(10.0, 10.0, 0.0)
     private val end = PosAndRot(0.0, 0.0, 0.0)
-//    private val start = PositionAndRotation(0.0, 0.0, 0.0)
-//    private val end = PositionAndRotation(10.0, 10.0, 0.0)
+//    private val start = PosAndRot(0.0, 0.0, 0.0)
+//    private val end = PosAndRot(10.0, 10.0, 0.0)
 
     private var obstructions: List<Obstruction> =
-//        listOf(Obstruction(Poly(PositionAndRotation(6.519797831033332, 7.727695766206712, 0.0), PositionAndRotation(3.808070865924204, 5.0588240052818865, 0.0), PositionAndRotation(4.055833477091567, 3.0009006746074265, 0.0))),
-//               Obstruction(Poly(PositionAndRotation(2.895762025674081, 5.1004682898221, 0.0), PositionAndRotation(9.074475200744146, 5.2907985702886755, 0.0), PositionAndRotation(4.487713669422675, 3.6953173241440336, 0.0))),
-//               Obstruction(Poly(PositionAndRotation(6.629677988177396, 9.479500916380966, 0.0), PositionAndRotation(8.302927274401915, 8.96710029016767, 0.0), PositionAndRotation(9.7812744203991, 7.538503451029122, 0.0))))
+//        listOf(Obstruction(Poly(PosAndRot(6.519797831033332, 7.727695766206712, 0.0), PosAndRot(3.808070865924204, 5.0588240052818865, 0.0), PosAndRot(4.055833477091567, 3.0009006746074265, 0.0))),
+//               Obstruction(Poly(PosAndRot(2.895762025674081, 5.1004682898221, 0.0), PosAndRot(9.074475200744146, 5.2907985702886755, 0.0), PosAndRot(4.487713669422675, 3.6953173241440336, 0.0))),
+//               Obstruction(Poly(PosAndRot(6.629677988177396, 9.479500916380966, 0.0), PosAndRot(8.302927274401915, 8.96710029016767, 0.0), PosAndRot(9.7812744203991, 7.538503451029122, 0.0))))
         listOf(Obstruction(Poly(PosAndRot(2.0, 3.0), PosAndRot(3.5, 3.0), PosAndRot(4.0, 8.0), PosAndRot(4.0, 6.0))),
             Obstruction(Poly(PosAndRot(5.0, 4.0), PosAndRot(5.0, 2.0), PosAndRot(7.0, 2.0), PosAndRot(7.0, 4.0))),
             Obstruction(Poly(PosAndRot(8.0, 7.0), PosAndRot(8.0, 9.0), PosAndRot(9.0, 9.0), PosAndRot(9.0, 7.0))))
@@ -332,14 +332,14 @@ class IntersectTest: PaintComponent() {
 
         val line = Line(PosAndRot(0.0, 0.0), PosAndRot(30.0, 30.0))
         val obstructions = listOf(obsGen.randomObstruction(), obsGen.randomObstruction(), obsGen.randomObstruction(), obsGen.randomObstruction())
-//            Obstruction(Poly(PositionAndRotation(10.0, 10.0),
-//                                    PositionAndRotation(10.0, 20.0),
-//                                    PositionAndRotation(20.0, 20.0),
-//                                    PositionAndRotation(20.0, 10.0)))
+//            Obstruction(Poly(PosAndRot(10.0, 10.0),
+//                                    PosAndRot(10.0, 20.0),
+//                                    PosAndRot(20.0, 20.0),
+//                                    PosAndRot(20.0, 10.0)))
         val result = obstructions.fold<Obstruction, Pair<Obstruction, Pair<PosAndRot, Line>>?>(null){ acc: Pair<Obstruction, Pair<PosAndRot, Line>>?, it ->
             val assd = it.poly.intersection(line)
 
-            if (assd != null && ( acc == null || assd!!.first <= acc!!.second.first))
+            if (assd != null && ( acc == null || assd!!.first.distance(line.start) <= acc!!.second.first.distance(line.start)))
                 it to assd!!
             else
                 acc
