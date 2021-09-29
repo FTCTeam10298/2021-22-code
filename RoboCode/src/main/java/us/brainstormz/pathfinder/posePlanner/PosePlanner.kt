@@ -1,6 +1,6 @@
 package posePlanner
 
-import us.brainstormz.localization.PositionAndRotation
+import locationTracking.PositionAndRotation
 
 
 class PosePlanner {
@@ -79,7 +79,7 @@ class PosePlanner {
 
         val farthestPoint = obstruction.poly.points.minBy{ it.distance(current) }!!
         val movedPoints = listOf(collisionEdge.start, collisionEdge.end).map {
-            it.coordinateAlongLine(-.2, centroid).PositionAndRotationAlongLine(-.2, farthestPoint)
+            it.coordinateAlongLine(-.2, centroid).coordinateAlongLine(-.2, farthestPoint)
         }
 
         return movedPoints

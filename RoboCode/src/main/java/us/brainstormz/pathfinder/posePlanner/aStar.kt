@@ -1,6 +1,6 @@
 package posePlanner
 
-import us.brainstormz.localization.PositionAndRotation
+import locationTracking.PositionAndRotation
 
 
 data class AStarPoint(val point: PositionAndRotation, var gCost: Double, var hCost: Double, var parent: AStarPoint?, var movementPenalty: Double) {
