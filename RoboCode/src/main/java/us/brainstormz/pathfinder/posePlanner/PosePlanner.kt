@@ -1,11 +1,11 @@
-package us.brainstormz.pathfinder.posePlanner
+package posePlanner
 
-import us.brainstormz.pathfinder.Coordinate
+import us.brainstormz.localization.PositionAndRotation
 
 
 class PosePlanner {
-    var aStar = AStar(Coordinate(), Coordinate(), listOf(), this)
-    var hitPoints = listOf<Coordinate>()
+    var aStar = AStar(PositionAndRotation(), PositionAndRotation(), listOf(), this)
+    var hitPoints = listOf<PositionAndRotation>()
 
     val preLoadedPaths = listOf(BezierPath())
     val undesirableAreas: List<UndesirableArea> = listOf()
@@ -15,7 +15,7 @@ class PosePlanner {
     /**
     PATH GEN
      */
-    fun generatePath(start: Coordinate, target: Coordinate): List<Coordinate> {
+    fun generatePath(start: PositionAndRotation, target: PositionAndRotation): List<PositionAndRotation> {
         println("\n\n\nNew Path=\n")
 
         val aStar = AStar(start, target, obstructions, this)
@@ -66,7 +66,7 @@ class PosePlanner {
     }
 
 
-    private fun findAround(current: Coordinate, obstruction: Obstruction): List<Coordinate> {
+    private fun findAround(current: PositionAndRotation, obstruction: Obstruction): List<PositionAndRotation> {
         val edges = obstruction.poly.getLines()
 
         val centroid = obstruction.poly.centroid()
@@ -77,20 +77,20 @@ class PosePlanner {
             collisionEdge = it
         }
 
-        val farthestPoint = obstruction.poly.points.minByOrNull { it.distance(current) }!!
+        val farthestPoint = obstruction.poly.points.minBy{ it.distance(current) }!!
         val movedPoints = listOf(collisionEdge.start, collisionEdge.end).map {
-            it.coordinateAlongLine(-.2, centroid).coordinateAlongLine(-.2, farthestPoint)
+            it.coordinateAlongLine(-.2, centroid).PositionAndRotationAlongLine(-.2, farthestPoint)
         }
 
         return movedPoints
     }
 
 
-    private fun cutCorners(path: List<Coordinate>): List<Coordinate> {
+    private fun cutCorners(path: List<PositionAndRotation>): List<PositionAndRotation> {
         println("\n")
         println(path)
 
-        val efficientPath: MutableList<Coordinate> = path.toMutableList()
+        val efficientPath: MutableList<PositionAndRotation> = path.toMutableList()
 
         var current = path.first()
 
@@ -116,8 +116,8 @@ class PosePlanner {
         return efficientPath
     }
 
-    fun firstIntersection(l: Line, obstructions: List<Obstruction>): Pair<Coordinate, Obstruction>? {
-        var result: Coordinate? = null
+    fun firstIntersection(l: Line, obstructions: List<Obstruction>): Pair<PositionAndRotation, Obstruction>? {
+        var result: PositionAndRotation? = null
         var intersect: Obstruction? = null
         obstructions.forEach {
             val newIntersect = it.poly.intersection(l)
@@ -148,7 +148,7 @@ class PosePlanner {
 //    private var d = 0.0
 //    private val granularity = 0.1
 //
-//    fun getCoordinate(current: Coordinate, target: Coordinate): Coordinate {
+//    fun getPositionAndRotation(current: PositionAndRotation, target: PositionAndRotation): PositionAndRotation {
 //
 ////        determine path
 //        if (currentPath == null)
@@ -169,7 +169,7 @@ class PosePlanner {
 //
 ////        return
 //        val nextPoint = currentCurve!!.calculatePoint(d)
-//        return nextPoint.toCoordinate()
+//        return nextPoint.toPositionAndRotation()
 //    }
 //
 //    private fun isPathPreLoaded(start: Point3D, end: Point3D): BezierPath? =
@@ -181,19 +181,19 @@ class PosePlanner {
 //        return d + granularity
 //    }
 
-    val pointToCoordinate = Point3D(0.0, 0.0, 0.0)
-    private fun Point3D.toCoordinate(): Coordinate {
-        val adjusted = this.copy(x = pointToCoordinate.x,
-                                 y = pointToCoordinate.y,
-                                 z = pointToCoordinate.z)
-        return Coordinate(x = adjusted.x,
+    val pointToPositionAndRotation = Point3D(0.0, 0.0, 0.0)
+    private fun Point3D.toPositionAndRotation(): PositionAndRotation {
+        val adjusted = this.copy(x = pointToPositionAndRotation.x,
+                                 y = pointToPositionAndRotation.y,
+                                 z = pointToPositionAndRotation.z)
+        return PositionAndRotation(x = adjusted.x,
                           y = adjusted.y,
                           r = adjusted.z)
     }
-    private fun Coordinate.toPoint3D(): Point3D {
-        val adjusted = this.copy(x = pointToCoordinate.x,
-                                 y = pointToCoordinate.y,
-                                 r = pointToCoordinate.z)
+    private fun PositionAndRotation.toPoint3D(): Point3D {
+        val adjusted = this.copy(x = pointToPositionAndRotation.x,
+                                 y = pointToPositionAndRotation.y,
+                                 r = pointToPositionAndRotation.z)
         return Point3D(x = adjusted.x,
                        y = adjusted.y,
                        z = adjusted.r)
