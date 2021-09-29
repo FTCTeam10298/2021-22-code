@@ -49,7 +49,7 @@ class Poly(p1: PosAndRot, p2: PosAndRot, p3:PosAndRot, vararg  points: PosAndRot
 //            println("line $line")
             if (thisIntersect != null){
 //                println("intersect")
-                if (result == null || thisIntersect < result!!.first) {
+                if (result == null || thisIntersect.distance(l.start) < result!!.first.distance(l.start)) {
                     result = thisIntersect to it
                 }
             }
