@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/pathfinderTest.iml" filepath="$PROJECT_DIR$/pathfinderTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/pathfinder.iml" filepath="$PROJECT_DIR$/pathfinder.iml" />
     </modules>
   </component>
 </project>

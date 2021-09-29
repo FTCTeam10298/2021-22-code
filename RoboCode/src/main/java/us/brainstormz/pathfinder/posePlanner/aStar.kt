@@ -1,12 +1,12 @@
 package posePlanner
 
-import locationTracking.PositionAndRotation
+import locationTracking.PosAndRot
 
 
-data class AStarPoint(val point: PositionAndRotation, var gCost: Double, var hCost: Double, var parent: AStarPoint?, var movementPenalty: Double) {
+data class AStarPoint(val point: PosAndRot, var gCost: Double, var hCost: Double, var parent: AStarPoint?, var movementPenalty: Double) {
     val fCost: Double get() = gCost + hCost
 
-    constructor(point: PositionAndRotation): this(point, 0.0, 0.0, null, 0.0)
+    constructor(point: PosAndRot): this(point, 0.0, 0.0, null, 0.0)
 
     override operator fun equals(other: Any?): Boolean {
         val other = other as AStarPoint
@@ -17,12 +17,12 @@ data class AStarPoint(val point: PositionAndRotation, var gCost: Double, var hCo
     }
 }
 
-class AStar(start: PositionAndRotation, private val target: PositionAndRotation, private val obstructions: List<Obstruction>, private val planner: PosePlanner) {
+class AStar(start: PosAndRot, private val target: PosAndRot, private val obstructions: List<Obstruction>, private val planner: PosePlanner) {
 
-    val allPoints: List<PositionAndRotation>
+    val allPoints: List<PosAndRot>
         get() = openSet.map { it.point } + closedSet.map { it.point } + anotherPoint
-    var anotherPoint = PositionAndRotation()
-    var hitpoint = listOf<PositionAndRotation>()
+    var anotherPoint = PosAndRot()
+    var hitpoint = listOf<PosAndRot>()
 
     val startNode = AStarPoint(start)
 
@@ -30,6 +30,7 @@ class AStar(start: PositionAndRotation, private val target: PositionAndRotation,
     val closedSet: MutableList<AStarPoint> = mutableListOf()
 
     fun cheapestNode(): AStarPoint {
+        println("openset $openSet")
         val newNode: AStarPoint = openSet.minBy { it.fCost }!!
         openSet.remove(newNode)
         closedSet.add(newNode)
@@ -84,7 +85,7 @@ class AStar(start: PositionAndRotation, private val target: PositionAndRotation,
     }
 
 
-    fun tracePath(lastNode: AStarPoint): List<PositionAndRotation> {
+    fun tracePath(lastNode: AStarPoint): List<PosAndRot> {
         val path: MutableList<AStarPoint> = mutableListOf()
 
         var currentNode: AStarPoint = lastNode
@@ -95,7 +96,7 @@ class AStar(start: PositionAndRotation, private val target: PositionAndRotation,
         path.add(startNode)
 
 
-        val waypoints: List<PositionAndRotation> = path.map { it.point }
+        val waypoints: List<PosAndRot> = path.map { it.point }
 
         return waypoints.reversed()
 

@@ -1,6 +1,6 @@
 package posePlanner
 
-import locationTracking.PositionAndRotation
+import locationTracking.PosAndRot
 import java.awt.*
 import java.lang.Thread.sleep
 import javax.swing.JButton
@@ -42,6 +42,197 @@ fun main() {
 //    bezierTest.post()
 }
 
+
+class UltimateTest: PaintComponent() {
+
+    private val posePlanner = PosePlanner()
+    private val start = PosAndRot(10.0, 10.0, 0.0)
+    private val end = PosAndRot(0.0, 0.0, 0.0)
+//    private val start = PositionAndRotation(0.0, 0.0, 0.0)
+//    private val end = PositionAndRotation(10.0, 10.0, 0.0)
+
+    private var obstructions: List<Obstruction> =
+//        listOf(Obstruction(Poly(PositionAndRotation(6.519797831033332, 7.727695766206712, 0.0), PositionAndRotation(3.808070865924204, 5.0588240052818865, 0.0), PositionAndRotation(4.055833477091567, 3.0009006746074265, 0.0))),
+//               Obstruction(Poly(PositionAndRotation(2.895762025674081, 5.1004682898221, 0.0), PositionAndRotation(9.074475200744146, 5.2907985702886755, 0.0), PositionAndRotation(4.487713669422675, 3.6953173241440336, 0.0))),
+//               Obstruction(Poly(PositionAndRotation(6.629677988177396, 9.479500916380966, 0.0), PositionAndRotation(8.302927274401915, 8.96710029016767, 0.0), PositionAndRotation(9.7812744203991, 7.538503451029122, 0.0))))
+        listOf(Obstruction(Poly(PosAndRot(2.0, 3.0), PosAndRot(3.5, 3.0), PosAndRot(4.0, 8.0), PosAndRot(4.0, 6.0))),
+            Obstruction(Poly(PosAndRot(5.0, 4.0), PosAndRot(5.0, 2.0), PosAndRot(7.0, 2.0), PosAndRot(7.0, 4.0))),
+            Obstruction(Poly(PosAndRot(8.0, 7.0), PosAndRot(8.0, 9.0), PosAndRot(9.0, 9.0), PosAndRot(9.0, 7.0))))
+
+    private val obsGen = ObstructionGen(obstructions)
+
+    val scaling = 50.0
+
+    private var points = listOf<PosAndRot>()
+    private var neighbors = listOf<PosAndRot>()
+
+    private var path = listOf<PosAndRot>()
+
+    private fun runOnDedicatedThread(fn:()->Unit): Thread {
+
+        val thread = object:Thread(){
+            override fun run() {
+                fn()
+            }
+        }
+        thread.start()
+        return thread
+    }
+
+    fun runStuff() {
+        val buttonsPanel = JPanel()
+
+        val runButton = JButton("Run")
+        val printButton = JButton("Print")
+
+        buttonsPanel.add(runButton)
+        buttonsPanel.add(printButton)
+        testFrame.contentPane.add(buttonsPanel, BorderLayout.SOUTH)
+
+        runButton.addActionListener {
+            points = listOf()
+            path = listOf()
+            obstructions = listOf(obsGen.randomObstruction(), obsGen.randomObstruction(), obsGen.randomObstruction())
+            findPath()
+            graphics.color = background
+            graphics.clearRect(0, 0, width, height)
+            paintComponent(graphics)
+        }
+        printButton.addActionListener {
+            val printable = obstructions.fold("listOf("){ acc, it ->
+                acc + it.codeString()
+            }.toString().dropLast(2).plus(")")
+
+            println(printable)
+        }
+    }
+
+    fun findPath()  {
+
+        val thread = runOnDedicatedThread {
+            posePlanner.obstructions = obstructions
+            path = posePlanner.generatePath(start, end)
+            println("Planner finished")
+        }
+        println(path)
+        sleep(100)
+        thread.stop()
+        println("\n \nPath Stopped")
+
+        points = posePlanner.aStar.allPoints
+        neighbors = posePlanner.hitPoints
+    }
+
+    override fun draw(g: Graphics) {
+
+//        g.color = Color.green
+//        g.drawLine(start.x.toInt(), start.y.toInt(), end.x.toInt() * scaling.toInt(), end.y.toInt() * scaling.toInt())
+
+        g.color = Color.red
+        obstructions.forEach { obstruction ->
+            val obs = obstruction.poly.points
+
+            val poly = Polygon(obs.map{ (it.x * scaling).toInt() }.toIntArray(),
+                obs.map{ (it.y * scaling).toInt() }.toIntArray(),
+                obs.size)
+
+            g.drawPolygon(poly)
+        }
+
+
+        g.color = Color.blue
+        neighbors.forEach {
+            val current = it * scaling
+
+            g.fillOval((current.x).toInt(),
+                (current.y).toInt(),
+                5,
+                5)
+        }
+
+//        println(path.size)
+//        println(path)
+        path.forEach {
+            val current = it * scaling
+
+            g.color = Color.black
+
+            g.fillOval(current.x.toInt(),
+                current.y.toInt(),
+                7,
+                7)
+
+            g.color = Color.BLUE
+            if (it != path.last()) {
+                val nextPoint = path[path.indexOf(it) + 1] * scaling
+
+//                println("current= $current")
+//                println("next= $nextPoint")
+                g.drawLine(
+                    current.x.toInt(),
+                    current.y.toInt(),
+                    nextPoint.x.toInt(),
+                    nextPoint.y.toInt()
+                )
+            }
+        }
+
+
+        g.color = Color.black
+        val hitPoint = start * scaling
+
+        g.fillOval((hitPoint.x).toInt(),
+            (hitPoint.y).toInt(),
+            (5).toInt(),
+            (5).toInt())
+
+        g.color = Color.black
+        val adjust = end * scaling
+
+        g.fillOval((adjust.x).toInt(),
+            (adjust.y).toInt(),
+            (5).toInt(),
+            (5).toInt())
+
+//        for (i in 0..5) {
+//
+//            val it = neighbors[i]
+//
+//
+//            g.color = Color.blue
+//            it.second.forEach {
+//                val current = it * scaling
+//
+//                g.fillOval((current.x).toInt(),
+//                    (current.y).toInt(),
+//                    (5+i*1.5).toInt(),
+//                    (5+i*1.5).toInt())
+//            }
+//
+//            g.color = Color.black
+//            val hitPoint = it.first * scaling
+//
+//            g.fillOval((hitPoint.x).toInt(),
+//                       (hitPoint.y).toInt(),
+//                       (5+i*1.5).toInt(),
+//                       (5+i*1.5).toInt())
+//
+//        }
+
+        g.color = Color.pink
+        points.forEach {
+            val current = it * scaling
+
+            g.fillOval((current.x).toInt(),
+                (current.y).toInt(),
+                5,
+                5)
+        }
+
+    }
+
+
+}
 
 class BezierTest: PaintComponent() {
     val obsGen = ObstructionGen(listOf())
@@ -139,13 +330,13 @@ class IntersectTest: PaintComponent() {
         val pose = PosePlanner()
         val obsGen = ObstructionGen(listOf())
 
-        val line = Line(PositionAndRotation(0.0, 0.0), PositionAndRotation(30.0, 30.0))
+        val line = Line(PosAndRot(0.0, 0.0), PosAndRot(30.0, 30.0))
         val obstructions = listOf(obsGen.randomObstruction(), obsGen.randomObstruction(), obsGen.randomObstruction(), obsGen.randomObstruction())
 //            Obstruction(Poly(PositionAndRotation(10.0, 10.0),
 //                                    PositionAndRotation(10.0, 20.0),
 //                                    PositionAndRotation(20.0, 20.0),
 //                                    PositionAndRotation(20.0, 10.0)))
-        val result = obstructions.fold<Obstruction, Pair<Obstruction, Pair<PositionAndRotation, Line>>?>(null){ acc: Pair<Obstruction, Pair<PositionAndRotation, Line>>?, it ->
+        val result = obstructions.fold<Obstruction, Pair<Obstruction, Pair<PosAndRot, Line>>?>(null){ acc: Pair<Obstruction, Pair<PosAndRot, Line>>?, it ->
             val assd = it.poly.intersection(line)
 
             if (assd != null && ( acc == null || assd!!.first <= acc!!.second.first))
@@ -209,7 +400,7 @@ class IntersectTest: PaintComponent() {
 
 class ObstructionGen(private var obstructions: List<Obstruction>) {
 
-    private fun containsPoint(poly: Poly, p: PositionAndRotation): Boolean {
+    private fun containsPoint(poly: Poly, p: PosAndRot): Boolean {
         val polygon = poly.points
 
         val centeroid = poly.centroid()
@@ -230,12 +421,12 @@ class ObstructionGen(private var obstructions: List<Obstruction>) {
     }
 
     fun randomObstruction(): Obstruction {
-        var points = mutableListOf<PositionAndRotation>()
+        var points = mutableListOf<PosAndRot>()
 
-        val start = PositionAndRotation(Random.nextDouble(6.0), Random.nextDouble(6.0))
+        val start = PosAndRot(Random.nextDouble(6.0), Random.nextDouble(6.0))
         for (i in 0..Random.nextInt(3, 5)) {
 
-            val new = PositionAndRotation(Random.nextDouble(4.0), Random.nextDouble(4.0))
+            val new = PosAndRot(Random.nextDouble(4.0), Random.nextDouble(4.0))
 
             points.add(start + new)
         }
@@ -269,194 +460,6 @@ class ObstructionGen(private var obstructions: List<Obstruction>) {
 
         return Obstruction(Poly(points[0], points[1], points[2], *points.subList(3, points.size).toTypedArray()))
     }
-}
-
-class UltimateTest: PaintComponent() {
-
-    private val posePlanner = PosePlanner()
-    private val start = PositionAndRotation(0.0, 0.0, 0.0)
-    private val end = PositionAndRotation(10.0, 10.0, 0.0)
-    private var obstructions: List<Obstruction> =
-//        listOf(Obstruction(Poly(PositionAndRotation(6.519797831033332, 7.727695766206712, 0.0), PositionAndRotation(3.808070865924204, 5.0588240052818865, 0.0), PositionAndRotation(4.055833477091567, 3.0009006746074265, 0.0))),
-//               Obstruction(Poly(PositionAndRotation(2.895762025674081, 5.1004682898221, 0.0), PositionAndRotation(9.074475200744146, 5.2907985702886755, 0.0), PositionAndRotation(4.487713669422675, 3.6953173241440336, 0.0))),
-//               Obstruction(Poly(PositionAndRotation(6.629677988177396, 9.479500916380966, 0.0), PositionAndRotation(8.302927274401915, 8.96710029016767, 0.0), PositionAndRotation(9.7812744203991, 7.538503451029122, 0.0))))
-        listOf(Obstruction(Poly(PositionAndRotation(2.0, 3.0), PositionAndRotation(3.5, 3.0), PositionAndRotation(4.0, 8.0), PositionAndRotation(4.0, 6.0))),
-                                                         Obstruction(Poly(PositionAndRotation(5.0, 4.0), PositionAndRotation(5.0, 2.0), PositionAndRotation(7.0, 2.0), PositionAndRotation(7.0, 4.0))),
-                                                         Obstruction(Poly(PositionAndRotation(8.0, 7.0), PositionAndRotation(8.0, 9.0), PositionAndRotation(9.0, 9.0), PositionAndRotation(9.0, 7.0))))
-
-    private val obsGen = ObstructionGen(obstructions)
-
-    val scaling = 50.0
-
-    private var points = listOf<PositionAndRotation>()
-    private var neighbors = listOf<PositionAndRotation>()
-
-    private var path = listOf<PositionAndRotation>()
-
-    private fun runOnDedicatedThread(fn:()->Unit): Thread {
-
-        val thread = object:Thread(){
-            override fun run() {
-                fn()
-            }
-        }
-        thread.start()
-        return thread
-    }
-
-    fun runStuff() {
-        val buttonsPanel = JPanel()
-
-        val runButton = JButton("Run")
-        val printButton = JButton("Print")
-
-        buttonsPanel.add(runButton)
-        buttonsPanel.add(printButton)
-        testFrame.contentPane.add(buttonsPanel, BorderLayout.SOUTH)
-
-        runButton.addActionListener {
-            points = listOf()
-            path = listOf()
-            obstructions = listOf(obsGen.randomObstruction(), obsGen.randomObstruction(), obsGen.randomObstruction())
-            findPath()
-            graphics.color = background
-            graphics.clearRect(0, 0, width, height)
-            paintComponent(graphics)
-        }
-        printButton.addActionListener {
-            val printable = obstructions.fold("listOf("){ acc, it ->
-                acc + it.codeString()
-            }.toString().dropLast(2).plus(")")
-
-            println(printable)
-        }
-    }
-
-    fun findPath()  {
-
-        val thread = runOnDedicatedThread {
-            posePlanner.obstructions = obstructions
-            path = posePlanner.generatePath(start, end)
-            println("Planner finished")
-        }
-        println(path)
-        sleep(100)
-        thread.stop()
-        println("\n \nPath Stopped")
-
-        points = posePlanner.aStar.allPoints
-        neighbors = posePlanner.hitPoints
-    }
-
-    override fun draw(g: Graphics) {
-
-//        g.color = Color.green
-//        g.drawLine(start.x.toInt(), start.y.toInt(), end.x.toInt() * scaling.toInt(), end.y.toInt() * scaling.toInt())
-
-        g.color = Color.red
-        obstructions.forEach { obstruction ->
-            val obs = obstruction.poly.points
-
-            val poly = Polygon(obs.map{ (it.x * scaling).toInt() }.toIntArray(),
-                               obs.map{ (it.y * scaling).toInt() }.toIntArray(),
-                               obs.size)
-
-            g.drawPolygon(poly)
-        }
-
-
-        g.color = Color.blue
-        neighbors.forEach {
-            val current = it * scaling
-
-            g.fillOval((current.x).toInt(),
-                (current.y).toInt(),
-                5,
-                5)
-        }
-
-//        println(path.size)
-//        println(path)
-        path.forEach {
-            val current = it * scaling
-
-            g.color = Color.black
-
-            g.fillOval(current.x.toInt(),
-                       current.y.toInt(),
-                       7,
-                       7)
-
-            g.color = Color.BLUE
-            if (it != path.last()) {
-                val nextPoint = path[path.indexOf(it) + 1] * scaling
-
-//                println("current= $current")
-//                println("next= $nextPoint")
-                g.drawLine(
-                    current.x.toInt(),
-                    current.y.toInt(),
-                    nextPoint.x.toInt(),
-                    nextPoint.y.toInt()
-                )
-            }
-        }
-
-
-        g.color = Color.black
-        val hitPoint = start * scaling
-
-        g.fillOval((hitPoint.x).toInt(),
-                   (hitPoint.y).toInt(),
-                   (5).toInt(),
-                   (5).toInt())
-
-        g.color = Color.black
-        val adjust = end * scaling
-
-        g.fillOval((adjust.x).toInt(),
-                    (adjust.y).toInt(),
-                    (5).toInt(),
-                    (5).toInt())
-
-//        for (i in 0..5) {
-//
-//            val it = neighbors[i]
-//
-//
-//            g.color = Color.blue
-//            it.second.forEach {
-//                val current = it * scaling
-//
-//                g.fillOval((current.x).toInt(),
-//                    (current.y).toInt(),
-//                    (5+i*1.5).toInt(),
-//                    (5+i*1.5).toInt())
-//            }
-//
-//            g.color = Color.black
-//            val hitPoint = it.first * scaling
-//
-//            g.fillOval((hitPoint.x).toInt(),
-//                       (hitPoint.y).toInt(),
-//                       (5+i*1.5).toInt(),
-//                       (5+i*1.5).toInt())
-//
-//        }
-
-        g.color = Color.pink
-        points.forEach {
-            val current = it * scaling
-
-            g.fillOval((current.x).toInt(),
-                (current.y).toInt(),
-                5,
-                5)
-        }
-
-    }
-
-
 }
 
 abstract class PaintComponent : JComponent() {

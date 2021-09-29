@@ -1,9 +1,9 @@
 package interfacing
 
-import locationTracking.PositionAndRotation
+import locationTracking.PosAndRot
 import interfacing.localization.World
 import interfacing.path.Path
 
 interface PathFinder {
-    fun calculatePath(world: World, from: PositionAndRotation, to: PositionAndRotation): Path
+    fun calculatePath(world: World, from: PosAndRot, to: PosAndRot): Path
 }
