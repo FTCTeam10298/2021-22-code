@@ -21,20 +21,20 @@ fun wrapAngle(n: Double): Double =
 
 
 fun main() {
-    val poly = Poly(PosAndRot(1.0, 1.0), PosAndRot(10.0, 10.0), PosAndRot(5.0,5.0))
-    println(poly.getLines())
+//    val poly = Poly(PosAndRot(1.0, 1.0), PosAndRot(10.0, 10.0), PosAndRot(5.0,5.0))
+//    println(poly.getLines())
+//
+//    val test = IntersectTest()
+//
+//    test.init(test)
+//    test.runStuff()
+//    test.post()
 
-    val test = IntersectTest()
-
-    test.init(test)
-    test.runStuff()
-    test.post()
-
-//    val ultimateTest = UltimateTest()
-//    ultimateTest.init(ultimateTest)
-//    ultimateTest.runStuff()
-//    ultimateTest.findPath()
-//    ultimateTest.post()
+    val ultimateTest = UltimateTest()
+    ultimateTest.init(ultimateTest)
+    ultimateTest.runStuff()
+    ultimateTest.findPath()
+    ultimateTest.post()
 
 //    val bezierTest = BezierTest()
 //    bezierTest.init(bezierTest)
