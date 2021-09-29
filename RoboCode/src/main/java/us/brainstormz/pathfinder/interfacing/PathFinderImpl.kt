@@ -1,9 +1,8 @@
-package us.brainstormz.pathfinder.interfacing
+package interfacing
 
-import interfacing.PathFinder
-import us.brainstormz.localization.PositionAndRotation
-import us.brainstormz.localization.World
-import us.brainstormz.path.Path
+import interfacing.localization.World
+import interfacing.path.Path
+import locationTracking.PositionAndRotation
 
 class PathFinderImpl: PathFinder {
     override fun calculatePath(world: World, from: PositionAndRotation, to: PositionAndRotation): Path {

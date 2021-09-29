@@ -1,4 +1,6 @@
-package us.brainstormz.localization
+package interfacing.localization
+
+import locationTracking.PositionAndRotation
 
 interface Localizer {
     fun currentPositionAndRotation(): PositionAndRotation

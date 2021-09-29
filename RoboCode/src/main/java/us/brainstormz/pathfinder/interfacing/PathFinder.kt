@@ -1,9 +1,9 @@
 package interfacing
 
-import us.brainstormz.localization.PositionAndRotation
-import us.brainstormz.localization.World
-import us.brainstormz.path.Path
+import locationTracking.PositionAndRotation
+import interfacing.localization.World
+import interfacing.path.Path
 
 interface PathFinder {
-    fun calculatePath(world: World, from: PositionAndRotation, to: PositionAndRotation):Path
+    fun calculatePath(world: World, from: PositionAndRotation, to: PositionAndRotation): Path
 }
