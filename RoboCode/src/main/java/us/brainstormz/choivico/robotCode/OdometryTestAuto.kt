@@ -17,6 +17,7 @@ class OdometryTestAuto: LinearOpMode() {
 
     override fun runOpMode() {
         hardware.init(hardwareMap)
+        robot.init()
 
         waitForStart()
 
