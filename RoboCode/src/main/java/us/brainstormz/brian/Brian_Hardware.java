@@ -1,6 +1,7 @@
 package us.brainstormz.brian;
 
 import com.qualcomm.robotcore.hardware.AnalogInput;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -29,7 +30,7 @@ public class Brian_Hardware
     public DcMotorEx pivotArm2        = null;
     public DcMotor collectOtron       = null;
     public Servo   collectorGate      = null;
-    public Servo   markerDumper       = null;
+    public CRServo markerDumper       = null;
     public AnalogInput potentiometer  = null;
 
     /* Local OpMode members. */
@@ -112,10 +113,10 @@ public class Brian_Hardware
 
         // Define and initialize all installed servos
         collectorGate = hwMap.servo.get("extension_lock");
-        markerDumper = hwMap.servo.get("marker_dumper");
+        markerDumper = hwMap.crservo.get("marker_dumper");
 
         collectorGate.setPosition(.68);
-        markerDumper.setPosition(0);
+        markerDumper.setPower(0);
 
         // Initialize arm position sensor
         potentiometer = hwMap.get(AnalogInput.class, "potentiometer");
