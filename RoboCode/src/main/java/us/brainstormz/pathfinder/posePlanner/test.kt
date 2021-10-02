@@ -23,18 +23,18 @@ fun wrapAngle(n: Double): Double =
 fun main() {
 //    val poly = Poly(PosAndRot(1.0, 1.0), PosAndRot(10.0, 10.0), PosAndRot(5.0,5.0))
 //    println(poly.getLines())
-//
-//    val test = IntersectTest()
-//
-//    test.init(test)
-//    test.runStuff()
-//    test.post()
 
-    val ultimateTest = UltimateTest()
-    ultimateTest.init(ultimateTest)
-    ultimateTest.runStuff()
-    ultimateTest.findPath()
-    ultimateTest.post()
+    val test = HitBoxTest()
+
+    test.init(test)
+//    test.runStuff()
+    test.post()
+
+//    val ultimateTest = UltimateTest()
+//    ultimateTest.init(ultimateTest)
+//    ultimateTest.runStuff()
+//    ultimateTest.findPath()
+//    ultimateTest.post()
 
 //    val bezierTest = BezierTest()
 //    bezierTest.init(bezierTest)
@@ -46,10 +46,10 @@ fun main() {
 class UltimateTest: PaintComponent() {
 
     private val posePlanner = PosePlanner()
-    private val start = PosAndRot(10.0, 10.0, 0.0)
-    private val end = PosAndRot(0.0, 0.0, 0.0)
-//    private val start = PosAndRot(0.0, 0.0, 0.0)
-//    private val end = PosAndRot(10.0, 10.0, 0.0)
+//    private val start = PosAndRot(10.0, 10.0, 0.0)
+//    private val end = PosAndRot(0.0, 0.0, 0.0)
+    private val start = PosAndRot(0.0, 0.0, 0.0)
+    private val end = PosAndRot(10.0, 10.0, 0.0)
 
     private var obstructions: List<Obstruction> =
 //        listOf(Obstruction(Poly(PosAndRot(6.519797831033332, 7.727695766206712, 0.0), PosAndRot(3.808070865924204, 5.0588240052818865, 0.0), PosAndRot(4.055833477091567, 3.0009006746074265, 0.0))),
@@ -233,6 +233,57 @@ class UltimateTest: PaintComponent() {
 
 
 }
+
+class HitBoxTest: PaintComponent() {
+
+    private val testLine = Line(PosAndRot(5.0, 0.0), PosAndRot(5.0, 5.0))
+    private val outerLines = createHitPath(testLine)
+
+    private val scalling = 50.0
+    private val hitRadius = 1.0
+    private fun rotateAround(point: PosAndRot, around: PosAndRot): PosAndRot {
+        val difference = PosAndRot() - around
+
+        val centeredPoint = point - difference
+
+        val rotatedPoint = PosAndRot(-centeredPoint.y, centeredPoint.x, centeredPoint.r)
+
+        val readjustedPoint = rotatedPoint + difference
+
+        return readjustedPoint
+    }
+
+    private fun createHitPath(line: Line): Pair<Line, Line> {
+        val rightAngleToStart = rotateAround(line.end, line.start)
+        val startSideA = line.start.coordinateAlongLine(hitRadius, rightAngleToStart)
+        val startSideB = line.start.coordinateAlongLine(-hitRadius, rightAngleToStart)
+
+        println(rightAngleToStart)
+        val rightAngleToEnd = rotateAround(line.start, line.end)
+        val endSideA = line.end.coordinateAlongLine(hitRadius, rightAngleToEnd)
+        val endSideB = line.end.coordinateAlongLine(-hitRadius, rightAngleToEnd)
+
+        return Pair(Line(startSideA, endSideA), Line(startSideB, endSideB))
+    }
+
+    override fun draw(g: Graphics) {
+
+        val asList = listOf(testLine, outerLines.first, outerLines.second)
+
+        asList.forEach {
+            val adjustedLine = Line(it.start * scalling, it.end * scalling)
+            println(adjustedLine)
+            g.drawLine(
+                adjustedLine.start.x.toInt(),
+                adjustedLine.start.y.toInt(),
+                adjustedLine.end.x.toInt(),
+                adjustedLine.end.y.toInt()
+            )
+        }
+
+    }
+}
+
 
 class BezierTest: PaintComponent() {
     val obsGen = ObstructionGen(listOf())
