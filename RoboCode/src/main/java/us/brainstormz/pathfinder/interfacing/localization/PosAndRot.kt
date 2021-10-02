@@ -146,4 +146,8 @@ open class PosAndRot(var x: Double = 0.0, var y: Double = 0.0, var r: Double = 0
     operator fun div(n: Int): PosAndRot {
         return PosAndRot(x / n, y / n, r / n)
     }
+
+    operator fun minus(n: PosAndRot): PosAndRot {
+        return plus(n = n * -1.0)
+    }
 }

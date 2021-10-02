@@ -11,6 +11,7 @@ class PosePlanner {
     val undesirableAreas: List<UndesirableArea> = listOf()
     var obstructions: List<Obstruction> = listOf()
 
+    val hitRadius = 1.0
 
     /**
     PATH GEN
@@ -65,6 +66,29 @@ class PosePlanner {
         return cutCorners(cutCorners(rtn))
     }
 
+    private fun rotateAround(point: PosAndRot, around: PosAndRot): PosAndRot {
+        val difference = PosAndRot() - around
+
+        val centeredPoint = point - difference
+
+        val rotatedPoint = PosAndRot(-centeredPoint.y, centeredPoint.x, centeredPoint.r)
+
+        val readjustedPoint = rotatedPoint + difference
+
+        return readjustedPoint
+    }
+
+    private fun createHitPath(line: Line): Pair<Line, Line> {
+        val rightAngleToStart = rotateAround(line.end, line.start)
+        val startSideA = line.start.coordinateAlongLine(hitRadius, rightAngleToStart)
+        val startSideB = line.start.coordinateAlongLine(-hitRadius, rightAngleToStart)
+
+        val rightAngleToEnd = rotateAround(line.start, line.end)
+        val endSideA = line.end.coordinateAlongLine(hitRadius, rightAngleToEnd)
+        val endSideB = line.end.coordinateAlongLine(-hitRadius, rightAngleToEnd)
+
+        return Pair(Line(startSideA, endSideA), Line(startSideB, endSideB))
+    }
 
     private fun findAround(current: PosAndRot, obstruction: Obstruction): List<PosAndRot> {
         val edges = obstruction.poly.getLines()
