@@ -32,11 +32,11 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package us.brainstormz.brian;
 
+import static java.lang.Math.abs;
+
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.Range;
-
-import static java.lang.Math.abs;
 
 /**
  * This file provides Teleop driving for our robot.
@@ -200,6 +200,12 @@ public class Brian_TeleOp extends OpMode {
                 endGameModeACTIVE = true;
         }
 
+        if (gamepad1.x || gamepad2.x) {
+            robot.markerDumper.setPower(0.5);
+        } else {
+            robot.markerDumper.setPower(0.0);
+        }
+
         if (gamepad1.y || gamepad2.y) {
             refinatorACTIVE = false;
             hangPositionACTIVE = false;
@@ -230,15 +236,15 @@ public class Brian_TeleOp extends OpMode {
             }
             direction = -1;
         }
-        else if (gamepad1.x || gamepad2.x) {
-            refinatorACTIVE = true;
-            hangPositionACTIVE = false;
-            robot.pivotArm1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            robot.pivotArm2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            robot.pivotArm1.setPower(-.3);
-            robot.pivotArm2.setPower(-.3);
-            direction = -1;
-        }
+//        else if (gamepad1.x || gamepad2.x) {
+//            refinatorACTIVE = true;
+//            hangPositionACTIVE = false;
+//            robot.pivotArm1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//            robot.pivotArm2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//            robot.pivotArm1.setPower(-.3);
+//            robot.pivotArm2.setPower(-.3);
+//            direction = -1;
+//        }
         else if (hangPositionACTIVE && robot.potentiometer.getVoltage() > (target_position + 0.1)) {
             robot.pivotArm1.setPower(1);
             robot.pivotArm2.setPower(1);

@@ -28,6 +28,8 @@
 // */
 //package us.brainstormz.brian;
 //
+//import static java.lang.Math.abs;
+//
 //import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
 //import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 //import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -44,15 +46,8 @@
 //
 //import java.util.List;
 //
-//import ftclib.FtcChoiceMenu;
-//import ftclib.FtcMenu;
-//import ftclib.FtcValueMenu;
-//import hallib.HalDashboard;
-//
-//import static java.lang.Math.abs;
-//
 //@Autonomous(name="Brian Autonomous MAXIMUMPOWER", group ="Brian")
-//public class Brian_Autonomous_MAXIMUMPOWER extends LinearOpMode implements FtcMenu.MenuButtons {
+//public class Brian_Autonomous_MAXIMUMPOWER extends LinearOpMode{
 //    public enum StartPosition {
 //        SILVER,
 //        GOLD
@@ -123,7 +118,7 @@
 //    ExtraScore attemptExtraScore = ExtraScore.DELIVER_ALL_THE_THINGS;
 //
 //    /* Declare OpMode members. */
-//    private HalDashboard dashboard;
+////    private HalDashboard dashboard;
 //    Brian_Hardware robot = new Brian_Hardware();
 //
 //    static final double COUNTS_PER_MOTOR_REV  = 28.0;      // Rev HD Hex v2.1 Motor encoder
@@ -166,7 +161,7 @@
 //        robot.init(hardwareMap);
 //
 //        // Initialize dashboard --------------------------------------------------------------------
-//        dashboard = HalDashboard.createInstance(telemetry);
+////        dashboard = HalDashboard.createInstance(telemetry);
 //
 //        // Initialize Vuforia ----------------------------------------------------------------------
 //        initVuforia();
@@ -184,17 +179,17 @@
 ////        }
 //
 //        if (startposition == StartPosition.GOLD && sampling == Sampling.TWO) {
-//            dashboard.displayPrintf(1, "You picked the wrong option, Stephanie!");
+////            dashboard.displayPrintf(1, "You picked the wrong option, Stephanie!");
 //            sampling = Sampling.ONE;
 //            errors += 1;
 //        }
 //
-//        if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
-//            initTfod();
-//        } else {
-//            dashboard.displayPrintf(1,"THE ZTE SPEEEEED IS TOO FAST FOR TFOD");
-//            errors += 1;
-//        }
+////        if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
+////            initTfod();
+////        } else {
+//////            dashboard.displayPrintf(1,"THE ZTE SPEEEEED IS TOO FAST FOR TFOD");
+////            errors += 1;
+////        }
 //
 //        robot.driveSetMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 //        robot.driveSetMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -213,12 +208,12 @@
 //        if (tfod != null) {
 //            tfod.activate();
 //        } else {
-//            dashboard.displayPrintf(1, "Failed to activate TFOD");
+////            dashboard.displayPrintf(1, "Failed to activate TFOD");
 //        }
 //
-//        dashboard.displayPrintf(0, "Status: Ready to start");
-//        if (errors > 0)
-//            dashboard.displayPrintf(2, "!!! %d errors!", errors);
+////        dashboard.displayPrintf(0, "Status: Ready to start");
+////        if (errors > 0)
+////            dashboard.displayPrintf(2, "!!! %d errors!", errors);
 //
 //        // Sample while waiting for start
 //        while (!opModeIsActive() && !isStopRequested()) {
@@ -237,7 +232,7 @@
 //         * ----- AUTONOMOUS START-------------------------------------------------------------------
 //         */
 //
-//        dashboard.displayPrintf(0, "Status: Running");
+////        dashboard.displayPrintf(0, "Status: Running");
 //
 //        // For testing drive train motors and encoders
 //        if (DoTask("Chassis motor test", runmode, false)) {
@@ -384,7 +379,7 @@
 //
 //                // Deposit team marker
 //                DriveRobotTurn(1, -5);
-//                robot.markerDumper.setPosition(0.7);
+////                robot.markerDumper.setPosition(0.7);
 //                sleep(600);
 //
 //                if (sampling == Sampling.ONE && crater == Crater.NEAR) {

@@ -28,6 +28,8 @@
 // */
 //package us.brainstormz.brian;
 //
+//import static java.lang.Math.abs;
+//
 //import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor;
 //import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 //import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -48,8 +50,6 @@
 //import ftclib.FtcMenu;
 //import ftclib.FtcValueMenu;
 //import hallib.HalDashboard;
-//
-//import static java.lang.Math.abs;
 //
 //@Autonomous(name="Brian Autonomous", group ="Brian")
 //public class Brian_Autonomous extends LinearOpMode implements FtcMenu.MenuButtons {
@@ -473,7 +473,7 @@
 //
 //                // Deposit team marker
 //                DriveRobotTurn(1, -5);
-//                robot.markerDumper.setPosition(0.7);
+////                robot.markerDumper.setPosition(0.7);
 //                sleep(600);
 //
 //                if (sampling == Sampling.ONE && crater == Crater.NEAR) {
