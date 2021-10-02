@@ -57,6 +57,7 @@ class ChoiVicoTeleOp: OpMode() {
 
     override fun init() {
         hardware.init(hardwareMap)
+        robot.init()
 
         opencv.cameraName = hardware.turretCameraName
 //        opencv.onNewFrame(goalDetector::scoopFrame)

@@ -1,21 +1,22 @@
-package us.brainstormz.pathfinder.posePlanner
+package posePlanner
 
-import us.brainstormz.pathfinder.Coordinate
+import locationTracking.PosAndRot
 
 
 class PosePlanner {
-    var aStar = AStar(Coordinate(), Coordinate(), listOf(), this)
-    var hitPoints = listOf<Coordinate>()
+    var aStar = AStar(PosAndRot(), PosAndRot(), listOf(), this)
+    var hitPoints = listOf<PosAndRot>()
 
     val preLoadedPaths = listOf(BezierPath())
     val undesirableAreas: List<UndesirableArea> = listOf()
     var obstructions: List<Obstruction> = listOf()
 
+    val hitRadius = 1.0
 
     /**
     PATH GEN
      */
-    fun generatePath(start: Coordinate, target: Coordinate): List<Coordinate> {
+    fun generatePath(start: PosAndRot, target: PosAndRot): List<PosAndRot> {
         println("\n\n\nNew Path=\n")
 
         val aStar = AStar(start, target, obstructions, this)
@@ -65,8 +66,31 @@ class PosePlanner {
         return cutCorners(cutCorners(rtn))
     }
 
+    private fun rotateAround(point: PosAndRot, around: PosAndRot): PosAndRot {
+        val difference = PosAndRot() - around
 
-    private fun findAround(current: Coordinate, obstruction: Obstruction): List<Coordinate> {
+        val centeredPoint = point - difference
+
+        val rotatedPoint = PosAndRot(-centeredPoint.y, centeredPoint.x, centeredPoint.r)
+
+        val readjustedPoint = rotatedPoint + difference
+
+        return readjustedPoint
+    }
+
+    private fun createHitPath(line: Line): Pair<Line, Line> {
+        val rightAngleToStart = rotateAround(line.end, line.start)
+        val startSideA = line.start.coordinateAlongLine(hitRadius, rightAngleToStart)
+        val startSideB = line.start.coordinateAlongLine(-hitRadius, rightAngleToStart)
+
+        val rightAngleToEnd = rotateAround(line.start, line.end)
+        val endSideA = line.end.coordinateAlongLine(hitRadius, rightAngleToEnd)
+        val endSideB = line.end.coordinateAlongLine(-hitRadius, rightAngleToEnd)
+
+        return Pair(Line(startSideA, endSideA), Line(startSideB, endSideB))
+    }
+
+    private fun findAround(current: PosAndRot, obstruction: Obstruction): List<PosAndRot> {
         val edges = obstruction.poly.getLines()
 
         val centroid = obstruction.poly.centroid()
@@ -77,7 +101,7 @@ class PosePlanner {
             collisionEdge = it
         }
 
-        val farthestPoint = obstruction.poly.points.minByOrNull { it.distance(current) }!!
+        val farthestPoint = obstruction.poly.points.minByOrNull{ it.distance(current) }!!
         val movedPoints = listOf(collisionEdge.start, collisionEdge.end).map {
             it.coordinateAlongLine(-.2, centroid).coordinateAlongLine(-.2, farthestPoint)
         }
@@ -86,11 +110,11 @@ class PosePlanner {
     }
 
 
-    private fun cutCorners(path: List<Coordinate>): List<Coordinate> {
+    private fun cutCorners(path: List<PosAndRot>): List<PosAndRot> {
         println("\n")
         println(path)
 
-        val efficientPath: MutableList<Coordinate> = path.toMutableList()
+        val efficientPath: MutableList<PosAndRot> = path.toMutableList()
 
         var current = path.first()
 
@@ -116,8 +140,8 @@ class PosePlanner {
         return efficientPath
     }
 
-    fun firstIntersection(l: Line, obstructions: List<Obstruction>): Pair<Coordinate, Obstruction>? {
-        var result: Coordinate? = null
+    fun firstIntersection(l: Line, obstructions: List<Obstruction>): Pair<PosAndRot, Obstruction>? {
+        var result: PosAndRot? = null
         var intersect: Obstruction? = null
         obstructions.forEach {
             val newIntersect = it.poly.intersection(l)
@@ -148,7 +172,7 @@ class PosePlanner {
 //    private var d = 0.0
 //    private val granularity = 0.1
 //
-//    fun getCoordinate(current: Coordinate, target: Coordinate): Coordinate {
+//    fun getPositionAndRotation(current: PositionAndRotation, target: PositionAndRotation): PositionAndRotation {
 //
 ////        determine path
 //        if (currentPath == null)
@@ -169,7 +193,7 @@ class PosePlanner {
 //
 ////        return
 //        val nextPoint = currentCurve!!.calculatePoint(d)
-//        return nextPoint.toCoordinate()
+//        return nextPoint.toPositionAndRotation()
 //    }
 //
 //    private fun isPathPreLoaded(start: Point3D, end: Point3D): BezierPath? =
@@ -181,19 +205,19 @@ class PosePlanner {
 //        return d + granularity
 //    }
 
-    val pointToCoordinate = Point3D(0.0, 0.0, 0.0)
-    private fun Point3D.toCoordinate(): Coordinate {
-        val adjusted = this.copy(x = pointToCoordinate.x,
-                                 y = pointToCoordinate.y,
-                                 z = pointToCoordinate.z)
-        return Coordinate(x = adjusted.x,
+    val pointToPositionAndRotation = Point3D(0.0, 0.0, 0.0)
+    private fun Point3D.toPositionAndRotation(): PosAndRot {
+        val adjusted = this.copy(x = pointToPositionAndRotation.x,
+                                 y = pointToPositionAndRotation.y,
+                                 z = pointToPositionAndRotation.z)
+        return PosAndRot(x = adjusted.x,
                           y = adjusted.y,
                           r = adjusted.z)
     }
-    private fun Coordinate.toPoint3D(): Point3D {
-        val adjusted = this.copy(x = pointToCoordinate.x,
-                                 y = pointToCoordinate.y,
-                                 r = pointToCoordinate.z)
+    private fun PosAndRot.toPoint3D(): Point3D {
+        val adjusted = this.copy(x = pointToPositionAndRotation.x,
+                                 y = pointToPositionAndRotation.y,
+                                 r = pointToPositionAndRotation.z)
         return Point3D(x = adjusted.x,
                        y = adjusted.y,
                        z = adjusted.r)
