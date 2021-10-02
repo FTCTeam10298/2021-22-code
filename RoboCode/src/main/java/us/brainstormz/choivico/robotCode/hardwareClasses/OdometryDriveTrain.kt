@@ -7,10 +7,7 @@ import kotlin.math.abs
 
 open class OdometryDriveTrain(private val hardware: MecOdometryHardware, private val console: TelemetryConsole): MecanumDriveTrain(hardware) {
 
-    val localizer = OdometryLocalizer(
-        lOdom = hardware.lOdom,
-        rOdom = hardware.rOdom,
-        cOdom = hardware.cOdom)
+    lateinit var localizer: OdometryLocalizer
 
     /**
      * Sets the speed of the four drive motors given desired speeds in the robot's x, y, and angle.
@@ -58,6 +55,13 @@ open class OdometryDriveTrain(private val hardware: MecOdometryHardware, private
         hardware.rFDrive.power = fr
         hardware.lBDrive.power = bl
         hardware.rBDrive.power = br
+    }
+
+    fun init() {
+        localizer = OdometryLocalizer(
+            lOdom = hardware.lOdom,
+            rOdom = hardware.rOdom,
+            cOdom = hardware.cOdom)
     }
 
 }
