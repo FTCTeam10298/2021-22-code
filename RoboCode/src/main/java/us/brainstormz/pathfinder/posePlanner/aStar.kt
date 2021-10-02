@@ -31,7 +31,7 @@ class AStar(start: PosAndRot, private val target: PosAndRot, private val obstruc
 
     fun cheapestNode(): AStarPoint {
         println("openset $openSet")
-        val newNode: AStarPoint = openSet.minBy { it.fCost }!!
+        val newNode: AStarPoint = openSet.minByOrNull { it.fCost }!!
         openSet.remove(newNode)
         closedSet.add(newNode)
 

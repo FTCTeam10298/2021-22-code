@@ -101,7 +101,7 @@ class PosePlanner {
             collisionEdge = it
         }
 
-        val farthestPoint = obstruction.poly.points.minBy { it.distance(current) }!!
+        val farthestPoint = obstruction.poly.points.minByOrNull{ it.distance(current) }!!
         val movedPoints = listOf(collisionEdge.start, collisionEdge.end).map {
             it.coordinateAlongLine(-.2, centroid).coordinateAlongLine(-.2, farthestPoint)
         }
