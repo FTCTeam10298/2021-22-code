@@ -34,6 +34,7 @@ package us.brainstormz.brian;
 
 import static java.lang.Math.abs;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.Range;
@@ -47,6 +48,7 @@ import com.qualcomm.robotcore.util.Range;
  */
 
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name="Brian TeleOp", group="Brian")
+@Disabled
 public class Brian_TeleOp extends OpMode {
 
     /* Declare OpMode members. */
