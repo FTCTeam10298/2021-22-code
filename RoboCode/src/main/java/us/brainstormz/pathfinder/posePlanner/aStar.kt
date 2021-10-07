@@ -20,8 +20,8 @@ data class AStarPoint(val point: PosAndRot, var gCost: Double, var hCost: Double
 class AStar(start: PosAndRot, private val target: PosAndRot, private val obstructions: List<Obstruction>, private val planner: PosePlanner) {
 
     val allPoints: List<PosAndRot>
-        get() = openSet.map { it.point } + closedSet.map { it.point } + anotherPoint
-    var anotherPoint = PosAndRot()
+        get() = openSet.map { it.point } + closedSet.map { it.point }/* + anotherPoint
+    var anotherPoint = PosAndRot()*/
     var hitpoint = listOf<PosAndRot>()
 
     val startNode = AStarPoint(start)
