@@ -176,57 +176,368 @@
 //                )
 //            }
 //        }
+
+        g.color = Color.pink
+        points.forEach {
+            val current = it * scaling
+
+            g.fillOval((current.x).toInt(),
+                (current.y).toInt(),
+                5,
+                5)
+        }
+
+    }
+
+
+}
+
+class HitBoxTest: PaintComponent() {
+
+    private val testLine = Line(PosAndRot(5.0, 0.0), PosAndRot(5.0, 5.0))
+    private val outerLines = createHitPath(testLine)
+
+    private val scalling = 50.0
+    private val hitRadius = 2.0
+    private fun rotateAround(point: PosAndRot, around: PosAndRot): PosAndRot {
+        val difference = PosAndRot() - around
+
+        val centeredPoint = point - difference
+
+        val rotatedPoint = PosAndRot(-centeredPoint.y, centeredPoint.x, centeredPoint.r)
+
+        val readjustedPoint = rotatedPoint + difference
+
+        return readjustedPoint
+    }
+
+    private fun createHitPath(line: Line): Pair<Line, Line> {
+        val rightAngleToStart = rotateAround(line.end, line.start)
+        val startSideA = line.start.coordinateAlongLine(hitRadius, rightAngleToStart)
+        val startSideB = line.start.coordinateAlongLine(-hitRadius, rightAngleToStart)
+
+        println(rightAngleToStart)
+        println("Start: ${line.start}")
+        println(startSideA)
+        val rightAngleToEnd = rotateAround(line.start, line.end)
+        val endSideA = line.end.coordinateAlongLine(hitRadius, rightAngleToEnd)
+        val endSideB = line.end.coordinateAlongLine(-hitRadius, rightAngleToEnd)
+
+        return Pair(Line(startSideA, endSideA), Line(startSideB, endSideB))
+    }
+
+    override fun draw(g: Graphics) {
+
+        val asList = listOf(testLine, outerLines.first, outerLines.second)
+
+        asList.forEach {
+            val adjustedLine = Line(it.start * scalling, it.end * scalling)
+            println(adjustedLine)
+            g.drawLine(
+                adjustedLine.start.x.toInt(),
+                adjustedLine.start.y.toInt(),
+                adjustedLine.end.x.toInt(),
+                adjustedLine.end.y.toInt()
+            )
+        }
+
+        asList.forEach { line ->
+            listOf(line.start * scalling, line.end * scalling).forEach { point ->
+                g.fillOval((point.x).toInt(),
+                    (point.y).toInt(),
+                    5,
+                    5)
+            }
+        }
+
+    }
+}
+
+
+class BezierTest: PaintComponent() {
+    val obsGen = ObstructionGen(listOf())
+//        BezierCurve(listOf(Point3D(20.0, 20.0, 0.0), Point3D(25.0, 30.0, 0.0), Point3D(30.0, 30.0, 0.0), Point3D(35.0, 20.0, 0.0), Point3D(40.0, 20.0, 0.0)))
+
+    val scaling = 30
+
+    fun generateCurve(curve: BezierCurve): List<Point3D> {
+        var curvePoints = mutableListOf<Point3D>()
+
+        for (i in (0..100000)) {
+            val adjustedI = i * 0.00001
+            curvePoints.add(curve.calculatePoint(adjustedI))
+        }
+        return curvePoints
+    }
+
+    fun runstuff() {
+        val buttonsPanel = JPanel()
+
+        val runButton = JButton("Run")
+
+        buttonsPanel.add(runButton)
+        testFrame.contentPane.add(buttonsPanel, BorderLayout.SOUTH)
+
+        runButton.addActionListener {
+            graphics.color = background
+            graphics.clearRect(0, 0, width, height)
+            paintComponent(graphics)
+        }
+    }
+
+    override fun draw(g: Graphics) {
+        val ctrls = mutableListOf<Point3D>()
+        for (i in (1..4)) {
+            ctrls.addAll(obsGen.randomObstruction().poly.points.map{ Point3D(it.x, it.y, it.r) })
+        }
+
+        val curve = BezierCurve(ctrls)
+
+        val curvePoints = generateCurve(curve)
+
+        val g2 = g as Graphics2D
+        g2.stroke = BasicStroke(5f)
+
+        g.color = Color.GREEN
+        curvePoints.forEach { i ->
+            val current = i * scaling.toDouble()
+            val nextPoint = if (i != curvePoints.last()) {
+                curvePoints[curvePoints.indexOf(i) + 1] * scaling.toDouble()
+            }else {
+                current
+            }
+
+            g.drawLine(
+                current.x.toInt(),
+                current.y.toInt(),
+                nextPoint.x.toInt(),
+                nextPoint.y.toInt()
+            )
+        }
+
+        print("\n")
+        g.color = Color.red
+        curve.ctrlPoints.forEach { i ->
+            val current = i * scaling.toDouble()
+
+            g.fillOval((current.x).toInt(),
+                (current.y).toInt(),
+                5,
+                5)
+        }
+
+    }
+}
+
+class IntersectTest: PaintComponent() {
+
+    fun runStuff() {
+        val buttonsPanel = JPanel()
+
+        val runButton = JButton("Run")
+
+        buttonsPanel.add(runButton)
+        testFrame.contentPane.add(buttonsPanel, BorderLayout.SOUTH)
+
+        runButton.addActionListener {
+            graphics.color = background
+            graphics.clearRect(0, 0, width, height)
+            paintComponent(graphics)
+        }
+    }
+    override fun draw(g: Graphics) {
+        println("\nNew Run\n")
+        val pose = PosePlanner()
+        val obsGen = ObstructionGen(listOf())
+
+        val line = Line(PosAndRot(0.0, 0.0), PosAndRot(30.0, 30.0))
+        val obstructions = listOf(obsGen.randomObstruction(), obsGen.randomObstruction(), obsGen.randomObstruction(), obsGen.randomObstruction())
+//            Obstruction(Poly(PosAndRot(10.0, 10.0),
+//                                    PosAndRot(10.0, 20.0),
+//                                    PosAndRot(20.0, 20.0),
+//                                    PosAndRot(20.0, 10.0)))
+        val result = obstructions.fold<Obstruction, Pair<Obstruction, Pair<PosAndRot, Line>>?>(null){ acc: Pair<Obstruction, Pair<PosAndRot, Line>>?, it ->
+            val assd = it.poly.intersection(line)
+
+            if (assd != null && ( acc == null || assd!!.first.distance(line.start) <= acc!!.second.first.distance(line.start)))
+                it to assd!!
+            else
+                acc
+
+        }
+
+        print("\n")
+        println("obs ${result?.first?.poly?.points}")
+        println("intersect ${result?.second?.first}")
+        println("edge ${result?.second?.second}")
+
+        val scaling = 30.0
+
+
+        obstructions.forEach {
+            g.color = Color.red
+            val obsPoints = it.poly.points
+            val poly = Polygon(obsPoints.map{ (it.x * scaling).toInt() }.toIntArray(),
+                obsPoints.map{ (it.y * scaling).toInt() }.toIntArray(),
+                obsPoints.size
+            )
+            g.drawPolygon(poly)
+        }
+
+
+        val obs = result?.first ?: Obstruction()
+        g.color = Color.blue
+        val obsPoints = obs.poly.points
+        val poly = Polygon(obsPoints.map{ (it.x * scaling).toInt() }.toIntArray(),
+            obsPoints.map{ (it.y * scaling).toInt() }.toIntArray(),
+            obsPoints.size
+        )
+        g.drawPolygon(poly)
+
+        g.color = Color.BLUE
+        val p1 = line.start * scaling
+        val p2 = line.end * scaling
+        g.drawLine(
+            p1.x.toInt(),
+            p1.y.toInt(),
+            p2.x.toInt(),
+            p2.y.toInt()
+        )
+
+        g.color = Color.black
+        if (result != null){
+            val current = result.second.first * scaling
+
+            g.fillOval((current.x).toInt(),
+                (current.y).toInt(),
+                5,
+                5)
+        }
+    }
+
+}
+
+
+class ObstructionGen(private var obstructions: List<Obstruction>) {
+
+    private fun containsPoint(poly: Poly, p: PosAndRot): Boolean {
+        val polygon = poly.points
+
+        val centeroid = poly.centroid()
+
+        val min = polygon.minByOrNull { centeroid.distance(it) }!!
+        val max = polygon.maxByOrNull { centeroid.distance(it) }!!
+
+
+        for (element in polygon) {
+            val q = element
+            min.x = min(q.x, min.x)
+            max.x = max(q.x, max.x)
+            min.y = min(q.y, min.y)
+            max.y = max(q.y, max.y)
+        }
+
+        return !(p.x < min.x || p.x > max.x || p.y < min.y || p.y > max.y)
+    }
+
+    fun randomObstruction(): Obstruction {
+        var points = mutableListOf<PosAndRot>()
+
+        val start = PosAndRot(Random.nextDouble(6.0), Random.nextDouble(6.0))
+        for (i in 0..Random.nextInt(3, 5)) {
+
+            val new = PosAndRot(Random.nextDouble(4.0), Random.nextDouble(4.0))
+
+            points.add(start + new)
+        }
+
+        val center = Poly(points[0], points[1], points[2], *points.subList(3, points.size).toTypedArray()).centroid()
+
+        val validPoints = points.toMutableList()
+        obstructions.forEach { obs ->
+            points.forEach{
+                if (containsPoint(obs.poly, it))
+                    validPoints.remove(it)
+            }
+        }
+
+        points = validPoints.sortedByDescending{ center.direction(it) }.toMutableList()
+
+        when (points.size) {
+            2 -> {
+                points.add(randomObstruction().poly.points.first())
+            }
+            1 -> {
+                val newPoints = randomObstruction().poly.points
+                points.add(newPoints.first())
+                points.add(newPoints.last())
+            }
+            0 -> {
+                points.addAll(randomObstruction().poly.points)
+            }
+        }
+
+
+        return Obstruction(Poly(points[0], points[1], points[2], *points.subList(3, points.size).toTypedArray()))
+    }
+}
+
+abstract class PaintComponent : JComponent() {
+    val testFrame = JFrame()
+
+    abstract fun draw(g: Graphics)
+
+    override fun paintComponent(g: Graphics) {
+        super.paintComponent(g)
+
+        draw(g)
+    }
+
+    fun init(comp: PaintComponent) {
+        println("Init")
+        testFrame.defaultCloseOperation = JFrame.DISPOSE_ON_CLOSE
+        comp.preferredSize = Dimension(600, 600)
+        testFrame.contentPane.add(comp, BorderLayout.CENTER)
+    }
+
+    fun post() {
+        testFrame.pack()
+        testFrame.isVisible = true
+        println("Show Frame")
+    }
+}
+
+
+
+class BezierCurveTest(private val comp: PaintComponent) {
+//    fun main() {
+////        val bezierCurve = interpolate(listOf(Point3D(0.0, 0.0, 0.0),
+////                                             Point3D(2.7757000000000005, 7.182100000000002, 2.7757000000000005),
+////                                             Point3D(4.163200000000002, 10.665600000000001, 4.163200000000002),
+////                                             Point3D(5.2477, 11.766099999999998, 5.2477),
+////                                             Point3D(6.1072000000000015, 10.945599999999999, 6.1072000000000015),
+////                                             Point3D(6.8125, 8.8125, 6.8125),
+////                                             Point3D(7.427199999999999, 6.121600000000001, 7.427199999999999),
+////                                             Point3D(8.0077, 3.7741000000000002, 8.0077),
+////                                             Point3D(8.6032, 2.8175999999999988, 8.6032),
+////                                             Point3D(9.255700000000001, 4.446099999999998, 9.255700000000001),
+////                                             Point3D(10.0, 9.999999999999993, 10.0)),
+////                                             10.0)
+//        val bezierCurve = BezierCurve(listOf(Point3D(1.0, 0.0, 0.0),
+//                                             Point3D(6.0, 21.0, 0.0),
+//                                             Point3D(7.0, 1.0, 0.0),
+//                                             Point3D(8.0, 5.0, 0.0),
+//                                             Point3D(10.0, 11.0, 0.0)))
 //
+//        var pointList = listOf(Point3D())
+//        val step = 0.1
 //
-//        g.color = Color.black
-//        val hitPoint = start * scaling
+//        var t = 0.1
+//        while (t < 1) {
 //
-//        g.fillOval((hitPoint.x).toInt(),
-//            (hitPoint.y).toInt(),
-//            (5).toInt(),
-//            (5).toInt())
+//            pointList += bezierCurve.calculatePoint(t)
 //
-//        g.color = Color.black
-//        val adjust = end * scaling
-//
-//        g.fillOval((adjust.x).toInt(),
-//            (adjust.y).toInt(),
-//            (5).toInt(),
-//            (5).toInt())
-//
-////        for (i in 0..5) {
-////
-////            val it = neighbors[i]
-////
-////
-////            g.color = Color.blue
-////            it.second.forEach {
-////                val current = it * scaling
-////
-////                g.fillOval((current.x).toInt(),
-////                    (current.y).toInt(),
-////                    (5+i*1.5).toInt(),
-////                    (5+i*1.5).toInt())
-////            }
-////
-////            g.color = Color.black
-////            val hitPoint = it.first * scaling
-////
-////            g.fillOval((hitPoint.x).toInt(),
-////                       (hitPoint.y).toInt(),
-////                       (5+i*1.5).toInt(),
-////                       (5+i*1.5).toInt())
-////
-////        }
-//
-//        g.color = Color.pink
-//        points.forEach {
-//            val current = it * scaling
-//
-//            g.fillOval((current.x).toInt(),
-//                (current.y).toInt(),
-//                5,
-//                5)
+//            t += step
 //        }
 //
 //    }
