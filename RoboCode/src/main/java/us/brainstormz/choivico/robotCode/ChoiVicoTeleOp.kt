@@ -63,7 +63,6 @@ class ChoiVicoTeleOp: OpMode() {
 //        opencv.onNewFrame(goalDetector::scoopFrame)
 //        opencv.init(hardwareMap)
 //        opencv.start()
-
     }
 
     override fun start() {
@@ -211,7 +210,7 @@ class ChoiVicoTeleOp: OpMode() {
             }
         }
 
-        console.display(12, "current high ${ringLevel}")
+        console.display(16, "current high ${ringLevel}")
 
 
 //        TURRET
@@ -284,11 +283,17 @@ class ChoiVicoTeleOp: OpMode() {
         console.display(6, "Shooter Power: ${hardware.shooter.power}")
         console.display(7, "Lift Limit: ${hardware.liftLimit.isPressed}")
         console.display(8, "wobble: ${hardware.wobble.currentPosition}")
-
+        console.display(9, "absolute x " + robot.localizer.currentPositionAndRotation().x.toString())
+        console.display(10, "absolute y " + robot.localizer.currentPositionAndRotation().y.toString())
+        console.display(11, "absolute r " + (robot.localizer.currentPositionAndRotation().r * 57.2958).toString())
+        console.display(12, "left raw " + hardware.lOdom.currentPosition.toString())
+        console.display(13, "right raw " + hardware.rOdom.currentPosition.toString())
+        console.display(14,"center raw " +  hardware.cOdom.currentPosition.toString())
 //        console.display(8, "LF: ${hardware.lFDrive.power}")
 //        console.display(9, "RF: ${hardware.rFDrive.power}")
 //        console.display(10, "LB: ${hardware.lBDrive.power}")
 //        console.display(11, "RB: ${hardware.rBDrive.power}")
+        robot.localizer.recalculatePositionAndRotation()
     }
 
     fun toRPM(tps: Double): Double = tps * 60 / 28
