@@ -99,9 +99,9 @@ class BrianTeleOp : OpMode() {
         } else if (gamepad1.dpad_up || gamepad2.dpad_up) {
             robot.DrivePowerAll(1.0)
         } else if (gamepad1.dpad_right || gamepad2.dpad_right) {
-            DriveSideways(.5)
-        } else if (gamepad1.dpad_left || gamepad2.dpad_left) {
             DriveSideways(-.5)
+        } else if (gamepad1.dpad_left || gamepad2.dpad_left) {
+            DriveSideways(.5)
         } else {
             y = if (gamepad1.left_stick_y > .1 || gamepad1.left_stick_y < -.1) {
                 gamepad1.left_stick_y.toDouble()
