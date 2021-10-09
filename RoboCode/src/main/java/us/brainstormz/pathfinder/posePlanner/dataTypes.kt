@@ -1,9 +1,7 @@
 package posePlanner
 
 import locationTracking.PosAndRot
-import kotlin.math.PI
-import kotlin.math.pow
-import kotlin.math.sqrt
+import kotlin.math.*
 
 //abstract class Plot(val x: Double, val y: Double, val width: Double, val height: Double)
 
@@ -37,7 +35,6 @@ class Poly(p1: PosAndRot, p2: PosAndRot, p3:PosAndRot, vararg  points: PosAndRot
             n + 2*PI
         else
             n
-
 
     fun intersection(l:Line): Pair<PosAndRot, Line>? {
         var result: Pair<PosAndRot, Line>? = null

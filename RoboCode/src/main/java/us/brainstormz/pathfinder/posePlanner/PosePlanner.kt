@@ -1,6 +1,9 @@
 package posePlanner
 
 import locationTracking.PosAndRot
+import kotlin.math.PI
+import kotlin.math.cos
+import kotlin.math.sin
 
 
 class PosePlanner {
@@ -66,26 +69,17 @@ class PosePlanner {
         return cutCorners(cutCorners(rtn))
     }
 
-    private fun rotateAround(point: PosAndRot, around: PosAndRot): PosAndRot {
-        val difference = PosAndRot() - around
-
-        val centeredPoint = point - difference
-
-        val rotatedPoint = PosAndRot(-centeredPoint.y, centeredPoint.x, centeredPoint.r)
-
-        val readjustedPoint = rotatedPoint + difference
-
-        return readjustedPoint
-    }
-
     private fun createHitPath(line: Line): Pair<Line, Line> {
-        val rightAngleToStart = rotateAround(line.end, line.start)
-        val startSideA = line.start.coordinateAlongLine(hitRadius, rightAngleToStart)
-        val startSideB = line.start.coordinateAlongLine(-hitRadius, rightAngleToStart)
+        val rightAngleToStart = line.end.rotateAround(line.start, PI *.5)
+        val startSideA = line.start.coordinateAlongLine(1.0, rightAngleToStart)
+        val startSideB = line.start.coordinateAlongLine(-1.0, rightAngleToStart)
 
-        val rightAngleToEnd = rotateAround(line.start, line.end)
-        val endSideA = line.end.coordinateAlongLine(hitRadius, rightAngleToEnd)
-        val endSideB = line.end.coordinateAlongLine(-hitRadius, rightAngleToEnd)
+        println(rightAngleToStart)
+        println("Start: ${line.start}")
+        println(startSideA)
+        val rightAngleToEnd = line.start.rotateAround(line.end, -PI *.5)
+        val endSideA = line.end.coordinateAlongLine(1.0, rightAngleToEnd)
+        val endSideB = line.end.coordinateAlongLine(-1.0, rightAngleToEnd)
 
         return Pair(Line(startSideA, endSideA), Line(startSideB, endSideB))
     }
@@ -108,6 +102,7 @@ class PosePlanner {
 
         return movedPoints
     }
+
 
 
     private fun cutCorners(path: List<PosAndRot>): List<PosAndRot> {

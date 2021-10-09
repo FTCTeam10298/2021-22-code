@@ -1,6 +1,8 @@
 package locationTracking
 
+import kotlin.math.cos
 import kotlin.math.hypot
+import kotlin.math.sin
 
 /**
  * Creates a PositionAndRotation with given values. All alternate constructors assume 0 for unstated variables.
@@ -87,6 +89,12 @@ open class PosAndRot(var x: Double = 0.0, var y: Double = 0.0, var r: Double = 0
     fun direction(PosAndRot: PosAndRot): Double {
         return Math.atan2(PosAndRot.y-this.y, PosAndRot.x-this.x)
     }
+
+    fun rotateAround(origin: PosAndRot, angle: Double): PosAndRot =
+        PosAndRot(
+            cos(angle) * (this.x - origin.x) - sin(angle) * (this.y - origin.y) + origin.x,
+            sin(angle) * (this.x - origin.x) + cos(angle) * (this.y - origin.y) + origin.y)
+
 
     fun coordinateAlongLine(distance: Double, p2: PosAndRot): PosAndRot {
 
