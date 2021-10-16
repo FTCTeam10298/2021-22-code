@@ -1,0 +1,3 @@
+Type org.firstinspires.ftc.teamcode.BuildConfig is defined multiple times:
+/Users/danielcpeters/Desktop/2021-22-code/TeamCode/build/intermediates/javac/debug/classes/org/firstinspires/ftc/teamcode/BuildConfig.class,
+/Users/danielcpeters/Desktop/2021-22-code/TeamCode/build/intermediates/javac/debug/classes/org/firstinspires/ftc/teamcode/BuildConfig 2.class

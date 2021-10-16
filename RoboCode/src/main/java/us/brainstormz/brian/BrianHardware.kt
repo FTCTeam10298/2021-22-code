@@ -3,12 +3,13 @@ package us.brainstormz.brian
 import com.qualcomm.robotcore.hardware.*
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorSimple
+import us.brainstormz.choivico.robotCode.hardwareClasses.MecanumHardware
 
 /**
  * This is NOT an opmode.
  * This class is used to define all the specific hardware for a single robot.
  */
-class BrianHardware {
+class BrianHardware: MecanumHardware {
     /* Public OpMode members. */
     lateinit var frontLeftDrive: DcMotor
     lateinit var backLeftDrive: DcMotor
@@ -24,12 +25,18 @@ class BrianHardware {
     lateinit var collectorGate: Servo
     lateinit var markerDumper: CRServo
     lateinit var potentiometer: AnalogInput
+    override lateinit var lFDrive: DcMotor
+    override lateinit var rFDrive: DcMotor
+    override lateinit var lBDrive: DcMotor
+    override lateinit var rBDrive: DcMotor
+
+
 
     /* Local OpMode members. */
-    lateinit var hwMap: HardwareMap
+    override lateinit var hwMap: HardwareMap
 
     /* Initialize standard Hardware interfaces */
-    fun init(ahwMap: HardwareMap?) {
+    override fun init(ahwMap: HardwareMap) {
         // Save reference to Hardware map
         hwMap = ahwMap!!
 
@@ -38,6 +45,11 @@ class BrianHardware {
         backLeftDrive = hwMap["back_left_drive"] as DcMotor
         frontRightDrive = hwMap["front_right_drive"] as DcMotor
         backRightDrive = hwMap["back_right_drive"] as DcMotor
+        lFDrive = frontLeftDrive
+        rFDrive = frontRightDrive
+        lBDrive = backLeftDrive
+        rBDrive = backRightDrive
+
         extendoArm5000initial = hwMap["extendoArm_5000"] as DcMotor
         pivotArm1initial = hwMap["pivotArm1"] as DcMotor
         pivotArm2initial = hwMap["pivotArm2"] as DcMotor
