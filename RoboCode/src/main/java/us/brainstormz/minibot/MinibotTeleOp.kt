@@ -37,5 +37,11 @@ class MinibotTeleOp: OpMode() {
                 (y - x - r),
                 (y + x + r)
         )
+
+        if (gamepad1.y) {
+            hardware.carouselSpinner.power = 1.0
+        }else{
+            hardware.carouselSpinner.power = 0.0
+        }
     }
 }

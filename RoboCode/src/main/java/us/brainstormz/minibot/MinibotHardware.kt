@@ -8,6 +8,7 @@ class MinibotHardware(): MecanumHardware {
     override lateinit var rFDrive: DcMotor
     override lateinit var lBDrive: DcMotor
     override lateinit var rBDrive: DcMotor
+    lateinit var carouselSpinner: CRServo
 
     override lateinit var hwMap: HardwareMap
 
@@ -34,5 +35,7 @@ class MinibotHardware(): MecanumHardware {
         lFDrive.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
         rBDrive.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
         lBDrive.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
+
+        carouselSpinner = hwMap["duckWheelSpinner"] as CRServo
     }
 }
