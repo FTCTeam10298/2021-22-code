@@ -631,7 +631,7 @@
 //
 //
 //
-//class BezierCurveTest(private val comp: PaintComponent) {
+////class BezierCurveTest(private val comp: PaintComponent) {
 ////    fun main() {
 //////        val bezierCurve = interpolate(listOf(Point3D(0.0, 0.0, 0.0),
 //////                                             Point3D(2.7757000000000005, 7.182100000000002, 2.7757000000000005),
