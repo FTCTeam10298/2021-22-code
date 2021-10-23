@@ -15,8 +15,8 @@ class BrianAuto: LinearOpMode() {
 
         waitForStart()
         /** AUTONOMOUS  PHASE */
-        //movement.driveRobotPosition(power = 1.0, inches = 36.0, smartAccel = true)
-        movement.driveRobotStrafe(power = 0.0, inches = 0.0, smartAccel = true)
+        movement.driveRobotStrafe(power = 1.0, inches = 35.0, smartAccel = true)
+        movement.driveRobotPosition(power = 1.0, inches = 180.0, smartAccel = true)
         //movement.driveRobotTurn(power = 1.0, degree = 120.0, smartAccel = true)
     }
 
