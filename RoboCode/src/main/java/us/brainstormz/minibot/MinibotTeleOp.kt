@@ -22,11 +22,11 @@ class MinibotTeleOp: OpMode() {
         // DRONE DRIVE
         val yInput = gamepad1.left_stick_y.toDouble()
         val xInput = gamepad1.left_stick_x.toDouble()
-        val rInput = gamepad1.right_stick_x.toDouble() *.5
+        val rInput = gamepad1.right_stick_x.toDouble()
 
         val y = -yInput
         val x = xInput
-        val r = -rInput * abs(rInput)
+        val r = -(rInput *.5) * abs(rInput *.5)
 //        val y = yInput.pow(5)
 //        val x = xInput.pow(5)
 //        val r = rInput.pow(5) * 0.5 + 0.5 * rInput
