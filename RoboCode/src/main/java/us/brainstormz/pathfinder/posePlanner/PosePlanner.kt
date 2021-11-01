@@ -30,11 +30,13 @@ class PosePlanner {
         var currentNode = AStarPoint(start)
 
         while (currentNode.point != target){
+            val hitbox = Hitbox(Hitbox().createHitbox(Line(currentNode.point, target)))
+
             /**Choose*/
             currentNode = aStar.cheapestNode()
             println("\nNew Node: ${currentNode.point}\n")
 
-            val collision = firstIntersection(Line(currentNode.point, target), obstructions) /*?: target to Obstruction()*/
+            val collision = hitbox.collides(obstructions)
             println("Collision ${collision?.first}\n")
 
             if (collision == null) {
@@ -51,14 +53,16 @@ class PosePlanner {
             /**Find Neighbors*/
             val neighbors = if (collision.first != target)
                 findAround(adjustedCollision, collision.second).filter{
-                    firstIntersection(Line(adjustedCollision, it), obstructions) == null
+                    val newHitbox = Hitbox(Hitbox().createHitbox(Line(adjustedCollision, it)))
+                    hitbox.collides(obstructions) == null
                 }
             else
                 listOf(target)
             aStar.addNeighbors(neighbors.map { AStarPoint(it, 0.0, 0.0, adjustedAStar, 0.0) })
 
             val trueNeighbors = aStar.openSet.filter {
-                firstIntersection(Line(adjustedCollision, it.point), obstructions) == null
+                val newHitbox = Hitbox(Hitbox().createHitbox(Line(adjustedCollision, it.point)))
+                hitbox.collides(obstructions) == null
             }
 
             /**Expand*/
@@ -122,7 +126,8 @@ class PosePlanner {
             val throughAllDistance = current.distance(next) + next.distance(nextNext)
             val directDistance = current.distance(nextNext)
 
-            current = if ((directDistance <= throughAllDistance) && firstIntersection(Line(current, nextNext), obstructions) == null) {
+            val newHitbox = Hitbox(Hitbox().createHitbox(Line(current, nextNext)))
+            current = if ((directDistance <= throughAllDistance) && newHitbox.collides(obstructions) == null) {
 
                 println(efficientPath.remove(next))
                 println(next)
@@ -135,23 +140,23 @@ class PosePlanner {
         return efficientPath
     }
 
-    fun firstIntersection(l: Line, obstructions: List<Obstruction>): Pair<PosAndRot, Obstruction>? {
-        var result: PosAndRot? = null
-        var intersect: Obstruction? = null
-        obstructions.forEach {
-            val newIntersect = it.poly.intersection(l)
-            if (newIntersect != null)
-                if (result == null || newIntersect.first.distance(l.start) < result!!.distance(l.start)){
-                    result = newIntersect.first
-                    intersect = it
-                }
-        }
-
-        return if (intersect != null)
-            result!! to intersect!!
-        else
-            null
-    }
+//    fun firstIntersection(l: Line, obstructions: List<Obstruction>): Pair<PosAndRot, Obstruction>? {
+//        var result: PosAndRot? = null
+//        var intersect: Obstruction? = null
+//        obstructions.forEach {
+//            val newIntersect = it.poly.intersection(l)
+//            if (newIntersect != null)
+//                if (result == null || newIntersect.first.distance(l.start) < result!!.distance(l.start)){
+//                    result = newIntersect.first
+//                    intersect = it
+//                }
+//        }
+//
+//        return if (intersect != null)
+//            result!! to intersect!!
+//        else
+//            null
+//    }
 
 
     /**
