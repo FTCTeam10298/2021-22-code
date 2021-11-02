@@ -11,8 +11,10 @@ import us.brainstormz.choivico.robotCode.hardwareClasses.MecanumDriveTrain
 import us.brainstormz.choivico.robotCode.hardwareClasses.MecanumHardware
 import us.brainstormz.choivico.telemetryWizard.TelemetryConsole
 import us.brainstormz.localization.PositionAndRotation
+import java.lang.Math.pow
 import kotlin.math.PI
 import kotlin.math.abs
+import kotlin.math.pow
 
 class JamesEncoderMovement (private val hardware: MecanumHardware, private val console: TelemetryConsole): MecanumDriveTrain(hardware) {
 
@@ -23,6 +25,61 @@ class JamesEncoderMovement (private val hardware: MecanumHardware, private val c
     var drivetrainError = 1.015 // Error determined from testing
     val countsPerInch = countsPerMotorRev * gearboxRatio * driveGearReduction / (wheelDiameterInches * PI) / drivetrainError
     val countsPerDegree: Double = countsPerInch * 0.268 + 0.0 // Found by testing
+    var pidCoefficients = PID(1.0, 0.0, 0.0)
+
+    /**
+     * DriveRobotPosition drives the robot the set number of inches at the given power level.
+     * @param power Power level to set motors to. 0 - 1.0
+     * @param forwardIn Number of inches to move forward. Can be negative.
+     * @param sidewaysIn Number of inches to move sideways. Can be negative.
+     */
+    fun changePosition(power: Double, forwardIn: Double, sidewaysIn: Double, rotationDegrees: Double) {
+        val y = forwardIn * countsPerInch
+        val x = sidewaysIn * countsPerInch
+        val r = rotationDegrees * countsPerDegree
+
+        val lfTarget = (y + x - r).toInt()
+        val rfTarget = (y - x - r).toInt()
+        val lbTarget = (y - x + r).toInt()
+        val rbTarget = (y + x + r).toInt()
+
+        val absPower = abs(power)
+//        val lfPower = absPower * posOrNeg(lfTarget)
+//        val rfPower = absPower * posOrNeg(rfTarget)
+//        val lbPower = absPower * posOrNeg(lbTarget)
+//        val rbPower = absPower * posOrNeg(rbTarget)
+
+        val lfPID = PID(pidCoefficients.kp, pidCoefficients.ki, pidCoefficients.kd, pidCoefficients.kf)
+        val rfPID = PID(pidCoefficients.kp, pidCoefficients.ki, pidCoefficients.kd, pidCoefficients.kf)
+        val lbPID = PID(pidCoefficients.kp, pidCoefficients.ki, pidCoefficients.kd, pidCoefficients.kf)
+        val rbPID = PID(pidCoefficients.kp, pidCoefficients.ki, pidCoefficients.kd, pidCoefficients.kf)
+
+        fun lfPower(): Double = posOrNeg(lfTarget) * lfPID.calcPID(hardware.lFDrive.targetPosition.toDouble(), hardware.rFDrive.currentPosition.toDouble())
+        fun rfPower(): Double = posOrNeg(rfTarget) * rfPID.calcPID(hardware.rFDrive.targetPosition.toDouble(), hardware.rFDrive.currentPosition.toDouble())
+        fun lbPower(): Double = posOrNeg(lbTarget) * lbPID.calcPID(hardware.lBDrive.targetPosition.toDouble(), hardware.lBDrive.currentPosition.toDouble())
+        fun rbPower(): Double = posOrNeg(rbTarget) * rbPID.calcPID(hardware.rBDrive.targetPosition.toDouble(), hardware.rBDrive.currentPosition.toDouble())
+
+        driveSetPower(lfPower(), rfPower(), lbPower(), rbPower())
+
+        driveSetRunToPosition()
+        driveAddTargetPosition(lfTarget, rfTarget, lbTarget, rbTarget)
+
+        for (i in 0..4) {    // Repeat check 5 times, sleeping 10ms between, as isBusy can be a bit unreliable
+            while (driveAllAreBusy()) {
+                driveSetPower(lfPower(), rfPower(), lbPower(), rbPower())
+            }
+            Thread.sleep(10)
+        }
+        drivePowerAll(0.0)
+    }
+
+    private fun posOrNeg(num: Int): Int {
+        return when {
+            num > 0 -> 1
+            num < 0 -> -1
+            else -> 0
+        }
+    }
 
     /**
      * DriveRobotPosition drives the robot the set number of inches at the given power level.
