@@ -84,7 +84,7 @@ class TelemetryWizard(private val console: TelemetryConsole, private val opmode:
 
             menuDone = false
 
-            while (!menuDone) {
+            while (!menuDone && !opmode.opModeIsActive()) {
                 changeCursorBasedOnDPad(gamepad, thisMenu)
 
                 displayMenu(formatMenu(thisMenu))
