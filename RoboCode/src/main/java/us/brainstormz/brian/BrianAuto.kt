@@ -12,6 +12,7 @@ import us.brainstormz.choivico.telemetryWizard.TelemetryWizard
 class BrianAuto: LinearOpMode() {
     val hardware = BrianHardware()
     val movement = EncoderDriveMovement(hardware, TelemetryConsole(telemetry))
+    val newMove = JamesEncoderMovement(hardware, telemetry)
     val wizard = TelemetryWizard(TelemetryConsole(telemetry), this)
     override fun runOpMode() {
         /** INIT PHASE */
@@ -23,146 +24,148 @@ class BrianAuto: LinearOpMode() {
         waitForStart()
         /** AUTONOMOUS  PHASE */
 
-        if(true/*wizard.wasItemChosen("Alliance", "Blue")*/) {
-//        drop starting block
-            movement.driveRobotStrafe(power = 1.0, inches = 8.0, true)
-            movement.driveRobotPosition(power = 1.0, inches = -15.0, true)
-            movement.driveRobotTurn(power = 1.0, degree = 85.0, true)
-            movement.driveRobotPosition(power = 1.0, inches = -25.0, true)
-            pivotArmSetRotation(1.0, 50.0, true)
-            pivotArmSetRotation(0.5, 49.0, true)
-            sleep(400)
-            //extend
-            hardware.extendoArm5000.power = 0.5
-            sleep(200)
-            hardware.extendoArm5000.power = 1.0
-            sleep(300)
-            hardware.extendoArm5000.power = 0.0
-            sleep(1000)
+        newMove.changePosition(1.0, 25.0, 25.0, 0.0)
 
-            hardware.collectorGate.position = 0.25
-            sleep(1500)
-            hardware.collectorGate.position = 0.68
-
-
-//        spin carousel
-            hardware.extendoArm5000.power = -1.0
-            pivotArmSetRotation(1.0, -90.0, true)
-            hardware.extendoArm5000.power = 0.0
-            movement.driveRobotPosition(1.0, 13.0, true)
-            movement.driveRobotTurn(1.0, -68.0, true)
-            movement.driveRobotPosition(1.0, 40.0, true)
-            movement.driveRobotTurn(1.0, -243.0, true)
-            movement.driveRobotPosition(1.0, -10.0, true)
-            movement.driveRobotPosition(0.5, -5.0, true)
-            hardware.duccSpinner.power = 1.0
-            sleep(3500)
-            hardware.duccSpinner.power = 0.0
-            return
-
-            if (wizard.wasItemChosen("Park", "Ducc")) {
-//                deliver ducc
-                movement.driveRobotPosition(1.0, 15.0, true)
-                movement.driveRobotTurn(1.0, 220.0, true)
-                pivotArmSetRotation(1.0, -9.0, true)
-                hardware.collectOtron.power = 1.0
-                movement.driveRobotPosition(1.0, 2.0, true)
-                movement.driveRobotTurn(1.0, -50.0, true)
-                movement.driveRobotPosition(1.0, 3.0, true)
-                movement.driveRobotTurn(1.0, 70.0, true)
-                movement.driveRobotPosition(1.0, 5.0, true)
-                movement.driveRobotTurn(1.0, -70.0, true)
-                hardware.collectOtron.power = 0.3
-                //deliver
-                pivotArmSetRotation(1.0, 10.0, true)
-                movement.driveRobotTurn(1.0, 40.0, true)
-                movement.driveRobotStrafe(1.0, 60.0, true)
-                pivotArmSetRotation(1.0, 50.0, true)
-                pivotArmSetRotation(0.5, 49.0, true)
-                sleep(400)
-                //extend
-                hardware.extendoArm5000.power = 0.5
-                sleep(200)
-                hardware.extendoArm5000.power = 1.0
-                sleep(300)
-                hardware.extendoArm5000.power = 0.0
-                sleep(1000)
-
-                hardware.collectorGate.position = 0.25
-                sleep(1500)
-                hardware.collectorGate.position = 0.68
-            } else {
-//            park in warehouse
-
-            }
-        } else /**Red*/ {
-//        drop starting block
-            movement.driveRobotStrafe(power = 1.0, inches = -8.0, true)
-            movement.driveRobotPosition(power = 1.0, inches = -15.0, true)
-            movement.driveRobotTurn(power = 1.0, degree = -85.0, true)
-            movement.driveRobotPosition(power = 1.0, inches = -25.0, true)
-            pivotArmSetRotation(1.0, 50.0, true)
-            pivotArmSetRotation(0.5, 49.0, true)
-            sleep(400)
-            //extend
-            hardware.extendoArm5000.power = 0.5
-            sleep(200)
-            hardware.extendoArm5000.power = 1.0
-            sleep(300)
-            hardware.extendoArm5000.power = 0.0
-            sleep(1000)
-
-            hardware.collectorGate.position = 0.25
-            sleep(1500)
-            hardware.collectorGate.position = 0.68
-
-//        spin carousel
-            hardware.extendoArm5000.power = -1.0
-            pivotArmSetRotation(1.0, -90.0, true)
-            hardware.extendoArm5000.power = 0.0
-            movement.driveRobotPosition(1.0, 13.0, true)
-            movement.driveRobotTurn(1.0, 65.0, true)
-            movement.driveRobotPosition(1.0, 40.0, true)
-            movement.driveRobotTurn(1.0, 129.0, true)
-            movement.driveRobotStrafe(1.0, 10.0, true)
-            movement.driveRobotStrafe(.5, 7.0, true)
-            hardware.duccSpinner.power = -1.0
-            sleep(3500)
-            hardware.duccSpinner.power = 0.0
-
-//        deliver ducc
-            movement.driveRobotPosition(1.0, 15.0, true)
-            movement.driveRobotTurn(1.0, 220.0, true)
-            pivotArmSetRotation(1.0, -9.0, true)
-            hardware.collectOtron.power = 1.0
-            movement.driveRobotPosition(1.0, 2.0, true)
-            movement.driveRobotTurn(1.0, -50.0, true)
-            movement.driveRobotPosition(1.0, 3.0, true)
-            movement.driveRobotTurn(1.0, 70.0, true)
-            movement.driveRobotPosition(1.0, 5.0, true)
-            movement.driveRobotTurn(1.0, -70.0, true)
-            hardware.collectOtron.power = 0.3
-            //deliver
-            pivotArmSetRotation(1.0, 10.0, true)
-            movement.driveRobotTurn(1.0, 40.0, true)
-            movement.driveRobotStrafe(1.0, 60.0, true)
-            pivotArmSetRotation(1.0, 50.0, true)
-            pivotArmSetRotation(0.5, 49.0, true)
-            sleep(400)
-            //extend
-            hardware.extendoArm5000.power = 0.5
-            sleep(200)
-            hardware.extendoArm5000.power = 1.0
-            sleep(300)
-            hardware.extendoArm5000.power = 0.0
-            sleep(1000)
-
-            hardware.collectorGate.position = 0.25
-            sleep(1500)
-            hardware.collectorGate.position = 0.68
-
-//        park in warehouse
-        }
+//        if(true/*wizard.wasItemChosen("Alliance", "Blue")*/) {
+////        drop starting block
+//            movement.driveRobotStrafe(power = 1.0, inches = 8.0, true)
+//            movement.driveRobotPosition(power = 1.0, inches = -15.0, true)
+//            movement.driveRobotTurn(power = 1.0, degree = 85.0, true)
+//            movement.driveRobotPosition(power = 1.0, inches = -25.0, true)
+//            pivotArmSetRotation(1.0, 50.0, true)
+//            pivotArmSetRotation(0.5, 49.0, true)
+//            sleep(400)
+//            //extend
+//            hardware.extendoArm5000.power = 0.5
+//            sleep(200)
+//            hardware.extendoArm5000.power = 1.0
+//            sleep(300)
+//            hardware.extendoArm5000.power = 0.0
+//            sleep(1000)
+//
+//            hardware.collectorGate.position = 0.25
+//            sleep(1500)
+//            hardware.collectorGate.position = 0.68
+//
+//
+////        spin carousel
+//            hardware.extendoArm5000.power = -1.0
+//            pivotArmSetRotation(1.0, -90.0, true)
+//            hardware.extendoArm5000.power = 0.0
+//            movement.driveRobotPosition(1.0, 13.0, true)
+//            movement.driveRobotTurn(1.0, -68.0, true)
+//            movement.driveRobotPosition(1.0, 40.0, true)
+//            movement.driveRobotTurn(1.0, -243.0, true)
+//            movement.driveRobotPosition(1.0, -10.0, true)
+//            movement.driveRobotPosition(0.5, -5.0, true)
+//            hardware.duccSpinner.power = 1.0
+//            sleep(3500)
+//            hardware.duccSpinner.power = 0.0
+//            return
+//
+//            if (wizard.wasItemChosen("Park", "Ducc")) {
+////                deliver ducc
+//                movement.driveRobotPosition(1.0, 15.0, true)
+//                movement.driveRobotTurn(1.0, 220.0, true)
+//                pivotArmSetRotation(1.0, -9.0, true)
+//                hardware.collectOtron.power = 1.0
+//                movement.driveRobotPosition(1.0, 2.0, true)
+//                movement.driveRobotTurn(1.0, -50.0, true)
+//                movement.driveRobotPosition(1.0, 3.0, true)
+//                movement.driveRobotTurn(1.0, 70.0, true)
+//                movement.driveRobotPosition(1.0, 5.0, true)
+//                movement.driveRobotTurn(1.0, -70.0, true)
+//                hardware.collectOtron.power = 0.3
+//                //deliver
+//                pivotArmSetRotation(1.0, 10.0, true)
+//                movement.driveRobotTurn(1.0, 40.0, true)
+//                movement.driveRobotStrafe(1.0, 60.0, true)
+//                pivotArmSetRotation(1.0, 50.0, true)
+//                pivotArmSetRotation(0.5, 49.0, true)
+//                sleep(400)
+//                //extend
+//                hardware.extendoArm5000.power = 0.5
+//                sleep(200)
+//                hardware.extendoArm5000.power = 1.0
+//                sleep(300)
+//                hardware.extendoArm5000.power = 0.0
+//                sleep(1000)
+//
+//                hardware.collectorGate.position = 0.25
+//                sleep(1500)
+//                hardware.collectorGate.position = 0.68
+//            } else {
+////            park in warehouse
+//
+//            }
+//        } else /**Red*/ {
+////        drop starting block
+//            movement.driveRobotStrafe(power = 1.0, inches = -8.0, true)
+//            movement.driveRobotPosition(power = 1.0, inches = -15.0, true)
+//            movement.driveRobotTurn(power = 1.0, degree = -85.0, true)
+//            movement.driveRobotPosition(power = 1.0, inches = -25.0, true)
+//            pivotArmSetRotation(1.0, 50.0, true)
+//            pivotArmSetRotation(0.5, 49.0, true)
+//            sleep(400)
+//            //extend
+//            hardware.extendoArm5000.power = 0.5
+//            sleep(200)
+//            hardware.extendoArm5000.power = 1.0
+//            sleep(300)
+//            hardware.extendoArm5000.power = 0.0
+//            sleep(1000)
+//
+//            hardware.collectorGate.position = 0.25
+//            sleep(1500)
+//            hardware.collectorGate.position = 0.68
+//
+////        spin carousel
+//            hardware.extendoArm5000.power = -1.0
+//            pivotArmSetRotation(1.0, -90.0, true)
+//            hardware.extendoArm5000.power = 0.0
+//            movement.driveRobotPosition(1.0, 13.0, true)
+//            movement.driveRobotTurn(1.0, 65.0, true)
+//            movement.driveRobotPosition(1.0, 40.0, true)
+//            movement.driveRobotTurn(1.0, 129.0, true)
+//            movement.driveRobotStrafe(1.0, 10.0, true)
+//            movement.driveRobotStrafe(.5, 7.0, true)
+//            hardware.duccSpinner.power = -1.0
+//            sleep(3500)
+//            hardware.duccSpinner.power = 0.0
+//
+////        deliver ducc
+//            movement.driveRobotPosition(1.0, 15.0, true)
+//            movement.driveRobotTurn(1.0, 220.0, true)
+//            pivotArmSetRotation(1.0, -9.0, true)
+//            hardware.collectOtron.power = 1.0
+//            movement.driveRobotPosition(1.0, 2.0, true)
+//            movement.driveRobotTurn(1.0, -50.0, true)
+//            movement.driveRobotPosition(1.0, 3.0, true)
+//            movement.driveRobotTurn(1.0, 70.0, true)
+//            movement.driveRobotPosition(1.0, 5.0, true)
+//            movement.driveRobotTurn(1.0, -70.0, true)
+//            hardware.collectOtron.power = 0.3
+//            //deliver
+//            pivotArmSetRotation(1.0, 10.0, true)
+//            movement.driveRobotTurn(1.0, 40.0, true)
+//            movement.driveRobotStrafe(1.0, 60.0, true)
+//            pivotArmSetRotation(1.0, 50.0, true)
+//            pivotArmSetRotation(0.5, 49.0, true)
+//            sleep(400)
+//            //extend
+//            hardware.extendoArm5000.power = 0.5
+//            sleep(200)
+//            hardware.extendoArm5000.power = 1.0
+//            sleep(300)
+//            hardware.extendoArm5000.power = 0.0
+//            sleep(1000)
+//
+//            hardware.collectorGate.position = 0.25
+//            sleep(1500)
+//            hardware.collectorGate.position = 0.68
+//
+////        park in warehouse
+//        }
     }
 
 
