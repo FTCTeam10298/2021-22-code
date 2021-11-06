@@ -27,10 +27,10 @@ class OdometryTestAuto: LinearOpMode() {
 //        sleep(400)
 //        robot.setSpeedAll(0.0, 0.0, 0.0, 0.0, 0.0)
 
-//        target.setCoordinate(r = 90.0)
-//        robot.turnGoToPosition(target, 0.9, 0.1)
-//        target.setCoordinate(r = 0.0)
-//        robot.turnGoToPosition(target, 0.9, 0.1)
+        target.setCoordinate(r = 90.0)
+        robot.turnGoToPosition(target, 0.9, 0.1)
+        target.setCoordinate(r = 0.0)
+        robot.turnGoToPosition(target, 0.9, 0.1)
         
 //        target.setCoordinate(y = 0.0)
 //        robot.straightGoToPosition(target, 1.0, 0.1, this)
