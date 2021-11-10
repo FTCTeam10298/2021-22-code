@@ -9,6 +9,11 @@ class MinibotHardware(): MecanumHardware {
     override lateinit var lBDrive: DcMotor
     override lateinit var rBDrive: DcMotor
     lateinit var carouselSpinner: CRServo
+    lateinit var liftMotor: DcMotorEx
+    lateinit var horiServo: CRServo
+    lateinit var dropperServo: Servo
+    lateinit var horiExtendLimit: TouchSensor
+    lateinit var horiRetractLimit: TouchSensor
 
     override lateinit var hwMap: HardwareMap
 
