@@ -13,6 +13,7 @@ class MinibotTeleOp: OpMode() {
     val hardware = MinibotHardware()
 
     val robot = MecanumDriveTrain(hardware)
+    val depositor = Depositor(hardware)
 
     override fun init() {
         hardware.init(hardwareMap)
@@ -38,6 +39,23 @@ class MinibotTeleOp: OpMode() {
                 (y + x + r)
         )
 
+//        Depositor
+        if (gamepad2.right_stick_x != 0.0f || gamepad2.right_stick_y != 0.0f) {
+            val xTarget = when {
+                gamepad2.right_stick_x > 0.0f -> Depositor.XPosition.Extend
+                gamepad2.right_stick_x < 0.0f -> Depositor.XPosition.Retract
+                else -> null
+            }
+            val yTarget = (gamepad2.right_stick_y.toDouble() * 1.0).toInt()
+
+            depositor.move(xTarget, yTarget)
+        }
+
+        if (gamepad2.right_trigger != 0.0f || gamepad2.left_trigger != 0.0f) {
+            depositor.drop()
+        }
+        
+//        Ducc Spinner
         if (gamepad1.y) {
             hardware.carouselSpinner.power = 1.0
         }else{
