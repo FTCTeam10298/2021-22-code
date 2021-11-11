@@ -46,26 +46,39 @@ class MinibotTeleOp: OpMode() {
             gamepad2.right_stick_x < 0.0f -> Depositor.XPosition.Retract
             else -> null
         }
+        depositor.xToPosition(xTarget)
 
-        depositor.teleOpHori(xTarget)
 
 
-        val yTarget = (gamepad2.right_stick_y.toDouble())
-
-        if (gamepad2.right_stick_y == 0.0f)
-            hardware.liftMotor.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
+        hardware.liftMotor.zeroPowerBehavior = if (gamepad2.right_stick_y == 0.0f)
+            DcMotor.ZeroPowerBehavior.BRAKE
         else
-            hardware.liftMotor.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.FLOAT
+            DcMotor.ZeroPowerBehavior.FLOAT
 
-        depositor.teleOpLift(yTarget)
+        val yTarget = gamepad2.right_stick_y.toInt()
+        depositor.yInDirection(yTarget)
+
+
+        if (gamepad2.right_trigger != 0.0f || gamepad2.left_trigger != 0.0f)
+            depositor.drop()
+        else
+            depositor.close()
+
+
+        if (gamepad2.a) {
+            depositor.home()
+        }
+
+
+        if (gamepad2.b) {
+            depositor.yToPosition(depositor.lowGoalHeight)
+            depositor.xToPosition(Depositor.XPosition.Extend)
+        }
+
 
         console.display(2, "y pos: ${hardware.liftMotor.currentPosition}")
         console.display(3, "x pos: ${depositor.xAbsPos}ed")
-
-        if (gamepad2.right_trigger != 0.0f || gamepad2.left_trigger != 0.0f) {
-            depositor.drop()
-        }
-
+        console.display(4, "dropper: ${hardware.dropperServo.position}")
 //        Ducc Spinner
         if (gamepad1.y) {
             hardware.carouselSpinner.power = 1.0
