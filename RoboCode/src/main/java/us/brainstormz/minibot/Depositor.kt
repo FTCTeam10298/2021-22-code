@@ -14,7 +14,7 @@ class Depositor(private val hardware: MinibotHardware, private val telemetry: Te
     }
 
     private val yPID = PID(kp = 0.002, ki = 0.002)
-    private val yLimits: IntRange = 0..1420
+    private val yLimits: IntRange = 0..1430
     private val extendableHeight = 190
     val lowGoalHeight = 200
 
@@ -52,8 +52,9 @@ class Depositor(private val hardware: MinibotHardware, private val telemetry: Te
         hardware.liftMotor.mode = DcMotor.RunMode.RUN_USING_ENCODER
 
         val direction = posOrNeg(-yDirection)
-        hardware.liftMotor.power = when {
-            hardware.liftMotor.currentPosition in yLimits -> {
+        hardware.liftMotor.power =
+        when (hardware.liftMotor.currentPosition) {
+            in yLimits -> {
                 if (yDirection != 0) {
                     val target = when (direction) {
                         1 -> yLimits.last
@@ -68,12 +69,6 @@ class Depositor(private val hardware: MinibotHardware, private val telemetry: Te
                 } else
                     0.0
             }
-//            hardware.liftMotor.currentPosition > yLimits.last -> {
-//                -0.1
-//            }
-//            hardware.liftMotor.currentPosition < yLimits.first -> {
-//                0.1
-//            }
             else -> 0.0
         }
 
@@ -112,16 +107,6 @@ class Depositor(private val hardware: MinibotHardware, private val telemetry: Te
         hardware.dropperServo.position = dropperClosed
         xToPosition(XPosition.Retract)
         yToPosition(yLimits.first)
-    }
-
-    private fun liftRunToPosition() {
-        if (hardware.liftMotor.mode != DcMotor.RunMode.RUN_TO_POSITION) {
-            hardware.liftMotor.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
-            // When the encoder is reset, also reset the target position, so it doesn't add an old
-            // target position when using driveAddTargetPosition()
-            hardware.liftMotor.targetPosition = 0
-            hardware.liftMotor.mode = DcMotor.RunMode.RUN_TO_POSITION
-        }
     }
 
     private fun posOrNeg(num: Int): Int {
