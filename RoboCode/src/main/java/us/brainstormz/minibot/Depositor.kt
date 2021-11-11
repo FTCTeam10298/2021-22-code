@@ -13,9 +13,9 @@ class Depositor(private val hardware: MinibotHardware, private val telemetry: Te
         Retract
     }
 
-    private val yPID = PID()
-    private val yPower = 0.5
-    private val yLimits: IntRange = 10..1425
+    private val yPID = PID(kp = 0.0015, ki = 0.001)
+    private val yPower = 0.6
+    private val yLimits: IntRange = 0..1420
     var yTarget = yLimits.first
 
     private val xPID = PID()
@@ -24,7 +24,37 @@ class Depositor(private val hardware: MinibotHardware, private val telemetry: Te
     private val dropperOpen = 0.5
     private val dropperClosed = 0.0
 
-    fun move(x: XPosition?, y: Int) {
+    fun teleOpLift(ySpeed: Double) {
+
+        val direction = posOrNeg(-ySpeed.toInt())
+        hardware.liftMotor.power = when {
+            hardware.liftMotor.currentPosition in yLimits -> {
+                if (ySpeed != 0.0) {
+                    val fakeTarget = when (direction) {
+                        1 -> yLimits.last
+                        -1 -> yLimits.first
+                        else -> hardware.liftMotor.currentPosition
+                    }
+                    val pidPower = yPID.calcPID(
+                        fakeTarget.toDouble(),
+                        hardware.liftMotor.currentPosition.toDouble()
+                    )
+                    pidPower
+                } else
+                    0.0
+            }
+            hardware.liftMotor.currentPosition > yLimits.last -> {
+                -0.2
+            }
+            hardware.liftMotor.currentPosition < yLimits.first -> {
+                0.2
+            }
+            else -> 0.0
+        }
+
+    }
+
+    fun moveToPosition(x: XPosition?, y: Int) {
 //        y Axis
         if (y != 0) {
 //            hardware.liftMotor.power = yPID.calcPID(y.toDouble(), hardware.liftMotor.currentPosition.toDouble())
@@ -82,13 +112,13 @@ class Depositor(private val hardware: MinibotHardware, private val telemetry: Te
     }
 
     fun deposit(x: XPosition, y: Int) {
-        move(x, y)
+        moveToPosition(x, y)
         drop()
     }
 
     fun home() {
         hardware.dropperServo.position = dropperClosed
-        move(XPosition.Retract, yLimits.first)
+        moveToPosition(XPosition.Retract, yLimits.first)
     }
 
     private fun liftRunToPosition() {

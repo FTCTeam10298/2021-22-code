@@ -2,10 +2,10 @@ package us.brainstormz.minibot
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
+import com.qualcomm.robotcore.hardware.DcMotor
 import us.brainstormz.choivico.robotCode.hardwareClasses.MecanumDriveTrain
 import kotlin.math.abs
 import us.brainstormz.choivico.telemetryWizard.TelemetryConsole
-import kotlin.math.pow
 
 @TeleOp(name="Minibot TeleOp", group="Minibot")
 class MinibotTeleOp: OpMode() {
@@ -41,21 +41,21 @@ class MinibotTeleOp: OpMode() {
         )
 
 //        Depositor
-        telemetry.addLine("yStick: ${gamepad2.left_stick_y}")
-        if (gamepad2.right_stick_x != 0.0f || gamepad2.right_stick_y != 0.0f) {
-            telemetry.addLine("We're in.")
-            val xTarget = when {
-                gamepad2.right_stick_x > 0.0f -> Depositor.XPosition.Extend
-                gamepad2.right_stick_x < 0.0f -> Depositor.XPosition.Retract
-                else -> null
-            }
-
-
-            val yTarget = (depositor.yTarget + (gamepad2.right_stick_y.toDouble() * 1400)).toInt()
-
-            telemetry.addLine("yStick: ${gamepad2.left_stick_y}")
-            depositor.move(xTarget, yTarget)
+        console.display(2,"yStic: ${gamepad2.left_stick_y}")
+        val xTarget = when {
+            gamepad2.right_stick_x > 0.0f -> Depositor.XPosition.Extend
+            gamepad2.right_stick_x < 0.0f -> Depositor.XPosition.Retract
+            else -> null
         }
+
+        val yTarget = (gamepad2.right_stick_y.toDouble())
+
+        if (gamepad2.right_stick_y == 0.0f)
+            hardware.liftMotor.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
+        else
+            hardware.liftMotor.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.FLOAT
+
+        depositor.teleOpLift(yTarget)
 
         if (gamepad2.right_trigger != 0.0f || gamepad2.left_trigger != 0.0f) {
             depositor.drop()
