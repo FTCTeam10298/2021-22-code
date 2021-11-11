@@ -3,8 +3,8 @@ package us.brainstormz.choivico.robotCode
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import us.brainstormz.localization.PositionAndRotation
-import us.brainstormz.choivico.robotCode.hardwareClasses.OdometryDriveMovement
-import us.brainstormz.choivico.telemetryWizard.TelemetryConsole
+import us.brainstormz.hardwareClasses.OdometryDriveMovement
+import us.brainstormz.telemetryWizard.TelemetryConsole
 
 @Autonomous(name = "odometryTest", group = "Aim Bot")
 class OdometryTestAuto: LinearOpMode() {

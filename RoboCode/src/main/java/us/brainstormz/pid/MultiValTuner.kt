@@ -1,9 +1,9 @@
-package us.brainstormz.choivico.pid
+package us.brainstormz.pid
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import com.qualcomm.robotcore.hardware.Gamepad
-import us.brainstormz.choivico.telemetryWizard.TelemetryConsole
+import us.brainstormz.telemetryWizard.TelemetryConsole
 
 @TeleOp(name="PID Tuner", group="Tests")
 class PIDTuner: OpMode() {

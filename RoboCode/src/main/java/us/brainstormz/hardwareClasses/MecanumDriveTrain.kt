@@ -1,4 +1,4 @@
-package us.brainstormz.choivico.robotCode.hardwareClasses
+package us.brainstormz.hardwareClasses
 
 import com.qualcomm.robotcore.hardware.DcMotor
 

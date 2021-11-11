@@ -1,4 +1,4 @@
-package us.brainstormz.choivico.robotCode.hardwareClasses
+package us.brainstormz.hardwareClasses
 
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
@@ -6,8 +6,8 @@ import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.util.Range
 import us.brainstormz.localization.PositionAndRotation
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit
-import us.brainstormz.choivico.pid.PID
-import us.brainstormz.choivico.telemetryWizard.TelemetryConsole
+import us.brainstormz.pid.PID
+import us.brainstormz.telemetryWizard.TelemetryConsole
 import kotlin.math.PI
 import kotlin.math.abs
 

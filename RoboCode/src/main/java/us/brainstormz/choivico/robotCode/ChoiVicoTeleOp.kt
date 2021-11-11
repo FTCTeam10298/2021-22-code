@@ -8,9 +8,9 @@ import kotlin.math.abs
 import kotlin.math.absoluteValue
 import us.brainstormz.choivico.creamsicleGoalDetection.CreamsicleGoalDetector
 import us.brainstormz.choivico.creamsicleGoalDetection.UltimateGoalAimer
-import us.brainstormz.choivico.openCvAbstraction.OpenCvAbstraction
-import us.brainstormz.choivico.robotCode.hardwareClasses.OdometryDriveTrain
-import us.brainstormz.choivico.telemetryWizard.TelemetryConsole
+import us.brainstormz.openCvAbstraction.OpenCvAbstraction
+import us.brainstormz.hardwareClasses.OdometryDriveTrain
+import us.brainstormz.telemetryWizard.TelemetryConsole
 import kotlin.math.pow
 
 @TeleOp(name="ChoiVico TeleOp", group="ChoiVico")

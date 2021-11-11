@@ -1,4 +1,4 @@
-package us.brainstormz.choivico.telemetryWizard
+package us.brainstormz.telemetryWizard
 
 import org.firstinspires.ftc.robotcore.external.Telemetry
 

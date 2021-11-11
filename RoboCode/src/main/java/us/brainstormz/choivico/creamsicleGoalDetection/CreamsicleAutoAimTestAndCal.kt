@@ -3,11 +3,11 @@ package us.brainstormz.choivico.creamsicleGoalDetection
 import us.brainstormz.choivico.buttonHelper.ButtonHelper
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
-import us.brainstormz.choivico.openCvAbstraction.OpenCvAbstraction
+import us.brainstormz.openCvAbstraction.OpenCvAbstraction
 import org.opencv.imgproc.Imgproc
 import us.brainstormz.choivico.robotCode.ChoiVicoHardware
-import us.brainstormz.choivico.robotCode.hardwareClasses.EncoderDriveMovement
-import us.brainstormz.choivico.telemetryWizard.TelemetryConsole
+import us.brainstormz.hardwareClasses.EncoderDriveMovement
+import us.brainstormz.telemetryWizard.TelemetryConsole
 
 
 @Autonomous(name="Creamsicle Test and Calibration", group="Tests")

@@ -1,9 +1,9 @@
-package us.brainstormz.choivico.robotCode.hardwareClasses
+package us.brainstormz.hardwareClasses
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import us.brainstormz.localization.PositionAndRotation
-import us.brainstormz.choivico.pid.PID
-import us.brainstormz.choivico.telemetryWizard.TelemetryConsole
+import us.brainstormz.pid.PID
+import us.brainstormz.telemetryWizard.TelemetryConsole
 import kotlin.math.*
 
 class OdometryDriveMovement(private val console: TelemetryConsole, private val hardware: MecOdometryHardware, private val opmode: LinearOpMode): DriveMovement, OdometryDriveTrain(hardware, console) {

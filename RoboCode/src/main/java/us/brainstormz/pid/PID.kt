@@ -1,4 +1,4 @@
-package us.brainstormz.choivico.pid
+package us.brainstormz.pid
 
 import com.qualcomm.robotcore.util.Range
 
@@ -27,7 +27,7 @@ open class PID(val kp: Double = 0.0, val ki: Double = 0.0, val kd: Double = 0.0,
      * Calculates pidf in a loop.
      * @param target the target value for the controller
      * @param feedback the current value
-     * @return the calculated value for the us.us.brainstormz.choivico.pid
+     * @return the calculated value for the us.us.brainstormz.pid
      */
     fun calcPID(target: Double, feedback: Double): Double {
         val error: Double = target - feedback

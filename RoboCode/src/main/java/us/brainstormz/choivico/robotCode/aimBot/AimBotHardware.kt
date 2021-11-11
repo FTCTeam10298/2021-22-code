@@ -1,7 +1,7 @@
 package us.brainstormz.choivico.robotCode.aimBot
 
 import com.qualcomm.robotcore.hardware.*
-import us.brainstormz.choivico.robotCode.hardwareClasses.MecanumHardware
+import us.brainstormz.hardwareClasses.MecanumHardware
 
 /*  CURRENT HARDWARE MAP:
 *   Expansion hub 2:
