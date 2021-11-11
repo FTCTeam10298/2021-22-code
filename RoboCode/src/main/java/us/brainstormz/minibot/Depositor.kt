@@ -118,7 +118,7 @@ class Depositor(private val hardware: MinibotHardware, private val telemetry: Te
 
 }
 
-@TeleOp(name="Depositor Tuner", group="Minibot")
+//@TeleOp(name="Depositor Tuner", group="Minibot")
 class DepositorTuner: OpMode() {
 
     val hardware = MinibotHardware()
