@@ -41,6 +41,7 @@ class MinibotTeleOp: OpMode() {
         )
 
 //        Depositor
+        telemetry.addLine("yStick: ${gamepad2.left_stick_y}")
         if (gamepad2.right_stick_x != 0.0f || gamepad2.right_stick_y != 0.0f) {
             telemetry.addLine("We're in.")
             val xTarget = when {
@@ -50,7 +51,7 @@ class MinibotTeleOp: OpMode() {
             }
 
 
-            val yTarget = (hardware.liftMotor.currentPosition - (gamepad2.right_stick_y.toDouble() * 1400)).toInt()
+            val yTarget = (depositor.yTarget + (gamepad2.right_stick_y.toDouble() * 1400)).toInt()
 
             telemetry.addLine("yStick: ${gamepad2.left_stick_y}")
             depositor.move(xTarget, yTarget)
