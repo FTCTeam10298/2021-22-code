@@ -1,39 +1,48 @@
 package us.brainstormz.minibot
 
+import com.qualcomm.robotcore.eventloop.opmode.OpMode
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import com.qualcomm.robotcore.hardware.DcMotor
+import org.firstinspires.ftc.robotcore.external.Telemetry
 import us.brainstormz.choivico.pid.PID
 import java.lang.Thread.sleep
 
-class Depositor(private val hardware: MinibotHardware) {
+class Depositor(private val hardware: MinibotHardware, private val telemetry: Telemetry) {
     enum class XPosition {
         Extend,
         Retract
     }
 
     private val yPID = PID()
-    private val yPower = 0.5
-    private val yLimits: IntRange = 1..8
+    private val yPower = 0.8
+    private val yLimits: IntRange = 10..1425
 
     private val xPID = PID()
-    private val xPower = 1.0
+    private val xPower = 0.1
 
     private val dropperOpen = 0.1
     private val dropperClosed = 0.5
 
     fun move(x: XPosition?, y: Int) {
 //        y Axis
-//        hardware.liftMotor.power = yPID.calcPID(y.toDouble(), hardware.liftMotor.currentPosition.toDouble())
-        hardware.liftMotor.power = yPower
-        setLiftRunToPosition()
+        if (y != 0) {
+//            hardware.liftMotor.power = yPID.calcPID(y.toDouble(), hardware.liftMotor.currentPosition.toDouble())
+            hardware.liftMotor.power = yPower
+            setLiftRunToPosition()
 
-        val adjutedY = y.coerceIn(yLimits)
-        hardware.liftMotor.targetPosition = adjutedY
-
+            telemetry.addLine("target Y: $y")
+            val adjustedY = y.coerceIn(yLimits)
+            telemetry.addLine("adjusted Y: $adjustedY")
+            hardware.liftMotor.targetPosition = adjustedY
+            telemetry.addLine("target Pos: ${hardware.liftMotor.targetPosition}")
+            telemetry.addLine("current Pos: ${hardware.liftMotor.currentPosition}")
+        }
 //        x Axis
         hardware.horiServo.power = xPower
 
         var atPosition = false
         while (atPosition) {
+            telemetry.addLine("current Pos: ${hardware.liftMotor.currentPosition}")
             val xAtPosition = when (x) {
                 XPosition.Extend -> hardware.horiExtendLimit.isPressed
                 XPosition.Retract -> hardware.horiRetractLimit.isPressed
@@ -74,4 +83,30 @@ class Depositor(private val hardware: MinibotHardware) {
             hardware.liftMotor.mode = DcMotor.RunMode.RUN_TO_POSITION
         }
     }
+}
+
+@TeleOp(name="Depositor Tuner", group="Minibot")
+class DepositorTuner: OpMode() {
+
+    val hardware = MinibotHardware()
+    val depositor = Depositor(hardware, telemetry)
+
+    override fun init() {
+        hardware.init(hardwareMap)
+    }
+
+    override fun loop() {
+        telemetry.addLine("")
+        telemetry.addLine("y position: ${hardware.liftMotor.currentPosition}")
+//        val xPosition = when {
+//            hardware.horiExtendLimit.isPressed -> Depositor.XPosition.Extend
+//            hardware.horiRetractLimit.isPressed -> Depositor.XPosition.Retract
+//            else -> null
+//        }
+        val xPosition = "not working atm"
+        telemetry.addLine("x position: $xPosition")
+
+        telemetry.update()
+    }
+
 }
