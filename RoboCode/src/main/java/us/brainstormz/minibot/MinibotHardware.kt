@@ -12,8 +12,7 @@ class MinibotHardware(): MecanumHardware {
     lateinit var liftMotor: DcMotorEx
     lateinit var horiServo: CRServo
     lateinit var dropperServo: Servo
-    lateinit var horiExtendLimit: TouchSensor
-    lateinit var horiRetractLimit: TouchSensor
+    val cameraName = "backWebcam"
 
     override lateinit var hwMap: HardwareMap
 

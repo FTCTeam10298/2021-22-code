@@ -18,7 +18,8 @@ class MinibotAuto: LinearOpMode() {
     val wizard = TelemetryWizard(TelemetryConsole(telemetry), this)
 
     val opencv = OpenCvAbstraction(this)
-    val ringDetector = RingDetector(150, 135, TelemetryConsole(telemetry))
+    val tseDetector = TeamScoringElementDetector(135, console)
+    var tsePosition = TSEPosition.One
 
     override fun runOpMode() {
         /** INIT PHASE */
