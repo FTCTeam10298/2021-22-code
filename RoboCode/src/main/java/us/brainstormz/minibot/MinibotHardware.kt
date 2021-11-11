@@ -41,6 +41,19 @@ class MinibotHardware(): MecanumHardware {
         rBDrive.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
         lBDrive.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
 
+//        Depositor
+        liftMotor = lFDrive as DcMotorEx
+
+        liftMotor.direction = DcMotorSimple.Direction.REVERSE
+        liftMotor.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
+
+        horiServo = hwMap["horiServo"] as CRServo
+        horiServo.direction = DcMotorSimple.Direction.FORWARD
+
+        dropperServo = hwMap["dropper"] as Servo
+
+//        Ducc
         carouselSpinner = hwMap["duckWheelSpinner"] as CRServo
+        carouselSpinner.direction = DcMotorSimple.Direction.FORWARD
     }
 }

@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import us.brainstormz.choivico.robotCode.hardwareClasses.MecanumDriveTrain
 import kotlin.math.abs
 import us.brainstormz.choivico.telemetryWizard.TelemetryConsole
+import kotlin.math.pow
 
 @TeleOp(name="Minibot TeleOp", group="Minibot")
 class MinibotTeleOp: OpMode() {
@@ -13,7 +14,7 @@ class MinibotTeleOp: OpMode() {
     val hardware = MinibotHardware()
 
     val robot = MecanumDriveTrain(hardware)
-    val depositor = Depositor(hardware)
+    val depositor = Depositor(hardware, telemetry)
 
     override fun init() {
         hardware.init(hardwareMap)
@@ -41,20 +42,24 @@ class MinibotTeleOp: OpMode() {
 
 //        Depositor
         if (gamepad2.right_stick_x != 0.0f || gamepad2.right_stick_y != 0.0f) {
+            telemetry.addLine("We're in.")
             val xTarget = when {
                 gamepad2.right_stick_x > 0.0f -> Depositor.XPosition.Extend
                 gamepad2.right_stick_x < 0.0f -> Depositor.XPosition.Retract
                 else -> null
             }
-            val yTarget = (gamepad2.right_stick_y.toDouble() * 1.0).toInt()
 
+
+            val yTarget = (hardware.liftMotor.currentPosition - (gamepad2.right_stick_y.toDouble() * 1400)).toInt()
+
+            telemetry.addLine("yStick: ${gamepad2.left_stick_y}")
             depositor.move(xTarget, yTarget)
         }
 
         if (gamepad2.right_trigger != 0.0f || gamepad2.left_trigger != 0.0f) {
             depositor.drop()
         }
-        
+
 //        Ducc Spinner
         if (gamepad1.y) {
             hardware.carouselSpinner.power = 1.0
