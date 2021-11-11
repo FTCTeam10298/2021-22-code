@@ -4,18 +4,18 @@ import org.opencv.core.*
 import org.opencv.imgproc.Imgproc
 import us.brainstormz.telemetryWizard.TelemetryConsole
 
-class TeamMarkerDetector(val FOUR_RING_THRESHOLD : Int, val ONE_RING_THRESHOLD : Int, private val console: TelemetryConsole) {
+class TeamScoringElementDetector(val tseThreshold : Int, private val console: TelemetryConsole) {
+    private val fourRingThreshold : Int = 0
+
     /*
-     * An enum to define the ring position
+     * An enum to define the position
      */
-    enum class RingPosition {
-        FOUR, ONE, NONE
+    enum class TSEPosition {
+        One, Two, Three
     }
 
     lateinit var REGION1_TOPLEFT_ANCHOR_POINT: Point
 
-    //val FOUR_RING_THRESHOLD = 150
-    //val ONE_RING_THRESHOLD = 135
     lateinit var region1_pointA: Point
     lateinit var region1_pointB: Point
 
@@ -30,7 +30,7 @@ class TeamMarkerDetector(val FOUR_RING_THRESHOLD : Int, val ONE_RING_THRESHOLD :
 
     // Volatile since accessed by OpMode thread w/o synchronization
     @Volatile
-    var position = RingPosition.FOUR
+    var position = TSEPosition.One
 
     /*
      * This function takes the RGB frame, converts to YCrCb,
@@ -64,16 +64,16 @@ class TeamMarkerDetector(val FOUR_RING_THRESHOLD : Int, val ONE_RING_THRESHOLD :
             region1_pointB,  // Second point which defines the rectangle
             BLUE,  // The color the rectangle is drawn in
             2) // Thickness of the rectangle lines
-        position = RingPosition.FOUR // Record our analysis
+        position = TSEPosition.One // Record our analysis
         position = when {
-            analysis > FOUR_RING_THRESHOLD -> {
-                RingPosition.FOUR
-            }
-            analysis > ONE_RING_THRESHOLD -> {
-                RingPosition.ONE
+//            analysis > fourRingThreshold -> {
+//                TSEPosition.One
+//            }
+            analysis > tseThreshold -> {
+                TSEPosition.Two
             }
             else -> {
-                RingPosition.NONE
+                TSEPosition.Three
             }
         }
         Imgproc.rectangle(
