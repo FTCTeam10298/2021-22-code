@@ -41,12 +41,14 @@ class MinibotTeleOp: OpMode() {
         )
 
 //        Depositor
-        console.display(2,"yStic: ${gamepad2.left_stick_y}")
         val xTarget = when {
             gamepad2.right_stick_x > 0.0f -> Depositor.XPosition.Extend
             gamepad2.right_stick_x < 0.0f -> Depositor.XPosition.Retract
             else -> null
         }
+
+        depositor.teleOpHori(xTarget)
+
 
         val yTarget = (gamepad2.right_stick_y.toDouble())
 
@@ -56,6 +58,9 @@ class MinibotTeleOp: OpMode() {
             hardware.liftMotor.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.FLOAT
 
         depositor.teleOpLift(yTarget)
+
+        console.display(2, "y pos: ${hardware.liftMotor.currentPosition}")
+        console.display(3, "x pos: ${depositor.xAbsPos}ed")
 
         if (gamepad2.right_trigger != 0.0f || gamepad2.left_trigger != 0.0f) {
             depositor.drop()

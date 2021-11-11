@@ -50,7 +50,8 @@ class MinibotHardware(): MecanumHardware {
         liftMotor.mode = DcMotor.RunMode.RUN_USING_ENCODER
 
         horiServo = hwMap["horiServo"] as CRServo
-        horiServo.direction = DcMotorSimple.Direction.FORWARD
+        horiServo.direction = DcMotorSimple.Direction.REVERSE
+        horiServo.power = 0.0
 
         dropperServo = hwMap["dropper"] as Servo
         dropperServo.position = 0.0

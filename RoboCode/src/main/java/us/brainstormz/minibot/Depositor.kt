@@ -13,16 +13,41 @@ class Depositor(private val hardware: MinibotHardware, private val telemetry: Te
         Retract
     }
 
-    private val yPID = PID(kp = 0.0015, ki = 0.001)
-    private val yPower = 0.6
+    private val yPID = PID(kp = 0.002, ki = 0.001)
+//    private val yPower = 0.6
     private val yLimits: IntRange = 0..1420
     var yTarget = yLimits.first
+    private val extendLimit = 185
 
-    private val xPID = PID()
-    private val xPower = 0.1
+    private val xPID = PID(kp = 0.0015, ki = 0.001)
+    private val xPower = 1.0
+    var xAbsPos = XPosition.Retract
+    private val xExtendTime: Long = 755
+    private val xRetractTime: Long = 755
 
-    private val dropperOpen = 0.5
-    private val dropperClosed = 0.0
+    private val dropperOpen = 0.0
+    private val dropperClosed = 0.8
+
+    fun teleOpHori(newPos: XPosition?) {
+        if (hardware.liftMotor.currentPosition > extendLimit) {
+            when {
+                (newPos == XPosition.Extend) && (xAbsPos == XPosition.Retract) -> {
+                    hardware.horiServo.power = xPower
+                    sleep(xExtendTime)
+                    hardware.horiServo.power = 0.0
+                    xAbsPos = XPosition.Extend
+                }
+                (newPos == XPosition.Retract) && (xAbsPos == XPosition.Extend) -> {
+                    hardware.horiServo.power = -xPower
+                    sleep(xRetractTime)
+                    hardware.horiServo.power = 0.0
+                    xAbsPos = XPosition.Retract
+                }
+                else -> hardware.horiServo.power = 0.0
+            }
+        }
+
+    }
 
     fun teleOpLift(ySpeed: Double) {
 
@@ -30,13 +55,13 @@ class Depositor(private val hardware: MinibotHardware, private val telemetry: Te
         hardware.liftMotor.power = when {
             hardware.liftMotor.currentPosition in yLimits -> {
                 if (ySpeed != 0.0) {
-                    val fakeTarget = when (direction) {
+                    val target = when (direction) {
                         1 -> yLimits.last
                         -1 -> yLimits.first
                         else -> hardware.liftMotor.currentPosition
                     }
                     val pidPower = yPID.calcPID(
-                        fakeTarget.toDouble(),
+                        target.toDouble(),
                         hardware.liftMotor.currentPosition.toDouble()
                     )
                     pidPower
@@ -63,7 +88,7 @@ class Depositor(private val hardware: MinibotHardware, private val telemetry: Te
             yTarget = adjustedY
 
             val direction = posOrNeg(hardware.liftMotor.currentPosition - yTarget)
-            hardware.liftMotor.power = yPower * direction
+//            hardware.liftMotor.power = yPower * direction
 
             telemetry.addLine("direction: $direction")
             telemetry.addLine("target Pos: $yTarget")
@@ -92,7 +117,7 @@ class Depositor(private val hardware: MinibotHardware, private val telemetry: Te
                 hardware.liftMotor.power = 0.0
             else {
                 val direction = posOrNeg(hardware.liftMotor.currentPosition - yTarget)
-                hardware.liftMotor.power = yPower * direction
+//                hardware.liftMotor.power = yPower * direction
             }
 
             if (xAtPosition)
@@ -107,8 +132,6 @@ class Depositor(private val hardware: MinibotHardware, private val telemetry: Te
 
     fun drop() {
         hardware.dropperServo.position = dropperOpen
-        sleep(400)
-        hardware.dropperServo.position = dropperClosed
     }
 
     fun deposit(x: XPosition, y: Int) {
