@@ -1,4 +1,4 @@
-package us.brainstormz.choivico.openCvAbstraction
+package us.brainstormz.openCvAbstraction
 
 import android.os.SystemClock.sleep
 import com.qualcomm.robotcore.eventloop.opmode.OpMode

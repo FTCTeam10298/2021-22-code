@@ -2,10 +2,7 @@ package us.brainstormz.examples
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
-import us.brainstormz.choivico.robotCode.hardwareClasses.EncoderDriveMovement
-import us.brainstormz.choivico.robotCode.hardwareClasses.MecanumDriveTrain
-import us.brainstormz.choivico.telemetryWizard.TelemetryConsole
-import us.brainstormz.minibot.MinibotHardware
+import us.brainstormz.hardwareClasses.MecanumDriveTrain
 import kotlin.math.abs
 
 @TeleOp

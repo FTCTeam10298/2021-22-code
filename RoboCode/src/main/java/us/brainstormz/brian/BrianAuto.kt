@@ -4,9 +4,9 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.hardware.DcMotor
 import us.brainstormz.brian.Brian_Hardware.PIVOTARM_CONSTANT
-import us.brainstormz.choivico.robotCode.hardwareClasses.EncoderDriveMovement
-import us.brainstormz.choivico.telemetryWizard.TelemetryConsole
-import us.brainstormz.choivico.telemetryWizard.TelemetryWizard
+import us.brainstormz.hardwareClasses.EncoderDriveMovement
+import us.brainstormz.telemetryWizard.TelemetryConsole
+import us.brainstormz.telemetryWizard.TelemetryWizard
 
 @Autonomous(name = "Meet 0 Brian Auto", group = "Brian")
 class BrianAuto: LinearOpMode() {

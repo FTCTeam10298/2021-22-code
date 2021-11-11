@@ -1,7 +1,7 @@
 package us.brainstormz.minibot
 
 import com.qualcomm.robotcore.hardware.*
-import us.brainstormz.choivico.robotCode.hardwareClasses.MecanumHardware
+import us.brainstormz.hardwareClasses.MecanumHardware
 
 class MinibotHardware(): MecanumHardware {
     override lateinit var lFDrive: DcMotor

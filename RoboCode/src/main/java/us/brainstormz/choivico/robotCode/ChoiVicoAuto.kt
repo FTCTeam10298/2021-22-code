@@ -7,13 +7,13 @@ import com.qualcomm.robotcore.hardware.HardwareMap
 import us.brainstormz.choivico.creamsicleGoalDetection.CreamsicleGoalDetector
 import us.brainstormz.choivico.creamsicleGoalDetection.UltimateGoalAimer
 import us.brainstormz.localization.PositionAndRotation
-import us.brainstormz.choivico.openCvAbstraction.OpenCvAbstraction
+import us.brainstormz.openCvAbstraction.OpenCvAbstraction
 import org.opencv.core.Mat
 import org.opencv.core.Point
 import us.brainstormz.choivico.ringDetector.RingDetector
-import us.brainstormz.choivico.robotCode.hardwareClasses.OdometryDriveMovement
-import us.brainstormz.choivico.telemetryWizard.TelemetryConsole
-import us.brainstormz.choivico.telemetryWizard.TelemetryWizard
+import us.brainstormz.hardwareClasses.OdometryDriveMovement
+import us.brainstormz.telemetryWizard.TelemetryConsole
+import us.brainstormz.telemetryWizard.TelemetryWizard
 
 @Autonomous(name="Auto ChoiVico", group="ChoiVico")
 class ChoiVicoAuto: LinearOpMode() {

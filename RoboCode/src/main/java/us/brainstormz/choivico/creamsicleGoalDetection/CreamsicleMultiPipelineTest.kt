@@ -3,12 +3,12 @@
 //import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 //import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 //import us.us.brainstormz.pathfinder.Coordinate
-//import us.us.brainstormz.choivico.openCvAbstraction.OpenCvAbstraction
+//import us.us.brainstormz.openCvAbstraction.OpenCvAbstraction
 //import us.us.brainstormz.choivico.ringDetector.RingDetector
 //import us.us.brainstormz.choivico.robotCode.ChoiVicoHardware
-//import us.us.brainstormz.choivico.robotCode.hardwareClasses.OdometryDriveMovement
+//import us.us.brainstormz.hardwareClasses.OdometryDriveMovement
 //import us.us.brainstormz.choivico.robotCode.OdometryTestHardware
-//import us.us.brainstormz.choivico.telemetryWizard.TelemetryConsole
+//import us.us.brainstormz.telemetryWizard.TelemetryConsole
 //
 //@TeleOp(name="Multi Pipeline Test", group="Tests")
 //class CreamsicleMultiPipelineTest: LinearOpMode() {

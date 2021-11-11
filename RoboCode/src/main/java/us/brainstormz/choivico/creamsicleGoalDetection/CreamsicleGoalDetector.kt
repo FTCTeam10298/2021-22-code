@@ -16,7 +16,7 @@ package us.brainstormz.choivico.creamsicleGoalDetection
 
 import org.opencv.core.*
 import org.opencv.imgproc.Imgproc
-import us.brainstormz.choivico.telemetryWizard.TelemetryConsole
+import us.brainstormz.telemetryWizard.TelemetryConsole
 
 class CreamsicleGoalDetector(private val console: TelemetryConsole){
 

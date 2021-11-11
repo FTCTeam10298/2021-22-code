@@ -1,10 +1,9 @@
 package us.brainstormz.minibot
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import com.qualcomm.robotcore.hardware.DcMotor
 import org.firstinspires.ftc.robotcore.external.Telemetry
-import us.brainstormz.choivico.pid.PID
+import us.brainstormz.pid.PID
 import java.lang.Thread.sleep
 
 class Depositor(private val hardware: MinibotHardware, private val telemetry: Telemetry) {

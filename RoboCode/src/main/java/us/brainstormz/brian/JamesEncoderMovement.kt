@@ -1,12 +1,9 @@
 package us.brainstormz.brian
 
-import com.qualcomm.robotcore.hardware.DcMotor
-import com.qualcomm.robotcore.util.Range
 import org.firstinspires.ftc.robotcore.external.Telemetry
-import us.brainstormz.choivico.pid.PID
-import us.brainstormz.choivico.robotCode.hardwareClasses.MecanumDriveTrain
-import us.brainstormz.choivico.robotCode.hardwareClasses.MecanumHardware
-import us.brainstormz.choivico.telemetryWizard.TelemetryConsole
+import us.brainstormz.pid.PID
+import us.brainstormz.hardwareClasses.MecanumDriveTrain
+import us.brainstormz.hardwareClasses.MecanumHardware
 import kotlin.math.PI
 import kotlin.math.abs
 

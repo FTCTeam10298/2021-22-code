@@ -1,6 +1,6 @@
 package us.brainstormz.choivico.ringDetector
 
-import us.brainstormz.choivico.telemetryWizard.TelemetryConsole
+import us.brainstormz.telemetryWizard.TelemetryConsole
 import org.opencv.core.*
 import org.opencv.imgproc.Imgproc
 

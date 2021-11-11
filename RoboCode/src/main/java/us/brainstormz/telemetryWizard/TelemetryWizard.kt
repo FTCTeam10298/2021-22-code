@@ -1,4 +1,4 @@
-package us.brainstormz.choivico.telemetryWizard
+package us.brainstormz.telemetryWizard
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.hardware.Gamepad

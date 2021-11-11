@@ -3,7 +3,7 @@ package us.brainstormz.brian
 import com.qualcomm.robotcore.hardware.*
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorSimple
-import us.brainstormz.choivico.robotCode.hardwareClasses.MecanumHardware
+import us.brainstormz.hardwareClasses.MecanumHardware
 import java.lang.Thread.sleep
 
 /**

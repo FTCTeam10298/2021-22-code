@@ -2,11 +2,11 @@
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.hardware.DcMotor
-import us.brainstormz.choivico.openCvAbstraction.OpenCvAbstraction
+import us.brainstormz.openCvAbstraction.OpenCvAbstraction
 import us.brainstormz.choivico.ringDetector.RingDetector
-import us.brainstormz.choivico.robotCode.hardwareClasses.EncoderDriveMovement
-import us.brainstormz.choivico.telemetryWizard.TelemetryConsole
-import us.brainstormz.choivico.telemetryWizard.TelemetryWizard
+import us.brainstormz.hardwareClasses.EncoderDriveMovement
+import us.brainstormz.telemetryWizard.TelemetryConsole
+import us.brainstormz.telemetryWizard.TelemetryWizard
 
 //@Autonomous(name="Aim Bot Auto", group="Aim Bot")
 class AimBotAuto: LinearOpMode() {

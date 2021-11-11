@@ -3,7 +3,7 @@ package us.brainstormz.choivico.robotCode
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorSimple
 import com.qualcomm.robotcore.hardware.HardwareMap
-import us.brainstormz.choivico.robotCode.hardwareClasses.MecOdometryHardware
+import us.brainstormz.hardwareClasses.MecOdometryHardware
 
 class OdometryTestHardware: MecOdometryHardware {
     override lateinit var lOdom: DcMotor
