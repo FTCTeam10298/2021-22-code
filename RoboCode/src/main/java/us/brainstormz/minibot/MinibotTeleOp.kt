@@ -29,9 +29,6 @@ class MinibotTeleOp: OpMode() {
         val y = -yInput
         val x = xInput
         val r = -(rInput *.5) * abs(rInput *.5)
-//        val y = yInput.pow(5)
-//        val x = xInput.pow(5)
-//        val r = rInput.pow(5) * 0.5 + 0.5 * rInput
 
         robot.driveSetPower(
                 (y + x - r),
@@ -79,11 +76,18 @@ class MinibotTeleOp: OpMode() {
         console.display(2, "y pos: ${hardware.liftMotor.currentPosition}")
         console.display(3, "x pos: ${depositor.xAbsPos}ed")
         console.display(4, "dropper: ${hardware.dropperServo.position}")
+
 //        Ducc Spinner
-        if (gamepad1.y) {
-            hardware.carouselSpinner.power = 1.0
-        }else{
-            hardware.carouselSpinner.power = 0.0
+        when {
+            gamepad2.dpad_left -> {
+                hardware.carouselSpinner.power = 1.0
+            }
+            gamepad2.dpad_right -> {
+                hardware.carouselSpinner.power = -1.0
+            }
+            else -> {
+                hardware.carouselSpinner.power = 0.0
+            }
         }
     }
 }
