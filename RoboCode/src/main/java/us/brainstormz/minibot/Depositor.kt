@@ -16,8 +16,9 @@ class Depositor(private val hardware: MinibotHardware, private val telemetry: Te
     private val yPID = PID(kp = 0.002, ki = 0.001)
 //    private val yPower = 0.6
     private val yLimits: IntRange = 0..1420
+    private val extendableHeight = 185
+    val lowGoalHeight = 190
     var yTarget = yLimits.first
-    private val extendLimit = 185
 
     private val xPID = PID(kp = 0.0015, ki = 0.001)
     private val xPower = 1.0
@@ -28,8 +29,8 @@ class Depositor(private val hardware: MinibotHardware, private val telemetry: Te
     private val dropperOpen = 0.0
     private val dropperClosed = 0.8
 
-    fun teleOpHori(newPos: XPosition?) {
-        if (hardware.liftMotor.currentPosition > extendLimit) {
+    fun xToPosition(newPos: XPosition?) {
+        if (hardware.liftMotor.currentPosition > extendableHeight) {
             when {
                 (newPos == XPosition.Extend) && (xAbsPos == XPosition.Retract) -> {
                     hardware.horiServo.power = xPower
@@ -49,12 +50,12 @@ class Depositor(private val hardware: MinibotHardware, private val telemetry: Te
 
     }
 
-    fun teleOpLift(ySpeed: Double) {
+    fun yInDirection(yDirection: Int) {
 
-        val direction = posOrNeg(-ySpeed.toInt())
+        val direction = posOrNeg(-yDirection)
         hardware.liftMotor.power = when {
             hardware.liftMotor.currentPosition in yLimits -> {
-                if (ySpeed != 0.0) {
+                if (yDirection != 0) {
                     val target = when (direction) {
                         1 -> yLimits.last
                         -1 -> yLimits.first
@@ -79,53 +80,63 @@ class Depositor(private val hardware: MinibotHardware, private val telemetry: Te
 
     }
 
-    fun moveToPosition(x: XPosition?, y: Int) {
-//        y Axis
-        if (y != 0) {
-//            hardware.liftMotor.power = yPID.calcPID(y.toDouble(), hardware.liftMotor.currentPosition.toDouble())
+    fun yToPosition(targetPos: Int) {
 
-            val adjustedY = y.coerceIn(yLimits)
-            yTarget = adjustedY
+        val direction = posOrNeg(targetPos)
 
-            val direction = posOrNeg(hardware.liftMotor.currentPosition - yTarget)
-//            hardware.liftMotor.power = yPower * direction
-
-            telemetry.addLine("direction: $direction")
-            telemetry.addLine("target Pos: $yTarget")
-            telemetry.addLine("current Pos: ${hardware.liftMotor.currentPosition}")
-        }
-//        x Axis
-        hardware.horiServo.power = xPower
-
-        var atPosition = false
-        while (atPosition) {
-            telemetry.addLine("target Pos: $yTarget")
-            telemetry.addLine("current Pos: ${hardware.liftMotor.currentPosition}")
-
-            val xAtPosition = when (x) {
-                XPosition.Extend -> hardware.horiExtendLimit.isPressed
-                XPosition.Retract -> hardware.horiRetractLimit.isPressed
-                else -> true
-            }
-
-            val yAtPosition = hardware.liftMotor.currentPosition == yTarget
+//        yInDirection(direction)
 
 
-            atPosition = xAtPosition && yAtPosition
+//        while () {
+//            yInDirection(direction)
+//        }
 
-            if (yAtPosition)
-                hardware.liftMotor.power = 0.0
-            else {
-                val direction = posOrNeg(hardware.liftMotor.currentPosition - yTarget)
-//                hardware.liftMotor.power = yPower * direction
-            }
+        hardware.liftMotor.power = 0.0
 
-            if (xAtPosition)
-                hardware.horiServo.power = 0.0
-
-//            hardware.liftMotor.power = yPID.calcPID(y.toDouble(), hardware.liftMotor.currentPosition.toDouble())
-//            hardware.horiServo.power = xPID.calcPID()
-        }
+////        y Axis
+//        if (y != 0) {
+////            hardware.liftMotor.power = yPID.calcPID(y.toDouble(), hardware.liftMotor.currentPosition.toDouble())
+//
+//            val adjustedY = y.coerceIn(yLimits)
+//            yTarget = adjustedY
+//
+//            val direction = posOrNeg(hardware.liftMotor.currentPosition - yTarget)
+////            hardware.liftMotor.power = yPower * direction
+//
+//            telemetry.addLine("direction: $direction")
+//            telemetry.addLine("target Pos: $yTarget")
+//            telemetry.addLine("current Pos: ${hardware.liftMotor.currentPosition}")
+//        }
+//
+//        var atPosition = false
+//        while (atPosition) {
+//            telemetry.addLine("target Pos: $yTarget")
+//            telemetry.addLine("current Pos: ${hardware.liftMotor.currentPosition}")
+//
+//            val xAtPosition = when (x) {
+//                XPosition.Extend -> hardware.horiExtendLimit.isPressed
+//                XPosition.Retract -> hardware.horiRetractLimit.isPressed
+//                else -> true
+//            }
+//
+//            val yAtPosition = hardware.liftMotor.currentPosition == yTarget
+//
+//
+//            atPosition = xAtPosition && yAtPosition
+//
+//            if (yAtPosition)
+//                hardware.liftMotor.power = 0.0
+//            else {
+//                val direction = posOrNeg(hardware.liftMotor.currentPosition - yTarget)
+////                hardware.liftMotor.power = yPower * direction
+//            }
+//
+//            if (xAtPosition)
+//                hardware.horiServo.power = 0.0
+//
+////            hardware.liftMotor.power = yPID.calcPID(y.toDouble(), hardware.liftMotor.currentPosition.toDouble())
+////            hardware.horiServo.power = xPID.calcPID()
+//        }
         hardware.liftMotor.power = 0.0
         hardware.horiServo.power = 0.0
     }
@@ -134,14 +145,14 @@ class Depositor(private val hardware: MinibotHardware, private val telemetry: Te
         hardware.dropperServo.position = dropperOpen
     }
 
-    fun deposit(x: XPosition, y: Int) {
-        moveToPosition(x, y)
-        drop()
+    fun close() {
+        hardware.dropperServo.position = dropperClosed
     }
 
     fun home() {
         hardware.dropperServo.position = dropperClosed
-        moveToPosition(XPosition.Retract, yLimits.first)
+        xToPosition(XPosition.Retract)
+        yToPosition(yLimits.first)
     }
 
     private fun liftRunToPosition() {
