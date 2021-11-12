@@ -1,5 +1,6 @@
 package us.brainstormz.minibot
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import us.brainstormz.openCvAbstraction.OpenCvAbstraction
@@ -8,7 +9,7 @@ import us.brainstormz.telemetryWizard.TelemetryConsole
 import us.brainstormz.telemetryWizard.TelemetryWizard
 import us.brainstormz.minibot.TeamScoringElementDetector.TSEPosition
 
-@TeleOp(name="Minibot Auto", group="Minibot")
+@Autonomous(name="Minibot Auto", group="Minibot")
 class MinibotAuto: LinearOpMode() {
 
     val console = TelemetryConsole(telemetry)
@@ -47,33 +48,33 @@ class MinibotAuto: LinearOpMode() {
         tsePosition = tseDetector.position
         opencv.stop()
 
-        when {
-            wizard.wasItemChosen("Alliance", "Blue") -> {
-//                Drop starter block
-                when (tsePosition) {
-                    TSEPosition.One -> {}
-                    TSEPosition.Two -> {}
-                    TSEPosition.Three -> {}
-                }
-//                Spin ducc
-//                collect ducc
-//                deliver ducc
-//                park
-            }
-            wizard.wasItemChosen("Alliance", "Red") -> {
-//                Drop starter block
-                when (tsePosition) {
-                    TSEPosition.One -> {}
-                    TSEPosition.Two -> {}
-                    TSEPosition.Three -> {}
-                }
-//                Spin ducc
-//                collect ducc
-//                deliver ducc
-//                park
-
-            }
-        }
+//        when {
+//            wizard.wasItemChosen("Alliance", "Blue") -> {
+////                Drop starter block
+//                when (tsePosition) {
+//                    TSEPosition.One -> {}
+//                    TSEPosition.Two -> {}
+//                    TSEPosition.Three -> {}
+//                }
+////                Spin ducc
+////                collect ducc
+////                deliver ducc
+////                park
+//            }
+//            wizard.wasItemChosen("Alliance", "Red") -> {
+////                Drop starter block
+//                when (tsePosition) {
+//                    TSEPosition.One -> {}
+//                    TSEPosition.Two -> {}
+//                    TSEPosition.Three -> {}
+//                }
+////                Spin ducc
+////                collect ducc
+////                deliver ducc
+////                park
+//
+//            }
+//        }
 //        movement.driveRobotPosition(power = 1.0, inches = 20.0, smartAccel = true)
 //        movement.driveRobotStrafe(power = 1.0, inches = 20.0, smartAccel = true)
 //        movement.driveRobotTurn(power = 1.0, degree = 20.0, smartAccel = true)
