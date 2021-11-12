@@ -4,81 +4,52 @@ import org.opencv.core.*
 import org.opencv.imgproc.Imgproc
 import us.brainstormz.telemetryWizard.TelemetryConsole
 
-class TeamScoringElementDetector(val tseThreshold : Int, private val console: TelemetryConsole) {
-    companion object {
-        val blue = Scalar(0.0, 0.0, 255.0)
-        val red = Scalar(225.0, 0.0, 0.0)
-        val black = Scalar(255.0, 255.0, 255.0)
-        val TRANSPARENT = Scalar(0.0, 255.0, 0.0)
-    }
-
-    data class Region(val rect: Rect, var cb: Mat?, var analysis: Int)
+class TeamScoringElementDetector(private val console: TelemetryConsole) {
     enum class TSEPosition {
         One, Two, Three
     }
 
-    val region1PointA = Point(290.0, 197.0)
-    val region1PointB = Point(325.0, 222.0)
-    private val region1 = Region(Rect(region1PointA, region1PointB), null, 0)
+    private val blue = Scalar(0.0, 0.0, 255.0)
+    private val red = Scalar(225.0, 0.0, 0.0)
+    private val black = Scalar(255.0, 255.0, 255.0)
+    private val transparent = Scalar(0.0, 255.0, 0.0)
 
-    val region2PointA = Point(290.0, 197.0)
-    val region2PointB = Point(325.0, 222.0)
-    private val region2 = Region(Rect(region2PointA, region2PointB), null, 0)
+    
+    private val tseThreshold = 135
 
-    val region3PointA = Point(290.0, 197.0)
-    val region3PointB = Point(325.0, 222.0)
-    private val region3 = Region(Rect(region3PointA, region3PointB), null, 0)
+    private val regions = listOf(
+        TSEPosition.One to Rect(Point(290.0, 197.0), Point(325.0, 222.0)),
+        TSEPosition.Two to Rect(Point(290.0, 197.0), Point(325.0, 222.0)),
+        TSEPosition.Three to Rect(Point(290.0, 197.0), Point(325.0, 222.0))
+    )
 
-    var yCrCb = Mat()
-    var cb = Mat()
+    private val colors = listOf(
+        TSEPosition.One to blue,
+        TSEPosition.Two to black,
+        TSEPosition.Three to red
+    )
 
     @Volatile // Volatile since accessed by OpMode thread w/o synchronization
     var position = TSEPosition.One
 
-    fun init(firstFrame: Mat) {
-//        initializes cb and yCrCb
-        inputToCb(firstFrame)
+    fun processFrame(frame: Mat): Mat {
+        val cbFrame = inputToCb(frame)
 
-//        creates the rect
-        region1.cb = cb.submat(region1.rect)
-        region2.cb = cb.submat(region2.rect)
-        region3.cb = cb.submat(region3.rect)
-    }
+        val result = regions.firstOrNull {
+            colorInRect(cbFrame.submat(it.second)) > tseThreshold
+        }?.first
 
-    fun processFrame(input: Mat): Mat {
-//        convert input to cb color format
-        inputToCb(input)
+        position = result ?: TSEPosition.Three
 
-//        makes a rect on the screen
-        Imgproc.rectangle(input, region1.rect, blue, 2)
-        Imgproc.rectangle(input, region2.rect, black, 2)
-        Imgproc.rectangle(input, region2.rect, red, 2)
-
-//        finds the color in the rect
-        region1.analysis = colorInRect(region1.cb!!)
-        region2.analysis = colorInRect(region2.cb!!)
-        region3.analysis = colorInRect(region3.cb!!)
-
-//        interpreting analysis
-        position = when {
-            region1.analysis > tseThreshold -> {
-                TSEPosition.One
-            }
-            region2.analysis > tseThreshold -> {
-                TSEPosition.Two
-            }
-            region3.analysis > tseThreshold -> {
-                TSEPosition.Three
-            }
-            else -> {
-                TSEPosition.Three
-            }
+        colors.forEach {
+            val rect = regions.toMap()[it.first]
+            Imgproc.rectangle(frame, rect, it.second, 2)
         }
+
         console.display(8, "Position: $position")
         console.display(9, "Threshold: $tseThreshold")
 
-//        gives image to the phone
-        return input
+        return frame
     }
 
     private fun colorInRect(rect: Mat): Int {
@@ -89,8 +60,11 @@ class TeamScoringElementDetector(val tseThreshold : Int, private val console: Te
      * This function takes the RGB frame, converts to YCrCb,
      * and extracts the Cb channel to the cb variable
      */
-    private fun inputToCb(input: Mat?) {
+    private fun inputToCb(input: Mat?): Mat {
+        var yCrCb = Mat()
         Imgproc.cvtColor(input, yCrCb, Imgproc.COLOR_RGB2YCrCb)
+        var cb: Mat? = null
         Core.extractChannel(yCrCb, cb, 1)
+        return cb!!
     }
 }
