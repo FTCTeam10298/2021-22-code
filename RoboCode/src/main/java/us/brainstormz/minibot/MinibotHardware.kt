@@ -20,10 +20,10 @@ class MinibotHardware(): MecanumHardware {
         hwMap = ahwMap
 
         // DRIVE TRAIN
-        lFDrive = hwMap["lFDrive"] as DcMotor
-        rFDrive = hwMap["rFDrive"] as DcMotor
-        lBDrive = hwMap["lBDrive"] as DcMotor
-        rBDrive = hwMap["rBDrive"] as DcMotor
+        lFDrive = hwMap["lFDrive"] as DcMotorEx
+        rFDrive = hwMap["rFDrive"] as DcMotorEx
+        lBDrive = hwMap["lBDrive"] as DcMotorEx
+        rBDrive = hwMap["rBDrive"] as DcMotorEx
 
         rFDrive.direction = DcMotorSimple.Direction.FORWARD
         lFDrive.direction = DcMotorSimple.Direction.REVERSE
@@ -57,7 +57,7 @@ class MinibotHardware(): MecanumHardware {
         dropperServo.position = 0.0
 
 //        Ducc
-        carouselSpinner = hwMap["duckWheelSpinner"] as CRServo
+        carouselSpinner = hwMap["duccSpinner"] as CRServo
         carouselSpinner.direction = DcMotorSimple.Direction.FORWARD
     }
 }
