@@ -54,19 +54,19 @@ class MinibotAuto: LinearOpMode() {
                     TSEPosition.One -> {
                         movement.driveRobotPosition(power = 1.0, inches = -8.0, smartAccel = true)
                         movement.driveRobotStrafe(power = 1.0, inches = 15.0, smartAccel = true)
-                        movement.driveRobotTurn(power = 0.0, degree = 90.0, smartAccel = true)
+                        movement.driveRobotTurn(power = 0.0, degree = -90.0, smartAccel = true)
                         movement.driveRobotStrafe(power = 1.0, inches = -12.0, smartAccel = true)
                         depositor.yToPosition(depositor.lowGoalHeight)
                         depositor.xToPosition(Depositor.XPosition.Extend)
                         depositor.drop()
                         depositor.home()
                         movement.driveRobotStrafe(power = 1.0, inches = 12.0, smartAccel = true)
-                        movement.driveRobotTurn(power = 0.0, degree = -90.0, smartAccel = true)
+                        movement.driveRobotTurn(power = 0.0, degree = 90.0, smartAccel = true)
                         movement.driveRobotStrafe(power = 1.0, inches = -47.0, smartAccel = true)
                         hardware.carouselSpinner.power = 1.0
                         hardware.collector.power = 1.0
                         movement.driveRobotStrafe(power = 1.0, inches = 47.0, smartAccel = true)
-                        movement.driveRobotTurn(power = 0.0, degree = 90.0, smartAccel = true)
+                        movement.driveRobotTurn(power = 0.0, degree = -90.0, smartAccel = true)
                         movement.driveRobotStrafe(power = 1.0, inches = -12.0, smartAccel = true)
                         depositor.yToPosition(depositor.highGoalHeight)
                         depositor.xToPosition(Depositor.XPosition.Extend)
@@ -75,19 +75,19 @@ class MinibotAuto: LinearOpMode() {
                     }
                     TSEPosition.Two -> {movement.driveRobotPosition(power = 1.0, inches = -8.0, smartAccel = true)
                         movement.driveRobotStrafe(power = 1.0, inches = 15.0, smartAccel = true)
-                        movement.driveRobotTurn(power = 0.0, degree = 90.0, smartAccel = true)
+                        movement.driveRobotTurn(power = 0.0, degree = -90.0, smartAccel = true)
                         movement.driveRobotStrafe(power = 1.0, inches = -12.0, smartAccel = true)
                         depositor.yToPosition(depositor.midGoalHeight)
                         depositor.xToPosition(Depositor.XPosition.Extend)
                         depositor.drop()
                         depositor.home()
                         movement.driveRobotStrafe(power = 1.0, inches = 12.0, smartAccel = true)
-                        movement.driveRobotTurn(power = 0.0, degree = -90.0, smartAccel = true)
+                        movement.driveRobotTurn(power = 0.0, degree = 90.0, smartAccel = true)
                         movement.driveRobotStrafe(power = 1.0, inches = -47.0, smartAccel = true)
                         hardware.carouselSpinner.power = 1.0
                         hardware.collector.power = 1.0
                         movement.driveRobotStrafe(power = 1.0, inches = 47.0, smartAccel = true)
-                        movement.driveRobotTurn(power = 0.0, degree = 90.0, smartAccel = true)
+                        movement.driveRobotTurn(power = 0.0, degree = -90.0, smartAccel = true)
                         movement.driveRobotStrafe(power = 1.0, inches = -12.0, smartAccel = true)
                         depositor.yToPosition(depositor.highGoalHeight)
                         depositor.xToPosition(Depositor.XPosition.Extend)
@@ -96,19 +96,19 @@ class MinibotAuto: LinearOpMode() {
                     }
                     TSEPosition.Three -> {movement.driveRobotPosition(power = 1.0, inches = -8.0, smartAccel = true)
                         movement.driveRobotStrafe(power = 1.0, inches = 15.0, smartAccel = true)
-                        movement.driveRobotTurn(power = 0.0, degree = 90.0, smartAccel = true)
+                        movement.driveRobotTurn(power = 0.0, degree = -90.0, smartAccel = true)
                         movement.driveRobotStrafe(power = 1.0, inches = -12.0, smartAccel = true)
                         depositor.yToPosition(depositor.highGoalHeight)
                         depositor.xToPosition(Depositor.XPosition.Extend)
                         depositor.drop()
                         depositor.home()
                         movement.driveRobotStrafe(power = 1.0, inches = 12.0, smartAccel = true)
-                        movement.driveRobotTurn(power = 0.0, degree = -90.0, smartAccel = true)
+                        movement.driveRobotTurn(power = 0.0, degree = 90.0, smartAccel = true)
                         movement.driveRobotStrafe(power = 1.0, inches = -47.0, smartAccel = true)
                         hardware.carouselSpinner.power = 1.0
                         hardware.collector.power = 1.0
                         movement.driveRobotStrafe(power = 1.0, inches = 47.0, smartAccel = true)
-                        movement.driveRobotTurn(power = 0.0, degree = 90.0, smartAccel = true)
+                        movement.driveRobotTurn(power = 0.0, degree = -90.0, smartAccel = true)
                         movement.driveRobotStrafe(power = 1.0, inches = -12.0, smartAccel = true)
                         depositor.yToPosition(depositor.highGoalHeight)
                         depositor.xToPosition(Depositor.XPosition.Extend)
@@ -124,7 +124,11 @@ class MinibotAuto: LinearOpMode() {
             wizard.wasItemChosen("Alliance", "Red") -> {
 //                Drop starter block
                when (tsePosition) {
-                    TSEPosition.One -> {}
+                    TSEPosition.One -> {
+
+
+
+                    }
                     TSEPosition.Two -> {}
                     TSEPosition.Three -> {}
                 }
