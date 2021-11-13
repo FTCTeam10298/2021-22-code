@@ -47,35 +47,49 @@ class MinibotAuto: LinearOpMode() {
         tsePosition = tseDetector.position
         opencv.stop()
 
-//        when {
-//            wizard.wasItemChosen("Alliance", "Blue") -> {
-////                Drop starter block
-//                when (tsePosition) {
-//                    TSEPosition.One -> {}
-//                    TSEPosition.Two -> {}
-//                    TSEPosition.Three -> {}
-//                }
-////                Spin ducc
-////                collect ducc
-////                deliver ducc
-////                park
-//            }
-//            wizard.wasItemChosen("Alliance", "Red") -> {
-////                Drop starter block
-//                when (tsePosition) {
-//                    TSEPosition.One -> {}
-//                    TSEPosition.Two -> {}
-//                    TSEPosition.Three -> {}
-//                }
-////                Spin ducc
-////                collect ducc
-////                deliver ducc
-////                park
-//
-//            }
-//        }
-//        movement.driveRobotPosition(power = 1.0, inches = 20.0, smartAccel = true)
-//        movement.driveRobotStrafe(power = 1.0, inches = 20.0, smartAccel = true)
-//        movement.driveRobotTurn(power = 1.0, degree = 20.0, smartAccel = true)
+        when {
+            wizard.wasItemChosen("Alliance", "Blue") -> {
+//                Drop starter block
+               when (tsePosition) {
+                    TSEPosition.One -> {
+                        movement.driveRobotPosition(power = 1.0, inches = -8.0, smartAccel = true)
+                        movement.driveRobotStrafe(power = 1.0, inches = -15.0, smartAccel = true)
+                        movement.driveRobotTurn(power = 0.0, degree = 90.0, smartAccel = true)
+                        movement.driveRobotStrafe(power = 1.0, inches = 12.0, smartAccel = true)
+                        depositor.yToPosition(depositor.lowGoalHeight)
+                        depositor.xToPosition(Depositor.XPosition.Extend)
+                        depositor.drop()
+                        depositor.home()
+                        movement.driveRobotStrafe(power = 1.0, inches = -12.0, smartAccel = true)
+                        movement.driveRobotTurn(power = 0.0, degree = -90.0, smartAccel = true)
+                        movement.driveRobotStrafe(power = 1.0, inches = 47.0, smartAccel = true)
+                        hardware.carouselSpinner.power = 1.0
+
+
+                    }
+                    TSEPosition.Two -> {
+                    }
+                    TSEPosition.Three -> {
+                    }
+                }
+//                Spin ducc
+//                collect ducc
+//                deliver ducc
+//                park
+            }
+            wizard.wasItemChosen("Alliance", "Red") -> {
+//                Drop starter block
+               when (tsePosition) {
+                    TSEPosition.One -> {}
+                    TSEPosition.Two -> {}
+                    TSEPosition.Three -> {}
+                }
+//                Spin ducc
+//                collect ducc
+//                deliver ducc
+//                park
+
+            }
+        }
     }
 }
