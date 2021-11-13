@@ -60,7 +60,7 @@ class MinibotHardware(): MecanumHardware {
 //        Collector
         collector = hwMap["collector"] as DcMotor
 
-        collector.direction = DcMotorSimple.Direction.REVERSE
+        collector.direction = DcMotorSimple.Direction.FORWARD
         collector.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.FLOAT
 
 //        Ducc
