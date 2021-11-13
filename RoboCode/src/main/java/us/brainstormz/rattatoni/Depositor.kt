@@ -17,7 +17,7 @@ class Depositor(private val hardware: MinibotHardware, private val telemetry: Te
     private val extendableHeight = 190
     val highGoalHeight = 1430
     val midGoalHeight = 820
-    val lowGoalHeight = 200
+    val lowGoalHeight = 300
 
     private val xPID = PID(kp = 0.0015, ki = 0.001)
     private val xPower = 1.0
@@ -26,7 +26,7 @@ class Depositor(private val hardware: MinibotHardware, private val telemetry: Te
     private val xRetractTime: Long = 755
 
     private val dropperOpen = 0.0
-    private val dropperClosed = 0.9
+    private val dropperClosed = 0.5
 
     fun xToPosition(newPos: XPosition?) {
         if (hardware.liftMotor.currentPosition > extendableHeight) {
