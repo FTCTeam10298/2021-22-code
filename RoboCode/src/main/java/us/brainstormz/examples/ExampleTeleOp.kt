@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import us.brainstormz.hardwareClasses.MecanumDriveTrain
 import kotlin.math.abs
 
-@TeleOp
+//@TeleOp
 class ExampleTeleOp/** Change Depending on robot */: OpMode() {
 
     val hardware = ExampleHardware() /** Change Depending on robot */

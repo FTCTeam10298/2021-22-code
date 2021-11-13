@@ -11,16 +11,16 @@ class TeamScoringElementDetector(private val console: TelemetryConsole) {
 
     private val blue = Scalar(0.0, 0.0, 255.0)
     private val red = Scalar(225.0, 0.0, 0.0)
-    private val black = Scalar(255.0, 255.0, 255.0)
+    private val black = Scalar(255.0, 0.0, 255.0)
     private val transparent = Scalar(0.0, 255.0, 0.0)
 
     
     private val tseThreshold = 135
 
     private val regions = listOf(
-        TSEPosition.One to Rect(Point(290.0, 197.0), Point(325.0, 222.0)),
-        TSEPosition.Two to Rect(Point(290.0, 197.0), Point(325.0, 222.0)),
-        TSEPosition.Three to Rect(Point(290.0, 197.0), Point(325.0, 222.0))
+        TSEPosition.One to Rect(Point(300.0, 197.0), Point(335.0, 222.0)),
+        TSEPosition.Two to Rect(Point(200.0, 197.0), Point(235.0, 222.0)),
+        TSEPosition.Three to Rect(Point(100.0, 197.0), Point(125.0, 222.0))
     )
 
     private val colors = listOf(
@@ -32,8 +32,13 @@ class TeamScoringElementDetector(private val console: TelemetryConsole) {
     @Volatile // Volatile since accessed by OpMode thread w/o synchronization
     var position = TSEPosition.One
 
-    fun processFrame(frame: Mat): Mat {
+//    fun init(frame: Mat): Mat {
+//        val cbFrame = inputToCb(frame)
+//
+//        return frame
+//    }
 
+    fun processFrame(frame: Mat): Mat {
         val cbFrame = inputToCb(frame)
 
         val result = regions.firstOrNull {
@@ -64,8 +69,8 @@ class TeamScoringElementDetector(private val console: TelemetryConsole) {
     private fun inputToCb(input: Mat?): Mat {
         var yCrCb = Mat()
         Imgproc.cvtColor(input, yCrCb, Imgproc.COLOR_RGB2YCrCb)
-        var cb: Mat? = null
+        var cb = Mat()
         Core.extractChannel(yCrCb, cb, 1)
-        return cb!!
+        return cb
     }
 }

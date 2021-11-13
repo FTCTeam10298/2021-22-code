@@ -113,7 +113,7 @@ class Depositor(private val hardware: MinibotHardware) {
         hardware.liftMotor.power = 1.0
 
         hardware.liftMotor.mode = DcMotor.RunMode.RUN_TO_POSITION
-        
+
         hardware.liftMotor.targetPosition = adjustedTarget
 
 //        while (hardware.liftMotor.isBusy) {
