@@ -12,6 +12,7 @@ class MinibotHardware(): MecanumHardware {
     lateinit var liftMotor: DcMotorEx
     lateinit var horiServo: CRServo
     lateinit var dropperServo: Servo
+    lateinit var collector: DcMotor
     val cameraName = "backWebcam"
 
     override lateinit var hwMap: HardwareMap
@@ -55,6 +56,12 @@ class MinibotHardware(): MecanumHardware {
         dropperServo = hwMap["dropper"] as Servo
         dropperServo.direction = Servo.Direction.REVERSE
         dropperServo.position = 0.0
+
+//        Collector
+        collector = hwMap["collector"] as DcMotor
+
+        collector.direction = DcMotorSimple.Direction.REVERSE
+        collector.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.FLOAT
 
 //        Ducc
         carouselSpinner = hwMap["duccSpinner"] as CRServo

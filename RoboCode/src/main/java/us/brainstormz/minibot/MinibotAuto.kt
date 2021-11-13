@@ -21,7 +21,7 @@ class MinibotAuto: LinearOpMode() {
 
 
     val opencv = OpenCvAbstraction(this)
-    val tseDetector = TeamScoringElementDetector(135, console)
+    val tseDetector = TeamScoringElementDetector(console)
     var tsePosition = TSEPosition.One
 
     override fun runOpMode() {
@@ -35,7 +35,6 @@ class MinibotAuto: LinearOpMode() {
         opencv.cameraName = hardware.cameraName
         opencv.init(hardwareMap)
         opencv.start()
-        opencv.onFirstFrame(tseDetector::init)
         opencv.onNewFrame(tseDetector::processFrame)
 
         wizard.summonWizard(gamepad1)
