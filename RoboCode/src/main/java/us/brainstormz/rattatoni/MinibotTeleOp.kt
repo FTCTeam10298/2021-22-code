@@ -4,7 +4,6 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import com.qualcomm.robotcore.hardware.DcMotor
 import us.brainstormz.hardwareClasses.MecanumDriveTrain
-import kotlin.math.abs
 import us.brainstormz.telemetryWizard.TelemetryConsole
 
 @TeleOp(name="Minibot TeleOp", group="Minibot")
@@ -14,7 +13,7 @@ class MinibotTeleOp: OpMode() {
     val hardware = MinibotHardware()
 
     val robot = MecanumDriveTrain(hardware)
-    val depositor = Depositor(hardware, telemetry)
+    val depositor = Depositor(hardware)
 
     override fun init() {
         hardware.init(hardwareMap)
@@ -28,7 +27,7 @@ class MinibotTeleOp: OpMode() {
 
         val y = -yInput
         val x = xInput
-        val r = -(rInput *.5) * abs(rInput *.5)
+        val r = -rInput *.8
 
         robot.driveSetPower(
                 (y + x - r),
@@ -37,7 +36,7 @@ class MinibotTeleOp: OpMode() {
                 (y + x + r)
         )
 
-//        Depositor
+        // Depositor
         val xTarget = when {
             gamepad2.right_stick_x > 0.0f -> Depositor.XPosition.Extend
             gamepad2.right_stick_x < 0.0f -> Depositor.XPosition.Retract
@@ -45,48 +44,47 @@ class MinibotTeleOp: OpMode() {
         }
         depositor.xToPosition(xTarget)
 
-
-
-        hardware.liftMotor.zeroPowerBehavior = if (gamepad2.right_stick_y == 0.0f)
-            DcMotor.ZeroPowerBehavior.BRAKE
-        else
-            DcMotor.ZeroPowerBehavior.FLOAT
-
         val yTarget = gamepad2.right_stick_y.toInt()
-        depositor.yInDirection(yTarget)
-
+        if (yTarget != 0) {
+            depositor.state = 0
+        }
+        if (depositor.state == 0)
+            depositor.yInDirection(yTarget)
 
         if (gamepad2.right_trigger != 0.0f || gamepad2.left_trigger != 0.0f)
             depositor.drop()
         else
             depositor.close()
 
-
         if (gamepad2.a) {
+            depositor.state = 0
             depositor.home()
         }
 
-
         if (gamepad2.b) {
+            depositor.state = 1
             depositor.yToPosition(depositor.lowGoalHeight)
-            depositor.xToPosition(Depositor.XPosition.Extend)
         }
 
+        if (depositor.state == 1 && !hardware.liftMotor.isBusy) {
+            depositor.xToPosition(Depositor.XPosition.Extend)
+            depositor.state = 0
+        }
 
         console.display(2, "y pos: ${hardware.liftMotor.currentPosition}")
         console.display(3, "x pos: ${depositor.xAbsPos}ed")
         console.display(4, "dropper: ${hardware.dropperServo.position}")
 
-
-//        collector
-        if (gamepad1.left_bumper || gamepad1.right_bumper || gamepad2.left_bumper || gamepad2.right_bumper) {
-            hardware.collector.power = 0.6
+        // Collector
+        if (gamepad1.right_bumper || gamepad2.right_bumper) {
+            hardware.collector.power = 0.5
+        } else if (gamepad1.left_bumper || gamepad2.left_bumper) {
+            hardware.collector.power = -0.5
         } else {
             hardware.collector.power = 0.0
         }
 
-
-//        Ducc Spinner
+        // Ducc Spinner
         when {
             gamepad2.dpad_left -> {
                 hardware.carouselSpinner.power = 1.0

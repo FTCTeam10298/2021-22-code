@@ -1,9 +1,10 @@
 package us.brainstormz.rattatoni
 
 import com.qualcomm.robotcore.hardware.*
+import org.firstinspires.ftc.robotcore.external.Telemetry
 import us.brainstormz.hardwareClasses.MecanumHardware
 
-class MinibotHardware(): MecanumHardware {
+class MinibotHardware: MecanumHardware {
     override lateinit var lFDrive: DcMotor
     override lateinit var rFDrive: DcMotor
     override lateinit var lBDrive: DcMotor
@@ -55,7 +56,7 @@ class MinibotHardware(): MecanumHardware {
 
         dropperServo = hwMap["dropper"] as Servo
         dropperServo.direction = Servo.Direction.REVERSE
-        dropperServo.position = 0.0
+        dropperServo.position = Depositor(this).dropperClosed
 
 //        Collector
         collector = hwMap["collector"] as DcMotor
