@@ -15,6 +15,8 @@ class Depositor(private val hardware: MinibotHardware, private val telemetry: Te
     private val yPID = PID(kp = 0.002, ki = 0.002)
     private val yLimits: IntRange = 0..1430
     private val extendableHeight = 190
+    val highGoalHeight = 1430
+    val midGoalHeight = 615
     val lowGoalHeight = 200
 
     private val xPID = PID(kp = 0.0015, ki = 0.001)
