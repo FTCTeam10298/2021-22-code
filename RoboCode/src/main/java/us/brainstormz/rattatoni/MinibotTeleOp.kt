@@ -37,6 +37,8 @@ class MinibotTeleOp: OpMode() {
         )
 
         // Depositor
+        if (gamepad2.right_stick_x > 0.1f || gamepad2.right_stick_x < -0.1f)
+            depositor.state = 0
         val xTarget = when {
             gamepad2.right_stick_x > 0.0f -> Depositor.XPosition.Extend
             gamepad2.right_stick_x < 0.0f -> Depositor.XPosition.Retract
@@ -66,10 +68,10 @@ class MinibotTeleOp: OpMode() {
             depositor.yToPosition(depositor.lowGoalHeight)
         }
 
-        if (depositor.state == 1 && !hardware.liftMotor.isBusy) {
-            depositor.xToPosition(Depositor.XPosition.Extend)
-            depositor.state = 0
-        }
+//        if (depositor.state == 1 && !hardware.liftMotor.isBusy) {
+//            depositor.xToPosition(Depositor.XPosition.Extend)
+//            depositor.state = 0
+//        }
 
         console.display(2, "y pos: ${hardware.liftMotor.currentPosition}")
         console.display(3, "x pos: ${depositor.xAbsPos}ed")
