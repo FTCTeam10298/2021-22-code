@@ -1,4 +1,4 @@
-package us.brainstormz.minibot
+package us.brainstormz.rattatoni
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
