@@ -6,7 +6,7 @@ import us.brainstormz.openCvAbstraction.OpenCvAbstraction
 import us.brainstormz.telemetryWizard.TelemetryConsole
 import us.brainstormz.rattatoni.TeamScoringElementDetector.TSEPosition
 
-@Autonomous(name="Miniblotto", group="Minibot")
+//@Autonomous(name="Miniblotto", group="Minibot")
 class Miniblotto: LinearOpMode() {
 
     val console = TelemetryConsole(telemetry)

@@ -33,6 +33,7 @@ class TeamScoringElementDetector(private val console: TelemetryConsole) {
     var position = TSEPosition.One
 
     fun processFrame(frame: Mat): Mat {
+
         val cbFrame = inputToCb(frame)
 
         val result = regions.firstOrNull {

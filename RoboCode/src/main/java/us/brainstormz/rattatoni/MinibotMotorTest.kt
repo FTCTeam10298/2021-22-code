@@ -15,8 +15,6 @@ class MinibotMotorTest: LinearOpMode() {
     val console = TelemetryConsole(telemetry)
 
     val hardware = MinibotHardware()
-    val movement = EncoderDriveMovement(hardware, console)
-    val depositor = Depositor(hardware, telemetry)
 
     override fun runOpMode() {
         /** INIT PHASE */

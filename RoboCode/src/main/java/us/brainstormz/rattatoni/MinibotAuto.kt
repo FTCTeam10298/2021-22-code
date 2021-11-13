@@ -16,7 +16,7 @@ class MinibotAuto: LinearOpMode() {
 
     val hardware = MinibotHardware()
     val movement = EncoderDriveMovement(hardware, console)
-    val depositor = Depositor(hardware, telemetry)
+    val depositor = Depositor(hardware)
 
 
     val opencv = OpenCvAbstraction(this)

@@ -6,7 +6,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry
 import us.brainstormz.pid.PID
 import java.lang.Thread.sleep
 
-class Depositor(private val hardware: MinibotHardware, private val telemetry: Telemetry) {
+class Depositor(private val hardware: MinibotHardware) {
     enum class XPosition {
         Extend,
         Retract
@@ -18,6 +18,7 @@ class Depositor(private val hardware: MinibotHardware, private val telemetry: Te
     val highGoalHeight = 1430
     val midGoalHeight = 820
     val lowGoalHeight = 300
+    var state = 0
 
     private val xPID = PID(kp = 0.0015, ki = 0.001)
     private val xPower = 1.0
@@ -26,7 +27,7 @@ class Depositor(private val hardware: MinibotHardware, private val telemetry: Te
     private val xRetractTime: Long = 755
 
     private val dropperOpen = 0.0
-    private val dropperClosed = 0.5
+    val dropperClosed = 0.7
 
     fun xToPosition(newPos: XPosition?) {
         if (hardware.liftMotor.currentPosition > extendableHeight) {
@@ -50,50 +51,76 @@ class Depositor(private val hardware: MinibotHardware, private val telemetry: Te
     }
 
     fun yInDirection(yDirection: Int) {
-        hardware.liftMotor.mode = DcMotor.RunMode.RUN_USING_ENCODER
+//        hardware.liftMotor.mode = DcMotor.RunMode.RUN_USING_ENCODER
 
         val direction = posOrNeg(-yDirection)
-        hardware.liftMotor.power =
-        when (hardware.liftMotor.currentPosition) {
-            in yLimits -> {
-                if (yDirection != 0) {
-                    val target = when (direction) {
-                        1 -> yLimits.last
-                        -1 -> yLimits.first
-                        else -> hardware.liftMotor.currentPosition
-                    }
-                    val pidPower = yPID.calcPID(
-                        target.toDouble(),
-                        hardware.liftMotor.currentPosition.toDouble()
-                    )
-                    pidPower
-                } else
-                    0.0
+        val target = when (direction) {
+                1 -> yLimits.last
+                -1 -> yLimits.first
+                else -> hardware.liftMotor.currentPosition
             }
-            else -> 0.0
-        }
+        if (yDirection != 0)
+            yToPosition(target)
+        else
+            hardware.liftMotor.power = 0.0
+
+//        hardware.liftMotor.power = if (yDirection != 0) {
+//            val target = when (direction) {
+//                1 -> yLimits.last
+//                -1 -> yLimits.first
+//                else -> hardware.liftMotor.currentPosition
+//            }
+//            yPID.calcPID(
+//                target.toDouble(),
+//                hardware.liftMotor.currentPosition.toDouble()
+//            )
+//        } else {
+//            0.0
+//        }
+
+//        if (hardware.liftMotor.currentPosition > yLimits.last) {
+//            yToPosition(yLimits.last)
+//        } else if (hardware.liftMotor.currentPosition < yLimits.first) {
+//            yToPosition(yLimits.first)
+//        }
+//
+//        when (hardware.liftMotor.currentPosition) {
+//            in yLimits -> {
+//                if (yDirection != 0) {
+//                    val target = when (direction) {
+//                        1 -> yLimits.last
+//                        -1 -> yLimits.first
+//                        else -> hardware.liftMotor.currentPosition
+//                    }
+//                    val pidPower = yPID.calcPID(
+//                        target.toDouble(),
+//                        hardware.liftMotor.currentPosition.toDouble()
+//                    )
+//                    pidPower
+//                }
+//            }
+//            else -> 0.0
+//        }
 
     }
 
     fun yToPosition(targetPos: Int) {
         val adjustedTarget = targetPos.coerceIn(yLimits)
 
-        hardware.liftMotor.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
+//        val direction = posOrNeg(targetPos)
 
-        val direction = posOrNeg(targetPos)
+//        hardware.liftMotor.power = yPID.calcPID(adjustedTarget.toDouble(), hardware.liftMotor.currentPosition.toDouble())
+        hardware.liftMotor.power = 1.0
 
-        hardware.liftMotor.power = yPID.calcPID(adjustedTarget.toDouble(), hardware.liftMotor.currentPosition.toDouble())
-
-        hardware.liftMotor.targetPosition = 0
         hardware.liftMotor.mode = DcMotor.RunMode.RUN_TO_POSITION
-
+        
         hardware.liftMotor.targetPosition = adjustedTarget
 
-        while (hardware.liftMotor.isBusy) {
-            hardware.liftMotor.power = yPID.calcPID(adjustedTarget.toDouble(), hardware.liftMotor.currentPosition.toDouble())
-        }
-
-        hardware.liftMotor.power = 0.0
+//        while (hardware.liftMotor.isBusy) {
+//            hardware.liftMotor.power = yPID.calcPID(adjustedTarget.toDouble(), hardware.liftMotor.currentPosition.toDouble())
+//        }
+//
+//        hardware.liftMotor.power = 0.0
     }
 
     fun drop() {
@@ -124,7 +151,7 @@ class Depositor(private val hardware: MinibotHardware, private val telemetry: Te
 class DepositorTuner: OpMode() {
 
     val hardware = MinibotHardware()
-    val depositor = Depositor(hardware, telemetry)
+    val depositor = Depositor(hardware)
 
     override fun init() {
         hardware.init(hardwareMap)
