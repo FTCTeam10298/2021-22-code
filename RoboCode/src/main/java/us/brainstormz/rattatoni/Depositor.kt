@@ -123,6 +123,25 @@ class Depositor(private val hardware: MinibotHardware) {
 //        hardware.liftMotor.power = 0.0
     }
 
+    fun yToPositionBlocking(targetPos: Int) {
+        val adjustedTarget = targetPos.coerceIn(yLimits)
+
+//        val direction = posOrNeg(targetPos)
+
+//        hardware.liftMotor.power = yPID.calcPID(adjustedTarget.toDouble(), hardware.liftMotor.currentPosition.toDouble())
+        hardware.liftMotor.power = 1.0
+
+        hardware.liftMotor.mode = DcMotor.RunMode.RUN_TO_POSITION
+
+        hardware.liftMotor.targetPosition = adjustedTarget
+
+        while (hardware.liftMotor.isBusy) {
+            hardware.liftMotor.power = 1.0
+        }
+//
+//        hardware.liftMotor.power = 0.0
+    }
+
     fun drop() {
         hardware.dropperServo.position = dropperOpen
     }
