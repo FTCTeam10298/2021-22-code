@@ -6,7 +6,7 @@ import us.brainstormz.localization.PositionAndRotation
 import us.brainstormz.hardwareClasses.OdometryDriveMovement
 import us.brainstormz.telemetryWizard.TelemetryConsole
 
-@Autonomous(name = "odometryTest", group = "Aim Bot")
+//@Autonomous(name = "odometryTest", group = "Aim Bot")
 class OdometryTestAuto: LinearOpMode() {
 
     val console = TelemetryConsole(telemetry)

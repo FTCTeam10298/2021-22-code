@@ -56,6 +56,7 @@ class OpenCvAbstraction(private val opmode: OpMode) {
 
     var optimizeView = false
     var openCameraDeviceAsync = false
+    var cameraOrientation = OpenCvCameraRotation.UPRIGHT
     var cameraName: String = "Webcam 1"
 
 
@@ -69,7 +70,7 @@ class OpenCvAbstraction(private val opmode: OpMode) {
     }
 
     fun start() {
-        camera.startStreaming(432, 240, OpenCvCameraRotation.UPRIGHT)
+        camera.startStreaming(432, 240, cameraOrientation)
 //        camera.startStreaming(1920, 1080, OpenCvCameraRotation.UPRIGHT)
         sleep(100)
 

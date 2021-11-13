@@ -2,6 +2,7 @@ package us.brainstormz.rattatoni
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
+import org.openftc.easyopencv.OpenCvCameraRotation
 import us.brainstormz.openCvAbstraction.OpenCvAbstraction
 import us.brainstormz.hardwareClasses.EncoderDriveMovement
 import us.brainstormz.telemetryWizard.TelemetryConsole
@@ -31,6 +32,7 @@ class MinibotAuto: LinearOpMode() {
 
         opencv.optimizeView = true
         opencv.openCameraDeviceAsync = true
+        opencv.cameraOrientation = OpenCvCameraRotation.UPSIDE_DOWN
         opencv.cameraName = hardware.cameraName
         opencv.init(hardwareMap)
         opencv.start()
