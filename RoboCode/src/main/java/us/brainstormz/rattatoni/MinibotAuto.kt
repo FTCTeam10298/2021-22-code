@@ -28,7 +28,8 @@ class MinibotAuto: LinearOpMode() {
         /** INIT PHASE */
         hardware.init(hardwareMap)
 
-        wizard.newMenu("Alliance", "What alliance are we on?", listOf("Blue", "Red"), firstMenu = true)
+        wizard.newMenu("Alliance", "What alliance are we on?", listOf("Blue", "Red"), "StartPos", firstMenu = true)
+        wizard.newMenu("StartPos", "What starting position are we in?", listOf("Ducc Side", "Warehouse Side"))
 
         opencv.optimizeView = true
         opencv.openCameraDeviceAsync = true
@@ -38,7 +39,7 @@ class MinibotAuto: LinearOpMode() {
         opencv.start()
         opencv.onNewFrame(tseDetector::processFrame)
 
-        wizard.summonWizard(gamepad1)
+//        wizard.summonWizard(gamepad1)
 
         console.display(1, "Initialization Complete")
         waitForStart()
@@ -48,155 +49,56 @@ class MinibotAuto: LinearOpMode() {
         tsePosition = tseDetector.position
         opencv.stop()
 
-        when {
-            wizard.wasItemChosen("Alliance", "Blue") -> {
+//        when {
+//            wizard.wasItemChosen("Alliance", "Red") -> {
+//                if (wizard.wasItemChosen("StartPos", "Ducc Side")) {
 //                Drop starter block
-               when (tsePosition) {
-                    TSEPosition.One -> {
-                        movement.driveRobotPosition(power = 1.0, inches = -8.0, smartAccel = true)
-                        movement.driveRobotStrafe(power = 1.0, inches = 15.0, smartAccel = true)
-                        movement.driveRobotTurn(power = 0.0, degree = -90.0, smartAccel = true)
-                        movement.driveRobotStrafe(power = 1.0, inches = -12.0, smartAccel = true)
-                        depositor.yToPosition(depositor.lowGoalHeight)
-                        depositor.xToPosition(Depositor.XPosition.Extend)
-                        depositor.drop()
-                        depositor.home()
-                        movement.driveRobotStrafe(power = 1.0, inches = 12.0, smartAccel = true)
-                        movement.driveRobotTurn(power = 0.0, degree = 90.0, smartAccel = true)
-                        movement.driveRobotStrafe(power = 1.0, inches = -47.0, smartAccel = true)
-                        hardware.carouselSpinner.power = 1.0
-                        hardware.collector.power = 1.0
-                        movement.driveRobotStrafe(power = 1.0, inches = 47.0, smartAccel = true)
-                        movement.driveRobotTurn(power = 0.0, degree = -90.0, smartAccel = true)
-                        movement.driveRobotStrafe(power = 1.0, inches = -12.0, smartAccel = true)
-                        depositor.yToPosition(depositor.highGoalHeight)
-                        depositor.xToPosition(Depositor.XPosition.Extend)
-                        depositor.drop()
-                        depositor.home()
-                    }
-                    TSEPosition.Two -> {
-                        movement.driveRobotPosition(power = 1.0, inches = -8.0, smartAccel = true)
-                        movement.driveRobotStrafe(power = 1.0, inches = 15.0, smartAccel = true)
-                        movement.driveRobotTurn(power = 0.0, degree = -90.0, smartAccel = true)
-                        movement.driveRobotStrafe(power = 1.0, inches = -12.0, smartAccel = true)
-                        depositor.yToPosition(depositor.midGoalHeight)
-                        depositor.xToPosition(Depositor.XPosition.Extend)
-                        depositor.drop()
-                        depositor.home()
-                        movement.driveRobotStrafe(power = 1.0, inches = 12.0, smartAccel = true)
-                        movement.driveRobotTurn(power = 0.0, degree = 90.0, smartAccel = true)
-                        movement.driveRobotStrafe(power = 1.0, inches = -47.0, smartAccel = true)
-                        hardware.carouselSpinner.power = 1.0
-                        hardware.collector.power = 1.0
-                        movement.driveRobotStrafe(power = 1.0, inches = 47.0, smartAccel = true)
-                        movement.driveRobotTurn(power = 0.0, degree = -90.0, smartAccel = true)
-                        movement.driveRobotStrafe(power = 1.0, inches = -12.0, smartAccel = true)
-                        depositor.yToPosition(depositor.highGoalHeight)
-                        depositor.xToPosition(Depositor.XPosition.Extend)
-                        depositor.drop()
-                        depositor.home()
-                    }
-                    TSEPosition.Three -> {
-                        movement.driveRobotPosition(power = 1.0, inches = -8.0, smartAccel = true)
-                        movement.driveRobotStrafe(power = 1.0, inches = 15.0, smartAccel = true)
-                        movement.driveRobotTurn(power = 0.0, degree = -90.0, smartAccel = true)
-                        movement.driveRobotStrafe(power = 1.0, inches = -12.0, smartAccel = true)
-                        depositor.yToPosition(depositor.highGoalHeight)
-                        depositor.xToPosition(Depositor.XPosition.Extend)
-                        depositor.drop()
-                        depositor.home()
-                        movement.driveRobotStrafe(power = 1.0, inches = 12.0, smartAccel = true)
-                        movement.driveRobotTurn(power = 0.0, degree = 90.0, smartAccel = true)
-                        movement.driveRobotStrafe(power = 1.0, inches = -47.0, smartAccel = true)
-                        hardware.carouselSpinner.power = 1.0
-                        hardware.collector.power = 1.0
-                        movement.driveRobotStrafe(power = 1.0, inches = 47.0, smartAccel = true)
-                        movement.driveRobotTurn(power = 0.0, degree = -90.0, smartAccel = true)
-                        movement.driveRobotStrafe(power = 1.0, inches = -12.0, smartAccel = true)
-                        depositor.yToPosition(depositor.highGoalHeight)
-                        depositor.xToPosition(Depositor.XPosition.Extend)
-                        depositor.drop()
-                        depositor.home()
-                    }
-                }
-//                Spin ducc
-//                collect ducc
-//                deliver ducc
-//                park
-            }
-            wizard.wasItemChosen("Alliance", "Red") -> {
-//                Drop starter block
-               when (tsePosition) {
-                    TSEPosition.One -> {movement.driveRobotPosition(power = 1.0, inches = -8.0, smartAccel = true)
-                        movement.driveRobotStrafe(power = 1.0, inches = 15.0, smartAccel = true)
-                        movement.driveRobotTurn(power = 0.0, degree = 90.0, smartAccel = true)
-                        movement.driveRobotStrafe(power = 1.0, inches = -12.0, smartAccel = true)
-                        depositor.yToPosition(depositor.lowGoalHeight)
-                        depositor.xToPosition(Depositor.XPosition.Extend)
-                        depositor.drop()
-                        depositor.home()
-                        movement.driveRobotStrafe(power = 1.0, inches = 12.0, smartAccel = true)
-                        movement.driveRobotTurn(power = 0.0, degree = -90.0, smartAccel = true)
-                        movement.driveRobotStrafe(power = 1.0, inches = -47.0, smartAccel = true)
-                        hardware.carouselSpinner.power = 1.0
-                        hardware.collector.power = 1.0
-                        movement.driveRobotStrafe(power = 1.0, inches = 47.0, smartAccel = true)
-                        movement.driveRobotTurn(power = 0.0, degree = 90.0, smartAccel = true)
-                        movement.driveRobotStrafe(power = 1.0, inches = -12.0, smartAccel = true)
-                        depositor.yToPosition(depositor.highGoalHeight)
-                        depositor.xToPosition(Depositor.XPosition.Extend)
-                        depositor.drop()
-                        depositor.home()
-                    }
-                    TSEPosition.Two -> {
-                        movement.driveRobotPosition(power = 1.0, inches = -8.0, smartAccel = true)
-                        movement.driveRobotStrafe(power = 1.0, inches = 15.0, smartAccel = true)
-                        movement.driveRobotTurn(power = 0.0, degree = 90.0, smartAccel = true)
-                        movement.driveRobotStrafe(power = 1.0, inches = -12.0, smartAccel = true)
-                        depositor.yToPosition(depositor.midGoalHeight)
-                        depositor.xToPosition(Depositor.XPosition.Extend)
-                        depositor.drop()
-                        depositor.home()
-                        movement.driveRobotStrafe(power = 1.0, inches = 12.0, smartAccel = true)
-                        movement.driveRobotTurn(power = 0.0, degree = -90.0, smartAccel = true)
-                        movement.driveRobotStrafe(power = 1.0, inches = -47.0, smartAccel = true)
-                        hardware.carouselSpinner.power = 1.0
-                        hardware.collector.power = 1.0
-                        movement.driveRobotStrafe(power = 1.0, inches = 47.0, smartAccel = true)
-                        movement.driveRobotTurn(power = 0.0, degree = 90.0, smartAccel = true)
-                        movement.driveRobotStrafe(power = 1.0, inches = -12.0, smartAccel = true)
-                        depositor.yToPosition(depositor.highGoalHeight)
-                        depositor.xToPosition(Depositor.XPosition.Extend)
-                        depositor.drop()
-                        depositor.home()}
-                    TSEPosition.Three -> {
-                        movement.driveRobotPosition(power = 1.0, inches = -8.0, smartAccel = true)
-                        movement.driveRobotStrafe(power = 1.0, inches = 15.0, smartAccel = true)
-                        movement.driveRobotTurn(power = 0.0, degree = 90.0, smartAccel = true)
-                        movement.driveRobotStrafe(power = 1.0, inches = -12.0, smartAccel = true)
-                        depositor.yToPosition(depositor.highGoalHeight)
-                        depositor.xToPosition(Depositor.XPosition.Extend)
-                        depositor.drop()
-                        depositor.home()
-                        movement.driveRobotStrafe(power = 1.0, inches = 12.0, smartAccel = true)
-                        movement.driveRobotTurn(power = 0.0, degree = -90.0, smartAccel = true)
-                        movement.driveRobotStrafe(power = 1.0, inches = -47.0, smartAccel = true)
-                        hardware.carouselSpinner.power = 1.0
-                        hardware.collector.power = 1.0
-                        movement.driveRobotStrafe(power = 1.0, inches = 47.0, smartAccel = true)
-                        movement.driveRobotTurn(power = 0.0, degree = 90.0, smartAccel = true)
-                        movement.driveRobotStrafe(power = 1.0, inches = -12.0, smartAccel = true)
-                        depositor.yToPosition(depositor.highGoalHeight)
-                        depositor.xToPosition(Depositor.XPosition.Extend)
-                        depositor.drop()
-                        depositor.home()}
-                }
-//                Spin ducc
-//                collect ducc
-//                deliver ducc
-//                park
+                    movement.driveRobotTurn(1.0, 26.0, true)
+                    movement.driveRobotPosition(power = 1.0, inches = -20.0, smartAccel = true)
+                    movement.driveRobotTurn(1.0, -70.0, true)
+                    movement.driveRobotStrafe(power = 1.0, inches = 4.0, smartAccel = true)
+                    movement.driveRobotPosition(1.0, -5.0, true)
+                    movement.driveRobotStrafe(1.0, 6.0, true)
+                    
 
-            }
-        }
+//                    movement.driveRobotStrafe(power = 1.0, inches = 15.0, smartAccel = true)
+//                    movement.driveRobotTurn(power = 0.0, degree = -90.0, smartAccel = true)
+//                    movement.driveRobotStrafe(power = 1.0, inches = -12.0, smartAccel = true)
+
+                    when (tsePosition) {
+                        TSEPosition.One -> depositor.yToPositionBlocking(depositor.lowGoalHeight)
+                        TSEPosition.Two -> depositor.yToPositionBlocking(depositor.midGoalHeight)
+                        TSEPosition.Three -> depositor.yToPositionBlocking(depositor.highGoalHeight)
+                    }
+                    sleep(1000)
+                    depositor.xToPosition(Depositor.XPosition.Extend)
+                    depositor.drop()
+                    sleep(200)
+                    depositor.home()
+/*
+//                Spin ducc
+                    movement.driveRobotStrafe(power = 1.0, inches = 12.0, smartAccel = true)
+                    movement.driveRobotTurn(power = 0.0, degree = 90.0, smartAccel = true)
+                    movement.driveRobotStrafe(power = 1.0, inches = -47.0, smartAccel = true)
+                    hardware.carouselSpinner.power = 1.0
+//                collect ducc
+                    hardware.collector.power = 1.0
+                    movement.driveRobotStrafe(power = 1.0, inches = 47.0, smartAccel = true)
+                    movement.driveRobotTurn(power = 0.0, degree = -90.0, smartAccel = true)
+                    movement.driveRobotStrafe(power = 1.0, inches = -12.0, smartAccel = true)
+//                deliver ducc
+                    depositor.yToPosition(depositor.highGoalHeight)
+                    depositor.xToPosition(Depositor.XPosition.Extend)
+                    depositor.drop()
+                    depositor.home()
+//                park*/
+
+//                } else {
+//
+//                }
+//            }
+//            wizard.wasItemChosen("Alliance", "Blue") -> {
+//            }
+//        }
     }
 }
