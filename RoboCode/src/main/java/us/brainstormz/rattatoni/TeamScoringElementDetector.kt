@@ -1,4 +1,4 @@
-package us.brainstormz.minibot
+package us.brainstormz.rattatoni
 
 import org.opencv.core.*
 import org.opencv.imgproc.Imgproc

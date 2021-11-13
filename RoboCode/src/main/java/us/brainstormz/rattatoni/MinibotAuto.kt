@@ -1,13 +1,12 @@
-package us.brainstormz.minibot
+package us.brainstormz.rattatoni
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import us.brainstormz.openCvAbstraction.OpenCvAbstraction
 import us.brainstormz.hardwareClasses.EncoderDriveMovement
 import us.brainstormz.telemetryWizard.TelemetryConsole
 import us.brainstormz.telemetryWizard.TelemetryWizard
-import us.brainstormz.minibot.TeamScoringElementDetector.TSEPosition
+import us.brainstormz.rattatoni.TeamScoringElementDetector.TSEPosition
 
 @Autonomous(name="Minibot Auto", group="Minibot")
 class MinibotAuto: LinearOpMode() {

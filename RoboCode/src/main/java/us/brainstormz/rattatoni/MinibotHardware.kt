@@ -1,4 +1,4 @@
-package us.brainstormz.minibot
+package us.brainstormz.rattatoni
 
 import com.qualcomm.robotcore.hardware.*
 import us.brainstormz.hardwareClasses.MecanumHardware
