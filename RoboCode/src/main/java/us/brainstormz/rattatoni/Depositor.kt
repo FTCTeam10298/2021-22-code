@@ -14,7 +14,7 @@ class Depositor(private val hardware: MinibotHardware) {
 
     private val yPID = PID(kp = 0.002, ki = 0.002)
     private val yLimits: IntRange = 0..1430
-    private val extendableHeight = 190
+    private val extendableHeight = 200
     val highGoalHeight = 1430
     val midGoalHeight = 820
     val lowGoalHeight = 300
@@ -24,7 +24,7 @@ class Depositor(private val hardware: MinibotHardware) {
     private val xPower = 1.0
     var xAbsPos = XPosition.Retract
     private val xExtendTime: Long = 755
-    private val xRetractTime: Long = 755
+    private val xRetractTime: Long = 765
 
     private val dropperOpen = 0.0
     val dropperClosed = 0.7
