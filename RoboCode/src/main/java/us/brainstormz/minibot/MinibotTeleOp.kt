@@ -77,6 +77,15 @@ class MinibotTeleOp: OpMode() {
         console.display(3, "x pos: ${depositor.xAbsPos}ed")
         console.display(4, "dropper: ${hardware.dropperServo.position}")
 
+
+//        collector
+        if (gamepad1.left_bumper || gamepad1.right_bumper || gamepad2.left_bumper || gamepad2.right_bumper) {
+            hardware.collector.power = 0.6
+        } else {
+            hardware.collector.power = 0.0
+        }
+
+
 //        Ducc Spinner
         when {
             gamepad2.dpad_left -> {
