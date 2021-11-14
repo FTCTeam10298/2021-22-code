@@ -39,12 +39,8 @@ class MinibotTeleOp: OpMode() {
         // Depositor
         if (gamepad2.right_stick_x > 0.1f || gamepad2.right_stick_x < -0.1f)
             depositor.state = 0
-        val xTarget = when {
-            gamepad2.right_stick_x > 0.0f -> Depositor.XPosition.Extend
-            gamepad2.right_stick_x < 0.0f -> Depositor.XPosition.Retract
-            else -> null
-        }
-        depositor.xToPosition(xTarget)
+
+        hardware.horiServo.power = gamepad2.right_stick_x.toDouble()
 
         val yTarget = gamepad2.right_stick_y.toInt()
         if (yTarget != 0) {

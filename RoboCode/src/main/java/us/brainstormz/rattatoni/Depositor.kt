@@ -14,7 +14,7 @@ class Depositor(private val hardware: MinibotHardware) {
 
     private val yPID = PID(kp = 0.002, ki = 0.002)
     private val yLimits: IntRange = 0..1430
-    private val extendableHeight = 200
+    private val extendableHeight = 190
     val highGoalHeight = 1430
     val midGoalHeight = 820
     val lowGoalHeight = 300
@@ -35,14 +35,14 @@ class Depositor(private val hardware: MinibotHardware) {
                 (newPos == XPosition.Extend) && (xAbsPos == XPosition.Retract) -> {
                     hardware.horiServo.power = xPower
                     sleep(xExtendTime)
-                    hardware.horiServo.power = 0.0
                     xAbsPos = XPosition.Extend
+                    hardware.horiServo.power = 0.0
                 }
                 (newPos == XPosition.Retract) && (xAbsPos == XPosition.Extend) -> {
                     hardware.horiServo.power = -xPower
                     sleep(xRetractTime)
-                    hardware.horiServo.power = 0.0
                     xAbsPos = XPosition.Retract
+                    hardware.horiServo.power = 0.0
                 }
                 else -> hardware.horiServo.power = 0.0
             }
