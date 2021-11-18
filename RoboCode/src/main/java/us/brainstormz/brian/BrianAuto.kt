@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.hardware.DcMotor
 import us.brainstormz.brian.Brian_Hardware.PIVOTARM_CONSTANT
 import us.brainstormz.hardwareClasses.EncoderDriveMovement
+import us.brainstormz.hardwareClasses.JamesEncoderMovement
 import us.brainstormz.telemetryWizard.TelemetryConsole
 import us.brainstormz.telemetryWizard.TelemetryWizard
 
@@ -12,7 +13,7 @@ import us.brainstormz.telemetryWizard.TelemetryWizard
 class BrianAuto: LinearOpMode() {
     val hardware = BrianHardware()
     val movement = EncoderDriveMovement(hardware, TelemetryConsole(telemetry))
-    val newMove = JamesEncoderMovement(hardware, telemetry)
+//    val newMove = JamesEncoderMovement(hardware, telemetry)
     val wizard = TelemetryWizard(TelemetryConsole(telemetry), this)
     override fun runOpMode() {
         /** INIT PHASE */
@@ -24,7 +25,7 @@ class BrianAuto: LinearOpMode() {
         waitForStart()
         /** AUTONOMOUS  PHASE */
 
-        newMove.changePosition(1.0, 25.0, 25.0, 0.0)
+//        newMove.changePosition(1.0, 25.0, 25.0, 0.0)
 
 //        if(true/*wizard.wasItemChosen("Alliance", "Blue")*/) {
 ////        drop starting block
