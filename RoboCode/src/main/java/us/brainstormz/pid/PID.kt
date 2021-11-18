@@ -17,6 +17,8 @@ open class PID(val kp: Double = 0.0, val ki: Double = 0.0, val kd: Double = 0.0,
     var d: Double = 0.0
     var f: Double = 0.0
 
+    var iRange = -1.0..1.0
+
     private var deltaTimeMs: Long = 1
     private var lastTimeMs: Long = System.currentTimeMillis()
     private var lastError: Double = 0.0
@@ -43,7 +45,7 @@ open class PID(val kp: Double = 0.0, val ki: Double = 0.0, val kd: Double = 0.0,
         i += ki * (error * deltaTimeMs.toDouble())
         d = kd * (error - lastError) / deltaTimeMs.toDouble()
 
-        i = Range.clip(i, -0.1, 0.1)
+        i = i.coerceIn(iRange)
 
         lastError = error
 
