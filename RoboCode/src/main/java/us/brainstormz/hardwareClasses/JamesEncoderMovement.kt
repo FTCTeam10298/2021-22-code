@@ -1,22 +1,25 @@
-package us.brainstormz.brian
+package us.brainstormz.hardwareClasses
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import org.firstinspires.ftc.robotcore.external.Telemetry
+import us.brainstormz.examples.ExampleHardware
 import us.brainstormz.pid.PID
-import us.brainstormz.hardwareClasses.MecanumDriveTrain
-import us.brainstormz.hardwareClasses.MecanumHardware
+import us.brainstormz.rattatoni.MinibotHardware
+import us.brainstormz.telemetryWizard.TelemetryConsole
 import kotlin.math.PI
 import kotlin.math.abs
 
-class JamesEncoderMovement (private val hardware: MecanumHardware, private val telemetry: Telemetry): MecanumDriveTrain(hardware) {
+class JamesEncoderMovement (private val hardware: MecanumHardware, private val console: TelemetryConsole): MecanumDriveTrain(hardware) {
 
-    var countsPerMotorRev = 28.0 // Rev HD Hex v2.1 Motor encoder
+    var countsPerMotorRev = 537.0 // Rev HD Hex v2.1 Motor encoder
     var gearboxRatio = 19.2 // 40 for 40:1, 20 for 20:1
     var driveGearReduction = 1 / 1 // This is > 1.0 if geared for torque
-    var wheelDiameterInches = 3.77953 // For figuring circumference
-    var drivetrainError = 1.015 // Error determined from testing
+    var wheelDiameterInches = 96.0 // For figuring circumference
+    var drivetrainError = 1.0 // Error determined from testing
     val countsPerInch = countsPerMotorRev * gearboxRatio * driveGearReduction / (wheelDiameterInches * PI) / drivetrainError
-    val countsPerDegree: Double = countsPerInch * 0.268 + 0.0 // Found by testing
-    var pid = PID(0.01, 0.0, 0.0)
+    val countsPerDegree: Double = countsPerInch * 0.26 // Found by testing
+    var pid = PID(0.001, 0.0, 0.0)
 
     /**
      * DriveRobotPosition drives the robot the set number of inches at the given power level.
@@ -26,26 +29,33 @@ class JamesEncoderMovement (private val hardware: MecanumHardware, private val t
      */
     fun changePosition(power: Double, forwardIn: Double, sidewaysIn: Double, rotationDegrees: Double) {
         val y = forwardIn * countsPerInch
-        val x = sidewaysIn * countsPerInch
+        val x = -sidewaysIn * countsPerInch
         val r = rotationDegrees * countsPerDegree
 
         val lfTarget = (y + x - r).toInt()
-        val rfTarget = (y - x - r).toInt()
-        val lbTarget = (y - x + r).toInt()
+        val rfTarget = (y - x + r).toInt()
+        val lbTarget = (y - x - r).toInt()
         val rbTarget = (y + x + r).toInt()
+        console.display(4, "lfTarget $lfTarget")
+        console.display(5, "rfTarget $rfTarget")
+        console.display(6, "lbTarget $lbTarget")
+        console.display(7, "rbTarget $rbTarget")
 
-        val absPower = abs(power)
         val avgTarget = (lfTarget + rfTarget + lbTarget + rbTarget) / 4
         fun avgCurrent(): Int = (hardware.lFDrive.currentPosition + hardware.rFDrive.currentPosition + hardware.lBDrive.currentPosition + hardware.rBDrive.currentPosition) / 4
 
-        telemetry.addLine("avg Target: $avgTarget")
-        telemetry.addLine("avg current: ${avgCurrent()}")
+        console.display(1, "avg Target: $avgTarget")
+        console.display(2, "avg current: ${avgCurrent()}")
 
         fun pidValue(): Double = pid.calcPID(avgCurrent().toDouble(), avgTarget.toDouble())
         fun lfPower(): Double = posOrNeg(lfTarget) * pidValue()
         fun rfPower(): Double = posOrNeg(rfTarget) * pidValue()
         fun lbPower(): Double = posOrNeg(lbTarget) * pidValue()
         fun rbPower(): Double = posOrNeg(rbTarget) * pidValue()
+        console.display(8, "lfPower ${lfPower()}")
+        console.display(9, "rfPower ${rfPower()}")
+        console.display(10, "lbPower ${lbPower()}")
+        console.display(11, "rbPower ${rbPower()}")
 
         driveSetPower(lfPower(), rfPower(), lbPower(), rbPower())
 
@@ -54,6 +64,8 @@ class JamesEncoderMovement (private val hardware: MecanumHardware, private val t
 
         for (i in 0..4) {
             while (driveAllAreBusy()) {
+                console.display(1, "avg Target: $avgTarget")
+                console.display(2, "avg current: ${avgCurrent()}")
                 driveSetPower(lfPower(), rfPower(), lbPower(), rbPower())
             }
             Thread.sleep(10)
@@ -420,4 +432,33 @@ class JamesEncoderMovement (private val hardware: MecanumHardware, private val t
 //        }
 //        drivePowerAll(0.0)
 //    }
+}
+
+@Autonomous
+class NewMovementTest: LinearOpMode() {
+
+    val console = TelemetryConsole(telemetry)
+    val hardware = MinibotHardware()
+
+    val movement = JamesEncoderMovement(hardware, console)
+
+    override fun runOpMode() {
+        hardware.init(hardwareMap)
+
+        waitForStart()
+
+        movement.changePosition(1.0, 10.0, 10.0, 90.0)
+//        movement.changePosition(1.0, forwardIn = 10.0, 0.0, 0.0)
+//        console.display(13, "forward 10")
+//        sleep(1000)
+//
+//        movement.changePosition(1.0, 0.0, sidewaysIn = 10.0, 0.0)
+//        console.display(13, "side 10")
+//        sleep(1000)
+//
+//        movement.changePosition(1.0, 0.0, 0.0, rotationDegrees = 90.0)
+//        console.display(13, "rotation 90")
+//        sleep(1000)
+    }
+
 }
