@@ -1,6 +1,6 @@
 package us.brainstormz.localization
 
-class VSLAMLocalizer:Localizer {
+class GeometricLocalizer:Localizer {
     override fun currentPositionAndRotation(): PositionAndRotation {
         TODO("Gabe will implement me!")
     }
@@ -12,4 +12,6 @@ class VSLAMLocalizer:Localizer {
     override fun setPositionAndRotation(x: Double?, y: Double?, r: Double?) {
         TODO("Gabe will implement me!")
     }
+
+
 }
