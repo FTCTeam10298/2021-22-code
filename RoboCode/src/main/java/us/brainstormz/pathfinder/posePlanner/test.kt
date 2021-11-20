@@ -22,17 +22,17 @@
 ////    val poly = Poly(PosAndRot(1.0, 1.0), PosAndRot(10.0, 10.0), PosAndRot(5.0,5.0))
 ////    println(poly.getLines())
 //
-//    val test = HitBoxTest()
+////    val test = HitBoxTest()
+////
+////    test.init(test)
+//////    test.runStuff()
+////    test.post()
 //
-//    test.init(test)
-////    test.runStuff()
-//    test.post()
-//
-////    val ultimateTest = UltimateTest()
-////    ultimateTest.init(ultimateTest)
-////    ultimateTest.runStuff()
-////    ultimateTest.findPath()
-////    ultimateTest.post()
+//    val ultimateTest = UltimateTest()
+//    ultimateTest.init(ultimateTest)
+//    ultimateTest.runStuff()
+//    ultimateTest.findPath()
+//    ultimateTest.post()
 //
 ////    val bezierTest = BezierTest()
 ////    bezierTest.init(bezierTest)
@@ -631,7 +631,7 @@
 //
 //
 //
-//class BezierCurveTest(private val comp: PaintComponent) {
+////class BezierCurveTest(private val comp: PaintComponent) {
 ////    fun main() {
 //////        val bezierCurve = interpolate(listOf(Point3D(0.0, 0.0, 0.0),
 //////                                             Point3D(2.7757000000000005, 7.182100000000002, 2.7757000000000005),

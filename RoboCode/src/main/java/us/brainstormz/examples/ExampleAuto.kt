@@ -2,10 +2,10 @@ package us.brainstormz.examples
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
-import us.brainstormz.choivico.robotCode.hardwareClasses.EncoderDriveMovement
-import us.brainstormz.choivico.telemetryWizard.TelemetryConsole
+import us.brainstormz.hardwareClasses.EncoderDriveMovement
+import us.brainstormz.telemetryWizard.TelemetryConsole
 
-@Autonomous
+//@Autonomous
 class ExampleAuto/** Change Depending on robot */: LinearOpMode() {
 
     val hardware = ExampleHardware()/** Change Depending on robot */

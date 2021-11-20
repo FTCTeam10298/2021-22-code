@@ -1,7 +1,7 @@
-package us.brainstormz.choivico.robotCode.hardwareClasses
+package us.brainstormz.hardwareClasses
 
 import com.qualcomm.robotcore.util.Range
-import us.brainstormz.choivico.telemetryWizard.TelemetryConsole
+import us.brainstormz.telemetryWizard.TelemetryConsole
 import us.brainstormz.localization.OdometryLocalizer
 import kotlin.math.abs
 

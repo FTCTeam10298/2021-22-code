@@ -1,4 +1,4 @@
-package us.brainstormz.choivico.openCvAbstraction
+package us.brainstormz.openCvAbstraction
 
 import android.os.SystemClock.sleep
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
@@ -56,6 +56,7 @@ class OpenCvAbstraction(private val opmode: OpMode) {
 
     var optimizeView = false
     var openCameraDeviceAsync = false
+    var cameraOrientation = OpenCvCameraRotation.UPRIGHT
     var cameraName: String = "Webcam 1"
 
 
@@ -69,7 +70,7 @@ class OpenCvAbstraction(private val opmode: OpMode) {
     }
 
     fun start() {
-        camera.startStreaming(432, 240, OpenCvCameraRotation.UPRIGHT)
+        camera.startStreaming(432, 240, cameraOrientation)
 //        camera.startStreaming(1920, 1080, OpenCvCameraRotation.UPRIGHT)
         sleep(100)
 

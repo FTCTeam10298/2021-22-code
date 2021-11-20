@@ -3,8 +3,8 @@
 import us.brainstormz.choivico.buttonHelper.ButtonHelper
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import com.qualcomm.robotcore.hardware.DcMotor
-import us.brainstormz.choivico.telemetryWizard.TelemetryConsole
-import us.brainstormz.choivico.robotCode.hardwareClasses.MecanumDriveTrain
+import us.brainstormz.telemetryWizard.TelemetryConsole
+import us.brainstormz.hardwareClasses.MecanumDriveTrain
 import kotlin.math.absoluteValue
 import kotlin.math.pow
 

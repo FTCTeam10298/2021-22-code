@@ -1,4 +1,4 @@
-package us.brainstormz.choivico.pid
+package us.brainstormz.pid
 
 fun main() {
     val pid: PID = PID()

@@ -38,7 +38,7 @@ import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.util.Range
 import kotlin.math.abs
 
-@TeleOp(name = "Brian TeleOp Kotlin", group = "Brian")
+@TeleOp(name = "Brian TeleOp", group = "Brian")
 class BrianTeleOp : OpMode() {
     /* Declare OpMode members. */
     var robot = BrianHardware() // use the class created to define FutureBot's hardware
@@ -168,9 +168,9 @@ class BrianTeleOp : OpMode() {
             endGameModeACTIVE = !endGameModeACTIVE
         }
         if (gamepad1.x || gamepad2.x) {
-            robot.markerDumper.power = 0.5
+            robot.duccSpinner.power = 0.5
         } else {
-            robot.markerDumper.power = 0.0
+            robot.duccSpinner.power = 0.0
         }
         if (gamepad1.y || gamepad2.y) {
             refinatorACTIVE = false

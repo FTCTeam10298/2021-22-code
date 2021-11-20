@@ -1,4 +1,4 @@
-package us.brainstormz.choivico.pid
+package us.brainstormz.pid
 
 import com.qualcomm.robotcore.util.Range
 
@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.util.Range
  * @param d derivative coefficient
  * @param f feed-forward coefficient
  * */
-open class PID(val k_p: Double = 0.0, val k_i: Double = 0.0, val k_d: Double = 0.0, val k_f: Double = 0.0) {
+open class PID(val kp: Double = 0.0, val ki: Double = 0.0, val kd: Double = 0.0, val kf: Double = 0.0) {
 
     var p: Double = 0.0
     var i: Double = 0.0
@@ -27,7 +27,7 @@ open class PID(val k_p: Double = 0.0, val k_i: Double = 0.0, val k_d: Double = 0
      * Calculates pidf in a loop.
      * @param target the target value for the controller
      * @param feedback the current value
-     * @return the calculated value for the us.us.brainstormz.choivico.pid
+     * @return the calculated value for the us.us.brainstormz.pid
      */
     fun calcPID(target: Double, feedback: Double): Double {
         val error: Double = target - feedback
@@ -39,9 +39,9 @@ open class PID(val k_p: Double = 0.0, val k_i: Double = 0.0, val k_d: Double = 0
         if (deltaTimeMs < 1)
             deltaTimeMs = 1
 
-        p = k_p * error
-        i += k_i * (error * deltaTimeMs.toDouble())
-        d = k_d * (error - lastError) / deltaTimeMs.toDouble()
+        p = kp * error
+        i += ki * (error * deltaTimeMs.toDouble())
+        d = kd * (error - lastError) / deltaTimeMs.toDouble()
 
         i = Range.clip(i, -0.1, 0.1)
 

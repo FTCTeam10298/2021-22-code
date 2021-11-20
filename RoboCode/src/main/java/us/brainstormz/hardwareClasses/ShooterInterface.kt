@@ -1,4 +1,4 @@
-package us.brainstormz.choivico.robotCode.hardwareClasses
+package us.brainstormz.hardwareClasses
 
 import android.os.SystemClock.sleep
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.hardware.Servo
-import us.brainstormz.choivico.pid.MotorWithPID
+import us.brainstormz.pid.MotorWithPID
 import us.brainstormz.choivico.robotCode.aimBot.AimBotHardware
 
 @Autonomous

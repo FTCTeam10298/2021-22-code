@@ -1,7 +1,7 @@
 package us.brainstormz.choivico.buttonHelper
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
-import us.brainstormz.choivico.telemetryWizard.TelemetryConsole
+import us.brainstormz.telemetryWizard.TelemetryConsole
 
 //@TeleOp(name="Button Test", group="Tests")
 class ButtonTest(): OpMode() {

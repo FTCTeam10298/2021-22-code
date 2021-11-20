@@ -1,4 +1,4 @@
-package us.brainstormz.choivico.pid
+package us.brainstormz.pid
 
 import com.qualcomm.robotcore.hardware.DcMotorEx
 

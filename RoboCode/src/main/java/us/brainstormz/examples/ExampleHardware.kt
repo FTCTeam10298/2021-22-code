@@ -2,7 +2,7 @@ package us.brainstormz.examples
 
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.HardwareMap
-import us.brainstormz.choivico.robotCode.hardwareClasses.MecanumHardware
+import us.brainstormz.hardwareClasses.MecanumHardware
 
 class ExampleHardware : MecanumHardware {
     override lateinit var lFDrive: DcMotor

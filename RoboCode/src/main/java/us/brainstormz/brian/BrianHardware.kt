@@ -3,7 +3,8 @@ package us.brainstormz.brian
 import com.qualcomm.robotcore.hardware.*
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorSimple
-import us.brainstormz.choivico.robotCode.hardwareClasses.MecanumHardware
+import us.brainstormz.hardwareClasses.MecanumHardware
+import java.lang.Thread.sleep
 
 /**
  * This is NOT an opmode.
@@ -17,13 +18,11 @@ class BrianHardware: MecanumHardware {
     lateinit var backRightDrive: DcMotor
     lateinit var extendoArm5000initial: DcMotor
     lateinit var extendoArm5000: DcMotorEx
-    lateinit var pivotArm1initial: DcMotor
-    lateinit var pivotArm2initial: DcMotor
     lateinit var pivotArm1: DcMotorEx
     lateinit var pivotArm2: DcMotorEx
     lateinit var collectOtron: DcMotor
     lateinit var collectorGate: Servo
-    lateinit var markerDumper: CRServo
+    lateinit var duccSpinner: CRServo
     lateinit var potentiometer: AnalogInput
     override lateinit var lFDrive: DcMotor
     override lateinit var rFDrive: DcMotor
@@ -51,12 +50,10 @@ class BrianHardware: MecanumHardware {
         rBDrive = backRightDrive
 
         extendoArm5000initial = hwMap["extendoArm_5000"] as DcMotor
-        pivotArm1initial = hwMap["pivotArm1"] as DcMotor
-        pivotArm2initial = hwMap["pivotArm2"] as DcMotor
+        pivotArm1 = hwMap["pivotArm1"] as DcMotorEx
+        pivotArm2 = hwMap["pivotArm2"] as DcMotorEx
         collectOtron = hwMap["collectOtron"] as DcMotor
         extendoArm5000 = extendoArm5000initial as DcMotorEx
-        pivotArm1 = pivotArm1initial as DcMotorEx
-        pivotArm2 = pivotArm2initial as DcMotorEx
 
         // Set direction for all motors
         frontLeftDrive.direction = DcMotorSimple.Direction.REVERSE
@@ -106,9 +103,9 @@ class BrianHardware: MecanumHardware {
 
         // Define and initialize all installed servos
         collectorGate = hwMap.servo["extension_lock"]
-        markerDumper = hwMap.crservo["marker_dumper"]
+        duccSpinner = hwMap.crservo["marker_dumper"]
         collectorGate.position = .68
-        markerDumper.power = 0.0
+        duccSpinner.power = 0.0
 
         // Initialize arm position sensor
         potentiometer = hwMap.get(AnalogInput::class.java, "potentiometer")
@@ -183,6 +180,17 @@ class BrianHardware: MecanumHardware {
                 && backRightDrive.isBusy)
     }
 
+    fun pivotArmToPosition(target: Double, power: Double) {
+        pivotArm1.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
+        pivotArm2.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
+
+        pivotArm1.power = power
+        pivotArm2.power = power
+        while (pivotArmGetPosition() <= target)
+            sleep(100)
+        pivotArm1.power = 0.0
+        pivotArm2.power = 0.0
+    }
     fun pivotArmGetPosition(): Double {
         // Sensor returns voltage from 0 to 3.34, normalize to a range of 0-1, then multiply by potentiometer range, then error
         return potentiometer.voltage / 3.34 * 270 * 1.578947368

@@ -1,8 +1,8 @@
 package us.brainstormz.choivico.creamsicleGoalDetection
 
-import us.brainstormz.choivico.pid.PID
+import us.brainstormz.pid.PID
 import us.brainstormz.choivico.robotCode.ChoiVicoHardware
-import us.brainstormz.choivico.telemetryWizard.TelemetryConsole
+import us.brainstormz.telemetryWizard.TelemetryConsole
 
 //This stuff allows *you*, a clueless developer, to target obliterating force onto your enemies and use my little ol' library with big clunky old Kotlin Driven machinery.
 //It has four calls to run.

@@ -2,7 +2,7 @@ package us.brainstormz.choivico.robotCode
 
 import com.qualcomm.hardware.rev.RevTouchSensor
 import com.qualcomm.robotcore.hardware.*
-import us.brainstormz.choivico.robotCode.hardwareClasses.MecOdometryHardware
+import us.brainstormz.hardwareClasses.MecOdometryHardware
 
 class ChoiVicoHardware(): MecOdometryHardware {
     val turretCameraName =  "turretWebcam"

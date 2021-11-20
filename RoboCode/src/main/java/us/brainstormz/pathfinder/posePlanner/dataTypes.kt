@@ -4,6 +4,56 @@ import locationTracking.PosAndRot
 import kotlin.math.*
 
 //abstract class Plot(val x: Double, val y: Double, val width: Double, val height: Double)
+class Hitbox(val bounds: Poly? = null) {
+
+    fun createHitbox(line: Line): Poly {
+        val rightAngleToStart = line.end.rotateAround(line.start, PI *.5)
+        val startSideA = line.start.coordinateAlongLine(1.0, rightAngleToStart)
+        val startSideB = line.start.coordinateAlongLine(-1.0, rightAngleToStart)
+
+        println(rightAngleToStart)
+        println("Start: ${line.start}")
+        println(startSideA)
+        val rightAngleToEnd = line.start.rotateAround(line.end, -PI *.5)
+        val endSideA = line.end.coordinateAlongLine(1.0, rightAngleToEnd)
+        val endSideB = line.end.coordinateAlongLine(-1.0, rightAngleToEnd)
+
+        return Poly(startSideA, endSideA, startSideB, endSideB)
+    }
+
+    fun collides(obs: List<Obstruction>): Pair<PosAndRot, Obstruction>? {
+
+        var result: Pair<PosAndRot, Obstruction>? = null
+        bounds!!.getLines().forEach {
+            val newIntersect = firstIntersection(it, obs)
+            if (newIntersect != null)
+                if (result == null || newIntersect.first.distance(it.start) < result!!.first.distance(it.start)){
+                    result = newIntersect
+                }
+        }
+
+        return result
+    }
+
+    fun firstIntersection(l: Line, obstructions: List<Obstruction>): Pair<PosAndRot, Obstruction>? {
+        var result: PosAndRot? = null
+        var intersect: Obstruction? = null
+        obstructions.forEach {
+            val newIntersect = it.poly.intersection(l)
+            if (newIntersect != null)
+                if (result == null || newIntersect.first.distance(l.start) < result!!.distance(l.start)){
+                    result = newIntersect.first
+                    intersect = it
+                }
+        }
+
+        return if (intersect != null)
+            result!! to intersect!!
+        else
+            null
+    }
+
+}
 
 class Poly(p1: PosAndRot, p2: PosAndRot, p3:PosAndRot, vararg  points: PosAndRot) {
     val points = listOf(p1, p2, p3, *points)

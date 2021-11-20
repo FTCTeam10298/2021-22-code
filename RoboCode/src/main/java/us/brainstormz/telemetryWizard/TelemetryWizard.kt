@@ -1,4 +1,4 @@
-package us.brainstormz.choivico.telemetryWizard
+package us.brainstormz.telemetryWizard
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.hardware.Gamepad
@@ -84,7 +84,7 @@ class TelemetryWizard(private val console: TelemetryConsole, private val opmode:
 
             menuDone = false
 
-            while (!menuDone) {
+            while (!menuDone && !opmode.opModeIsActive()) {
                 changeCursorBasedOnDPad(gamepad, thisMenu)
 
                 displayMenu(formatMenu(thisMenu))
