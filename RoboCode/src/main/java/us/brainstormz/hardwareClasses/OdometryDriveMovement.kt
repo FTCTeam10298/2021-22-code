@@ -1,7 +1,7 @@
 package us.brainstormz.hardwareClasses
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
-import us.brainstormz.localization.PositionAndRotation
+import us.brainstormz.localizer.PositionAndRotation
 import us.brainstormz.pid.PID
 import us.brainstormz.telemetryWizard.TelemetryConsole
 import kotlin.math.*

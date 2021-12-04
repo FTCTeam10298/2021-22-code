@@ -11,13 +11,10 @@ import us.brainstormz.telemetryWizard.TelemetryConsole
 
 
 @Autonomous(name="Creamsicle Test and Calibration", group="Tests")
-class CreamsicleAutoAimTestAndCal : OpMode() {
-    val hardware = ChoiVicoHardware()
+class LocalizerAutoAimTestAndCal : OpMode() {
     val console = TelemetryConsole(telemetry)
     val opencv = OpenCvAbstraction(this)
-    val goalDetector = CreamsicleGoalDetector(console)
-    val aimer = UltimateGoalAimer(console, goalDetector, hardware)
-    val movement = EncoderDriveMovement(hardware, console)
+    val clutterDetector = ClutterDetector(console)
     val font = Imgproc.FONT_HERSHEY_COMPLEX
     val XbuttonHelper = ButtonHelper()
     val YbuttonHelper = ButtonHelper()
@@ -27,14 +24,11 @@ class CreamsicleAutoAimTestAndCal : OpMode() {
     val AbuttonHelper = ButtonHelper()
 
     override fun init() {
-        hardware.init(hardwareMap)
-        opencv.cameraName = hardware.turretCameraName
-        opencv.init(hardwareMap)
         opencv.start()
-        opencv.onNewFrame(goalDetector::scoopFrame)
+        opencv.onNewFrame(clutterDetector::scoopFrame)
     }
 
-    private var varBeingEdited: CreamsicleGoalDetector.NamedVar = goalDetector.goalColor.L_H
+    private var varBeingEdited: ClutterDetector.NamedVar = ClutterDetector.goalColor
     fun render() {
         console.display(2, "Active Var; ${varBeingEdited.name}")
         console.display(4, "${varBeingEdited.value}")
@@ -42,11 +36,11 @@ class CreamsicleAutoAimTestAndCal : OpMode() {
 
     override fun init_loop() {
         if (XbuttonHelper.stateChanged(gamepad1.x) && gamepad1.x) {
-            console.display(3, "TrainerMODE; ${goalDetector.displayMode}")
-            when (goalDetector.displayMode) {
-                "frame" -> goalDetector.displayMode = "mask"
-                "mask" -> goalDetector.displayMode = "kernel"
-                "kernel" -> goalDetector.displayMode = "frame"
+            console.display(3, "TrainerMODE; ${ClutterDetector.displayMode}")
+            when (ClutterDetector.displayMode) {
+                "frame" -> ClutterDetector.displayMode = "mask"
+                "mask" -> ClutterDetector.displayMode = "kernel"
+                "kernel" -> ClutterDetector.displayMode = "frame"
             }
             render()
         }
@@ -55,12 +49,12 @@ class CreamsicleAutoAimTestAndCal : OpMode() {
         when {
             DpadHelper.stateChanged(gamepad1.dpad_left) && gamepad1.dpad_left -> {
                 when (varBeingEdited) {
-                    goalDetector.goalColor.L_H -> varBeingEdited = goalDetector.goalColor.L_S
-                    goalDetector.goalColor.L_S -> varBeingEdited = goalDetector.goalColor.L_V
-                    goalDetector.goalColor.L_V -> varBeingEdited = goalDetector.goalColor.U_H
-                    goalDetector.goalColor.U_H -> varBeingEdited = goalDetector.goalColor.U_S
-                    goalDetector.goalColor.U_S -> varBeingEdited = goalDetector.goalColor.U_V
-                    goalDetector.goalColor.U_V -> varBeingEdited = goalDetector.goalColor.L_H
+                    ClutterDetector.goalColor.L_H -> varBeingEdited = ClutterDetector.goalColor.L_S
+                    ClutterDetector.goalColor.L_S -> varBeingEdited = ClutterDetector.goalColor.L_V
+                    ClutterDetector.goalColor.L_V -> varBeingEdited = ClutterDetector.goalColor.U_H
+                    ClutterDetector.goalColor.U_H -> varBeingEdited = ClutterDetector.goalColor.U_S
+                    ClutterDetector.goalColor.U_S -> varBeingEdited = ClutterDetector.goalColor.U_V
+                    ClutterDetector.goalColor.U_V -> varBeingEdited = ClutterDetector.goalColor.L_H
                 }
                 render()
             }

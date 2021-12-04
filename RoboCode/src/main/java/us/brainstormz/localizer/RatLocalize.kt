@@ -1,4 +1,4 @@
-package us.brainstormz.CreamsicleVision
+package us.brainstormz.localizer
 
 class RatLocalize:Localizer {
     override fun currentPositionAndRotation(): PositionAndRotation {

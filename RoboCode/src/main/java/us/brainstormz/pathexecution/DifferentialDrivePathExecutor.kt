@@ -1,6 +1,6 @@
 package us.brainstormz.pathexecution
 
-import us.brainstormz.localization.Localizer
+import us.brainstormz.localizer.Localizer
 import us.brainstormz.motion.DifferentialDrivePlatform
 import us.brainstormz.path.Path
 import java.util.concurrent.CompletableFuture

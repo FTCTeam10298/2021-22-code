@@ -11,14 +11,15 @@
 //As it burns, throw uniform in (all articles of clothing)
 //Lie until further notice.
 
+//Detecting Red Storage Unit (TODO: currently Contour checker)
 
-package us.brainstormz.CreamsicleVision
+package us.brainstormz.localizer
 
 import org.opencv.core.*
 import org.opencv.imgproc.Imgproc
 import us.brainstormz.telemetryWizard.TelemetryConsole
 
-class CreamsicleDetector(private val console: TelemetryConsole){
+class ClutterDetector(private val console: TelemetryConsole){
 
     // THIS STUFF DO BE A DETECTOR. pICTURE AN 'APPLE IN A SUNNY ROOM' (thought experiment © 1998 Aperture Science Innovators)
     //RED will detect that apple if it's lit by a halogen bulb (panel, only $200,000,000 per!)
@@ -40,7 +41,7 @@ class CreamsicleDetector(private val console: TelemetryConsole){
 
     private val font = Imgproc.FONT_HERSHEY_COMPLEX
 
-    var displayMode: String = "frame"
+    public var displayMode: String = "frame"
 
     class NamedVar(val name: String, var value: Double)
 
@@ -158,7 +159,9 @@ class CreamsicleDetector(private val console: TelemetryConsole){
 
                 // cv2.drawContours(frame, [approx], 0, (0, 0, 0), 5)
                 Imgproc.drawContours(frame, mutableListOf(convert(points)), 0, Scalar(0.0, 0.0, 0.0), 5)
-
+                if (points.toArray().size > 2){
+                    console.display(14, "${points.toArray().size}")
+                }
                 when (points.toArray().size) {
                     3 -> {
                         // cv2.putText(frame, "triangle", (x, y), font, 1, (22, 100, 100))

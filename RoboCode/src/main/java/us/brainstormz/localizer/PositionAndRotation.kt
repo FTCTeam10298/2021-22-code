@@ -1,4 +1,4 @@
-package us.brainstormz.CreamsicleVision
+package us.brainstormz.localizer
 
 import kotlin.math.hypot
 

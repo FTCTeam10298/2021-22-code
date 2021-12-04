@@ -4,7 +4,7 @@ import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cRangeSensor
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.util.Range
-import us.brainstormz.localization.PositionAndRotation
+import us.brainstormz.localizer.PositionAndRotation
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit
 import us.brainstormz.pid.PID
 import us.brainstormz.telemetryWizard.TelemetryConsole
