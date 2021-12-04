@@ -1,6 +1,6 @@
-package us.brainstormz.localization
+package us.brainstormz.CreamsicleVision
 
-class GeometricLocalizer:Localizer {
+class RatLocalize:Localizer {
     override fun currentPositionAndRotation(): PositionAndRotation {
         TODO("Gabe will implement me!")
     }

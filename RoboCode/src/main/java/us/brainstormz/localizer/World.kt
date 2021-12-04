@@ -1,4 +1,4 @@
-package us.brainstormz.localization
+package us.brainstormz.CreamsicleVision
 
 interface World {
     fun currentPositionAndRotation(): PositionAndRotation
