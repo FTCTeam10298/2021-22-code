@@ -1,8 +1,7 @@
 package us.brainstormz.choivico.robotCode
 
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
-import us.brainstormz.localization.PositionAndRotation
+import us.brainstormz.localizer.PositionAndRotation
 import us.brainstormz.hardwareClasses.OdometryDriveMovement
 import us.brainstormz.telemetryWizard.TelemetryConsole
 

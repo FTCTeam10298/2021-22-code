@@ -2,7 +2,7 @@ package us.brainstormz.hardwareClasses
 
 import com.qualcomm.robotcore.util.Range
 import us.brainstormz.telemetryWizard.TelemetryConsole
-import us.brainstormz.localization.OdometryLocalizer
+import us.brainstormz.localizer.OdometryLocalizer
 import kotlin.math.abs
 
 open class OdometryDriveTrain(private val hardware: MecOdometryHardware, private val console: TelemetryConsole): MecanumDriveTrain(hardware) {

@@ -1,6 +1,6 @@
 package us.brainstormz.path
 
-import us.brainstormz.localization.PositionAndRotation
+import us.brainstormz.localizer.PositionAndRotation
 
 interface Path {
     fun length():Double

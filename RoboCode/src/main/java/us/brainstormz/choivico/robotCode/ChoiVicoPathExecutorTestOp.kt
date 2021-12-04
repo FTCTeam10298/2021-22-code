@@ -2,7 +2,7 @@ package us.brainstormz.choivico.robotCode
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
-import us.brainstormz.localization.OdometryLocalizer
+import us.brainstormz.localizer.OdometryLocalizer
 import us.brainstormz.motion.MecanumDifferentialDrivePlatform
 import us.brainstormz.path.FollowOneWall
 import us.brainstormz.pathexecution.DifferentialDrivePathExecutor

@@ -88,7 +88,7 @@ public class ConceptTensorFlowObjectDetectionWebcam extends LinearOpMode {
 
     /**
      * {@link #vuforia} is the variable we will use to store our instance of the Vuforia
-     * localization engine.
+     * CreamsicleVision engine.
      */
     private VuforiaLocalizer vuforia;
 
@@ -152,7 +152,7 @@ public class ConceptTensorFlowObjectDetectionWebcam extends LinearOpMode {
     }
 
     /**
-     * Initialize the Vuforia localization engine.
+     * Initialize the Vuforia CreamsicleVision engine.
      */
     private void initVuforia() {
         /*
