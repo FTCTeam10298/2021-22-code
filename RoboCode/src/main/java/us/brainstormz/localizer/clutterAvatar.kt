@@ -19,7 +19,7 @@ import org.opencv.core.*
 import org.opencv.imgproc.Imgproc
 import us.brainstormz.telemetryWizard.TelemetryConsole
 
-class ClutterDetector(private val console: TelemetryConsole){
+class clutterAvatar(private val console: TelemetryConsole){
 
     // THIS STUFF DO BE A DETECTOR. pICTURE AN 'APPLE IN A SUNNY ROOM' (thought experiment © 1998 Aperture Science Innovators)
     //RED will detect that apple if it's lit by a halogen bulb (panel, only $200,000,000 per!)
@@ -93,7 +93,7 @@ class ClutterDetector(private val console: TelemetryConsole){
             U_S = NamedVar("Upper Saturation", 255.0),
             U_V = NamedVar("Upper Vanity/Variance/VolumentricVibracity", 255.0))
 
-    val goalColor = when(targetHue){
+    public val goalColor = when(targetHue){
         TargetHue.RED -> redColor
         TargetHue.BLUE -> blueColor
         TargetHue.absRED -> redAbsoluteColor

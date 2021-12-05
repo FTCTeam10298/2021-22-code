@@ -14,7 +14,7 @@ import us.brainstormz.telemetryWizard.TelemetryConsole
 class LocalizerAutoAimTestAndCal : OpMode() {
     val console = TelemetryConsole(telemetry)
     val opencv = OpenCvAbstraction(this)
-    val clutterDetector = ClutterDetector(console)
+    val clutterAvatar = clutterAvatar(console)
     val font = Imgproc.FONT_HERSHEY_COMPLEX
     val XbuttonHelper = ButtonHelper()
     val YbuttonHelper = ButtonHelper()
@@ -25,10 +25,10 @@ class LocalizerAutoAimTestAndCal : OpMode() {
 
     override fun init() {
         opencv.start()
-        opencv.onNewFrame(clutterDetector::scoopFrame)
+        opencv.onNewFrame(clutterAvatar::scoopFrame)
     }
 
-    private var varBeingEdited: ClutterDetector.NamedVar = ClutterDetector.goalColor
+    private var varBeingEdited: clutterAvatar.NamedVar = clutterAvatar.goalColor.U_H
     fun render() {
         console.display(2, "Active Var; ${varBeingEdited.name}")
         console.display(4, "${varBeingEdited.value}")
@@ -36,11 +36,11 @@ class LocalizerAutoAimTestAndCal : OpMode() {
 
     override fun init_loop() {
         if (XbuttonHelper.stateChanged(gamepad1.x) && gamepad1.x) {
-            console.display(3, "TrainerMODE; ${ClutterDetector.displayMode}")
-            when (ClutterDetector.displayMode) {
-                "frame" -> ClutterDetector.displayMode = "mask"
-                "mask" -> ClutterDetector.displayMode = "kernel"
-                "kernel" -> ClutterDetector.displayMode = "frame"
+            console.display(3, "TrainerMODE; ${clutterAvatar.displayMode}")
+            when (clutterAvatar.displayMode) {
+                "frame" -> clutterAvatar.displayMode = "mask"
+                "mask" -> clutterAvatar.displayMode = "kernel"
+                "kernel" -> clutterAvatar.displayMode = "frame"
             }
             render()
         }
@@ -49,12 +49,12 @@ class LocalizerAutoAimTestAndCal : OpMode() {
         when {
             DpadHelper.stateChanged(gamepad1.dpad_left) && gamepad1.dpad_left -> {
                 when (varBeingEdited) {
-                    ClutterDetector.goalColor.L_H -> varBeingEdited = ClutterDetector.goalColor.L_S
-                    ClutterDetector.goalColor.L_S -> varBeingEdited = ClutterDetector.goalColor.L_V
-                    ClutterDetector.goalColor.L_V -> varBeingEdited = ClutterDetector.goalColor.U_H
-                    ClutterDetector.goalColor.U_H -> varBeingEdited = ClutterDetector.goalColor.U_S
-                    ClutterDetector.goalColor.U_S -> varBeingEdited = ClutterDetector.goalColor.U_V
-                    ClutterDetector.goalColor.U_V -> varBeingEdited = ClutterDetector.goalColor.L_H
+                    clutterAvatar.goalColor.L_H -> varBeingEdited = clutterAvatar.goalColor.L_S
+                    clutterAvatar.goalColor.L_S -> varBeingEdited = clutterAvatar.goalColor.L_V
+                    clutterAvatar.goalColor.L_V -> varBeingEdited = clutterAvatar.goalColor.U_H
+                    clutterAvatar.goalColor.U_H -> varBeingEdited = clutterAvatar.goalColor.U_S
+                    clutterAvatar.goalColor.U_S -> varBeingEdited = clutterAvatar.goalColor.U_V
+                    clutterAvatar.goalColor.U_V -> varBeingEdited = clutterAvatar.goalColor.L_H
                 }
                 render()
             }
@@ -62,12 +62,12 @@ class LocalizerAutoAimTestAndCal : OpMode() {
 
         if (YbuttonHelper.stateChanged(gamepad1.y) && gamepad1.y) {
             console.display(1, "Vals Zeroed")
-            goalDetector.goalColor.L_H.value = 0.0
-            goalDetector.goalColor.L_S.value = 0.0
-            goalDetector.goalColor.L_V.value = 0.0
-            goalDetector.goalColor.U_H.value = 0.0
-            goalDetector.goalColor.U_S.value = 0.0
-            goalDetector.goalColor.U_V.value = 0.0
+            clutterAvatar.goalColor.L_H.value = 0.0
+            clutterAvatar.goalColor.L_S.value = 0.0
+            clutterAvatar.goalColor.L_V.value = 0.0
+            clutterAvatar.goalColor.U_H.value = 0.0
+            clutterAvatar.goalColor.U_S.value = 0.0
+            clutterAvatar.goalColor.U_V.value = 0.0
             render()
         }
 
@@ -81,12 +81,12 @@ class LocalizerAutoAimTestAndCal : OpMode() {
         }
 
         if (AbuttonHelper.stateChanged(gamepad1.a) && gamepad1.a) {
-            goalDetector.goalColor.L_H.value = 0.0
-            goalDetector.goalColor.L_S.value = 0.0
-            goalDetector.goalColor.L_V.value = 0.0
-            goalDetector.goalColor.U_H.value = 255.0
-            goalDetector.goalColor.U_S.value = 255.0
-            goalDetector.goalColor.U_V.value = 255.0
+            clutterAvatar.goalColor.L_H.value = 0.0
+            clutterAvatar.goalColor.L_S.value = 0.0
+            clutterAvatar.goalColor.L_V.value = 0.0
+            clutterAvatar.goalColor.U_H.value = 255.0
+            clutterAvatar.goalColor.U_S.value = 255.0
+            clutterAvatar.goalColor.U_V.value = 255.0
             console.display(1, "Vals Squonked")
             render()
         }
