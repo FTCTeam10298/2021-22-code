@@ -2,15 +2,14 @@ package us.brainstormz.rattatoni
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
-import com.qualcomm.robotcore.hardware.DcMotor
 import us.brainstormz.hardwareClasses.MecanumDriveTrain
 import us.brainstormz.telemetryWizard.TelemetryConsole
 
 @TeleOp(name="Minibot TeleOp", group="Minibot")
-class MinibotTeleOp: OpMode() {
+class RataTonyTeleOp: OpMode() {
 
     val console = TelemetryConsole(telemetry)
-    val hardware = MinibotHardware()
+    val hardware = RataTonyHardware()
 
     val robot = MecanumDriveTrain(hardware)
     val depositor = Depositor(hardware)

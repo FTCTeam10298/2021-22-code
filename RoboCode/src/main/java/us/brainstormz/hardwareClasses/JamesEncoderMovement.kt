@@ -3,7 +3,7 @@ package us.brainstormz.hardwareClasses
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import us.brainstormz.pid.PID
-import us.brainstormz.rattatoni.MinibotHardware
+import us.brainstormz.rattatoni.RataTonyHardware
 import us.brainstormz.telemetryWizard.TelemetryConsole
 import kotlin.math.PI
 
@@ -84,7 +84,7 @@ class JamesEncoderMovement (private val hardware: MecanumHardware, private val c
 class NewMovementTest: LinearOpMode() {
 
     val console = TelemetryConsole(telemetry)
-    val hardware = MinibotHardware()
+    val hardware = RataTonyHardware()
 
     val movement = JamesEncoderMovement(hardware, console)
 

@@ -2,7 +2,6 @@ package us.brainstormz.rattatoni
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
-import org.openftc.easyopencv.OpenCvCameraRotation
 import us.brainstormz.openCvAbstraction.OpenCvAbstraction
 import us.brainstormz.hardwareClasses.EncoderDriveMovement
 import us.brainstormz.hardwareClasses.JamesEncoderMovement
@@ -11,12 +10,12 @@ import us.brainstormz.telemetryWizard.TelemetryWizard
 import us.brainstormz.rattatoni.TeamScoringElementDetector.TSEPosition
 
 @Autonomous(name="Minibot Auto", group="Minibot")
-class MinibotAuto: LinearOpMode() {
+class RataTonyAuto: LinearOpMode() {
 
     val console = TelemetryConsole(telemetry)
     val wizard = TelemetryWizard(console, this)
 
-    val hardware = MinibotHardware()
+    val hardware = RataTonyHardware()
     val movement = EncoderDriveMovement(hardware, console)
     val jovement = JamesEncoderMovement(hardware,console)
     val depositor = Depositor(hardware)

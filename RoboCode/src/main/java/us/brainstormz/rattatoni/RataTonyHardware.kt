@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.hardware.*
 import org.firstinspires.ftc.robotcore.external.Telemetry
 import us.brainstormz.hardwareClasses.MecanumHardware
 
-class MinibotHardware: MecanumHardware {
+class RataTonyHardware: MecanumHardware {
     override lateinit var lFDrive: DcMotor
     override lateinit var rFDrive: DcMotor
     override lateinit var lBDrive: DcMotor
