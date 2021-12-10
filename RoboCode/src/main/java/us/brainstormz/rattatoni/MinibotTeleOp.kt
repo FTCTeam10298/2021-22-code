@@ -64,9 +64,9 @@ class MinibotTeleOp: OpMode() {
 
         // Collector
         if (gamepad1.right_bumper || gamepad2.right_bumper) {
-            hardware.collector.power = 0.5
+            hardware.collector.power = 1.0
         } else if (gamepad1.left_bumper || gamepad2.left_bumper) {
-            hardware.collector.power = -0.5
+            hardware.collector.power = -1.0
         } else {
             hardware.collector.power = 0.0
         }
