@@ -34,9 +34,10 @@ class MinibotAuto: LinearOpMode() {
         waitForStart()
         /** AUTONOMOUS  PHASE */
 
-        movement.driveRobotStrafe(1.0, 10.0, true)
-        movement.driveRobotTurn(1.0,45.0,true)
-
-
+//        movement.driveRobotStrafe(1.0, 10.0, true)
+//        movement.driveRobotTurn(1.0,30.0,true)
+//        depositor.yToPosition(depositor.midGoalHeight)
+//        movement.driveRobotStrafe(1.0, 30.0, true)
+        movement.driveRobotTurn(0.2, 1800.0, true)
     }
 }
