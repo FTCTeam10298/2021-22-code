@@ -2,19 +2,14 @@ package us.brainstormz.rattatoni
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp
-import us.brainstormz.openCvAbstraction.OpenCvAbstraction
-import us.brainstormz.hardwareClasses.EncoderDriveMovement
 import us.brainstormz.telemetryWizard.TelemetryConsole
-import us.brainstormz.telemetryWizard.TelemetryWizard
-import us.brainstormz.rattatoni.TeamScoringElementDetector.TSEPosition
 
 @Autonomous(name="Minibot Motor Test", group="Minibot")
-class MinibotMotorTest: LinearOpMode() {
+class RataTonyMotorTest: LinearOpMode() {
 
     val console = TelemetryConsole(telemetry)
 
-    val hardware = MinibotHardware()
+    val hardware = RataTonyHardware()
 
     override fun runOpMode() {
         /** INIT PHASE */

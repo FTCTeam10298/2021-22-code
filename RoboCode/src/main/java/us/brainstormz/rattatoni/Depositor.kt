@@ -2,11 +2,10 @@ package us.brainstormz.rattatoni
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import com.qualcomm.robotcore.hardware.DcMotor
-import org.firstinspires.ftc.robotcore.external.Telemetry
 import us.brainstormz.pid.PID
 import java.lang.Thread.sleep
 
-class Depositor(private val hardware: MinibotHardware) {
+class Depositor(private val hardware: RataTonyHardware) {
     enum class XPosition {
         Extend,
         Retract
@@ -169,7 +168,7 @@ class Depositor(private val hardware: MinibotHardware) {
 //@TeleOp(name="Depositor Tuner", group="Minibot")
 class DepositorTuner: OpMode() {
 
-    val hardware = MinibotHardware()
+    val hardware = RataTonyHardware()
     val depositor = Depositor(hardware)
 
     override fun init() {
