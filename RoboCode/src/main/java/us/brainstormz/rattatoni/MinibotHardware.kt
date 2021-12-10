@@ -32,6 +32,11 @@ class MinibotHardware: MecanumHardware {
         rBDrive.direction = DcMotorSimple.Direction.FORWARD
         lBDrive.direction = DcMotorSimple.Direction.REVERSE
 
+        rFDrive.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
+        lFDrive.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
+        rBDrive.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
+        lBDrive.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
+
         rFDrive.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
         lFDrive.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
         rBDrive.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
