@@ -53,17 +53,6 @@ class MinibotTeleOp: OpMode() {
             depositor.drop()
         else
             depositor.close()
-
-        if (gamepad2.a) {
-            depositor.state = 0
-            depositor.home()
-        }
-
-        if (gamepad2.b) {
-            depositor.state = 1
-            depositor.yToPosition(depositor.lowGoalHeight)
-        }
-
 //        if (depositor.state == 1 && !hardware.liftMotor.isBusy) {
 //            depositor.xToPosition(Depositor.XPosition.Extend)
 //            depositor.state = 0
