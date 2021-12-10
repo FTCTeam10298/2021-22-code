@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import org.openftc.easyopencv.OpenCvCameraRotation
 import us.brainstormz.openCvAbstraction.OpenCvAbstraction
 import us.brainstormz.hardwareClasses.EncoderDriveMovement
+import us.brainstormz.hardwareClasses.JamesEncoderMovement
 import us.brainstormz.telemetryWizard.TelemetryConsole
 import us.brainstormz.telemetryWizard.TelemetryWizard
 import us.brainstormz.rattatoni.TeamScoringElementDetector.TSEPosition
@@ -17,6 +18,7 @@ class MinibotAuto: LinearOpMode() {
 
     val hardware = MinibotHardware()
     val movement = EncoderDriveMovement(hardware, console)
+    val jovement = JamesEncoderMovement(hardware,console)
     val depositor = Depositor(hardware)
 
 
@@ -32,6 +34,9 @@ class MinibotAuto: LinearOpMode() {
         waitForStart()
         /** AUTONOMOUS  PHASE */
 
-        movement.driveRobotPosition(1.0, -40.0, true)
+        movement.driveRobotStrafe(1.0, 10.0, true)
+        movement.driveRobotTurn(1.0,45.0,true)
+
+
     }
 }
