@@ -33,10 +33,24 @@ class RataTonyAuto: LinearOpMode() {
         waitForStart()
         /** AUTONOMOUS  PHASE */
 
-//        movement.driveRobotStrafe(1.0, 10.0, true)
-//        movement.driveRobotTurn(1.0,30.0,true)
-//        depositor.yToPosition(depositor.midGoalHeight)
-//        movement.driveRobotStrafe(1.0, 30.0, true)
-        movement.driveRobotTurn(0.2, 1800.0, true)
+//        deliver
+        movement.driveRobotStrafe(1.0, 5.0, true)
+        movement.driveRobotTurn(1.0,40.0,true)
+        depositor.yToPosition(depositor.midGoalHeight)
+        movement.driveRobotStrafe(1.0, 11.0, true)
+        movement.driveRobotPosition(1.0, 5.0, true)
+        movement.driveRobotStrafe(1.0, 15.0, true)
+        movement.driveRobotPosition(1.0, -9.0, true)
+        movement.driveRobotStrafe(1.0, 10.5, true)
+        hardware.horiServo.power = 1.0
+        sleep(2000)
+        hardware.horiServo.power = 0.0
+        depositor.drop()
+        hardware.horiServo.power = -1.0
+        sleep(2000)
+        hardware.horiServo.power = 0.0
+
+//        go to warehouse
+        
     }
 }
