@@ -3,7 +3,7 @@ package us.brainstormz.hardwareClasses
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import us.brainstormz.pid.PID
-import us.brainstormz.rattatoni.RataTonyHardware
+import us.brainstormz.rataTony.RataTonyHardware
 import us.brainstormz.telemetryWizard.TelemetryConsole
 import kotlin.math.PI
 

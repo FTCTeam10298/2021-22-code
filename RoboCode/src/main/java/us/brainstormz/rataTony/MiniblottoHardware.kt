@@ -1,4 +1,4 @@
-package us.brainstormz.rattatoni
+package us.brainstormz.rataTony
 
 import com.qualcomm.robotcore.hardware.HardwareMap
 import us.brainstormz.hardwareClasses.HardwareClass

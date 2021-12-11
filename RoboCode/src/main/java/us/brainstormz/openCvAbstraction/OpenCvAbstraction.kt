@@ -8,8 +8,8 @@ import com.qualcomm.robotcore.hardware.HardwareMap
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName
 import org.opencv.core.Mat
 import org.openftc.easyopencv.*
-import us.brainstormz.rattatoni.RataTonyHardware
-import us.brainstormz.rattatoni.TeamScoringElementDetector
+import us.brainstormz.rataTony.RataTonyHardware
+import us.brainstormz.rataTony.TeamScoringElementDetector
 import us.brainstormz.telemetryWizard.TelemetryConsole
 import org.openftc.easyopencv.OpenCvCameraRotation
 
@@ -141,25 +141,25 @@ class OpenCvAbstraction(private val opmode: OpMode) {
     }
 }
 
-@Autonomous
-class CameraTest(): LinearOpMode() {
-
-    val hardware = RataTonyHardware()
-    val console = TelemetryConsole(telemetry)
-    val opencv = OpenCvAbstraction(this)
-    val tseDetector = TeamScoringElementDetector(console)
-    var tsePosition = TeamScoringElementDetector.TSEPosition.One
-
-    override fun runOpMode() {
-        opencv.stop()
-        opencv.init(hardwareMap)
-        opencv.cameraName = hardware.cameraName
-        opencv.cameraOrientation = OpenCvCameraRotation.SIDEWAYS_RIGHT
-        opencv.start()
-        opencv.onFirstFrame(tseDetector::init)
-        opencv.onNewFrame(tseDetector::processFrame)
-
-        waitForStart()
-
-    }
-}
+//@Autonomous
+//class CameraTest(): LinearOpMode() {
+//
+//    val hardware = RataTonyHardware()
+//    val console = TelemetryConsole(telemetry)
+//    val opencv = OpenCvAbstraction(this)
+//    val tseDetector = TeamScoringElementDetector()
+//    var tsePosition = TeamScoringElementDetector.TSEPosition.One
+//
+//    override fun runOpMode() {
+//        opencv.stop()
+//        opencv.init(hardwareMap)
+//        opencv.cameraName = hardware.cameraName
+//        opencv.cameraOrientation = OpenCvCameraRotation.SIDEWAYS_RIGHT
+//        opencv.start()
+////        opencv.onFirstFrame(tseDetector::init)
+//        opencv.onNewFrame(tseDetector::processFrame)
+//
+//        waitForStart()
+//
+//    }
+//}

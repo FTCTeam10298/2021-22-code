@@ -1,7 +1,6 @@
-package us.brainstormz.rattatoni
+package us.brainstormz.rataTony
 
 import com.qualcomm.robotcore.hardware.*
-import org.firstinspires.ftc.robotcore.external.Telemetry
 import us.brainstormz.hardwareClasses.MecanumHardware
 
 class RataTonyHardware: MecanumHardware {

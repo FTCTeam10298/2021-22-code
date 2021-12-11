@@ -1,10 +1,9 @@
-package us.brainstormz.rattatoni
+package us.brainstormz.rataTony
 
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import us.brainstormz.openCvAbstraction.OpenCvAbstraction
 import us.brainstormz.telemetryWizard.TelemetryConsole
-import us.brainstormz.rattatoni.TeamScoringElementDetector.TSEPosition
+import us.brainstormz.rataTony.TeamScoringElementDetector.TSEPosition
 
 //@Autonomous(name="Miniblotto", group="Minibot")
 class Miniblotto: LinearOpMode() {
@@ -17,7 +16,7 @@ class Miniblotto: LinearOpMode() {
 
 
     val opencv = OpenCvAbstraction(this)
-    val tseDetector = TeamScoringElementDetector(console)
+//    val tseDetector = TeamScoringElementDetector()
     var tsePosition = TSEPosition.One
 
     override fun runOpMode() {
@@ -31,7 +30,7 @@ class Miniblotto: LinearOpMode() {
         opencv.cameraName = hardware.cameraName
         opencv.init(hardwareMap)
         opencv.start()
-        opencv.onNewFrame(tseDetector::processFrame)
+//        opencv.onNewFrame(tseDetector::processFrame)
 
 //        wizard.summonWizard(gamepad1)
 
@@ -40,7 +39,7 @@ class Miniblotto: LinearOpMode() {
         /** AUTONOMOUS  PHASE */
 
 //        Store data and stop detector
-        tsePosition = tseDetector.position
+//        tsePosition = tseDetector.position
         console.display(2, "$tsePosition")
         opencv.stop()
 
