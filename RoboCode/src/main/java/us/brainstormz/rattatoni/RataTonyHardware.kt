@@ -14,7 +14,7 @@ class RataTonyHardware: MecanumHardware {
     lateinit var horiServo: CRServo
     lateinit var dropperServo: Servo
     lateinit var collector: DcMotor
-    val cameraName = "backWebcam"
+    val cameraName = "Webcam 1"
 
     override lateinit var hwMap: HardwareMap
 
