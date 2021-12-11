@@ -30,20 +30,20 @@ class RataTonyAuto: LinearOpMode() {
         /** INIT PHASE */
         hardware.init(hardwareMap)
 
-        opencv.init(hardwareMap)
-        opencv.cameraName = hardware.cameraName
-        opencv.cameraOrientation = OpenCvCameraRotation.SIDEWAYS_RIGHT
-        opencv.start()
-        opencv.onFirstFrame(tseDetector::init)
-        opencv.onNewFrame(tseDetector::processFrame)
+//        opencv.init(hardwareMap)
+//        opencv.cameraName = hardware.cameraName
+//        opencv.cameraOrientation = OpenCvCameraRotation.UPRIGHT
+//        opencv.start()
+//        opencv.onFirstFrame(tseDetector::init)
+//        opencv.onNewFrame(tseDetector::processFrame)
 
         wizard.newMenu("Alliance", "Which alliance are we on?", listOf("Blue", "Red"), firstMenu = true)
         wizard.summonWizard(gamepad1)
 
-        console.display(1, "Initialization Complete")
+//        console.display(1, "Initialization Complete")
         waitForStart()
         /** AUTONOMOUS  PHASE */
-        opencv.stop()
+//        opencv.stop()
 
         if (wizard.wasItemChosen("Alliance", "Blue")) {
 //        deliver
@@ -78,20 +78,20 @@ class RataTonyAuto: LinearOpMode() {
         if (wizard.wasItemChosen("Alliance", "Red")) {
 //          deliver
             movement.driveRobotStrafe(1.0, 5.0, true)
-            movement.driveRobotTurn(1.0,-140.0,true)
+            movement.driveRobotTurn(1.0,-33.0,true)
             depositor.yToPosition(depositor.midGoalHeight)
             movement.driveRobotStrafe(1.0, 11.0, true)
             movement.driveRobotPosition(1.0, -5.0, true)
             movement.driveRobotStrafe(1.0, 15.0, true)
-            movement.driveRobotPosition(1.0, 9.0, true)
-            movement.driveRobotStrafe(1.0, 9.0, true)
+            movement.driveRobotPosition(1.0, 6.5, true)
+            movement.driveRobotStrafe(1.0, 8.0, true)
             hardware.horiServo.power = 1.0
             sleep(2000)
             hardware.horiServo.power = 0.0
             sleep(1000)
             depositor.drop()
             sleep(1000)
-            depositor.yToPositionBlocking(depositor.midGoalHeight+60)
+            depositor.yToPositionBlocking(depositor.midGoalHeight + 100)
             hardware.horiServo.power = -1.0
             sleep(1000)
             depositor.close()
@@ -101,9 +101,9 @@ class RataTonyAuto: LinearOpMode() {
             depositor.yToPosition(depositor.state)
 //        go to warehouse
             movement.driveRobotStrafe(1.0, -10.0, true)
-            movement.driveRobotTurn(1.0,140.0,true)
+            movement.driveRobotTurn(1.0,40.0,true)
             movement.driveRobotStrafe(1.0, -37.0, true)
-            movement.driveRobotPosition(1.0,49.0,true)
+            movement.driveRobotPosition(1.0,47.0,true)
         }
     }
 }
