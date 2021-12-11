@@ -29,28 +29,74 @@ class RataTonyAuto: LinearOpMode() {
         /** INIT PHASE */
         hardware.init(hardwareMap)
 
+        wizard.newMenu("Alliance", "Which alliance are we on?", listOf("Red", "Blue"), firstMenu = true)
+
         console.display(1, "Initialization Complete")
         waitForStart()
         /** AUTONOMOUS  PHASE */
-
-//        deliver
-        movement.driveRobotStrafe(1.0, 5.0, true)
-        movement.driveRobotTurn(1.0,40.0,true)
-        depositor.yToPosition(depositor.midGoalHeight)
-        movement.driveRobotStrafe(1.0, 11.0, true)
-        movement.driveRobotPosition(1.0, 5.0, true)
-        movement.driveRobotStrafe(1.0, 15.0, true)
-        movement.driveRobotPosition(1.0, -9.0, true)
-        movement.driveRobotStrafe(1.0, 10.5, true)
-        hardware.horiServo.power = 1.0
-        sleep(2000)
-        hardware.horiServo.power = 0.0
-        depositor.drop()
-        hardware.horiServo.power = -1.0
-        sleep(2000)
-        hardware.horiServo.power = 0.0
+        if (wizard.wasItemChosen("Alliance", "Blue")) {
+            //        deliver
+            movement.driveRobotStrafe(1.0, 5.0, true)
+            movement.driveRobotTurn(1.0,40.0,true)
+            depositor.yToPosition(depositor.midGoalHeight)
+            movement.driveRobotStrafe(1.0, 11.0, true)
+            movement.driveRobotPosition(1.0, 5.0, true)
+            movement.driveRobotStrafe(1.0, 15.0, true)
+            movement.driveRobotPosition(1.0, -9.0, true)
+            movement.driveRobotStrafe(1.0, 9.0, true)
+            hardware.horiServo.power = 1.0
+            sleep(2000)
+            hardware.horiServo.power = 0.0
+            sleep(1000)
+            depositor.drop()
+            sleep(1000)
+            hardware.horiServo.power = -1.0
+            sleep(500)
+            depositor.close()
+            hardware.horiServo.power = -1.0
+            sleep(500)
+            hardware.horiServo.power = 0.0
+            depositor.yToPosition(depositor.state)
 
 //        go to warehouse
+            movement.driveRobotStrafe(1.0, 9.0, true)
+            movement.driveRobotTurn(1.0,-40.0,true)
+            movement.driveRobotPosition(1.0,20.0,true)
+            movement.driveRobotPosition(1.0,-36.0,true)
+        }
+        if (wizard.wasItemChosen("Alliance", "Red")) {
+//        deliver
+            movement.driveRobotStrafe(1.0, 5.0, true)
+            movement.driveRobotTurn(1.0, 140.0, true)
+            depositor.yToPosition(depositor.midGoalHeight)
+            movement.driveRobotStrafe(1.0, 11.0, true)
+            movement.driveRobotPosition(1.0, -5.0, true)
+            movement.driveRobotStrafe(1.0, 15.0, true)
+            movement.driveRobotPosition(1.0, 9.0, true)
+            movement.driveRobotStrafe(1.0, 9.0, true)
+            hardware.horiServo.power = 1.0
+            sleep(2000)
+            hardware.horiServo.power = 0.0
+            sleep(1000)
+            depositor.drop()
+            sleep(1000)
+            hardware.horiServo.power = -1.0
+            sleep(500)
+            depositor.close()
+            hardware.horiServo.power = -1.0
+            sleep(500)
+            hardware.horiServo.power = 0.0
+            depositor.yToPosition(depositor.state)
+
+//        go to warehouse
+            movement.driveRobotStrafe(1.0, 9.0, true)
+            movement.driveRobotTurn(1.0, -140.0, true)
+            movement.driveRobotPosition(1.0, -20.0, true)
+            movement.driveRobotPosition(1.0, 36.0, true)
+        }
+
+
+
         
     }
 }
