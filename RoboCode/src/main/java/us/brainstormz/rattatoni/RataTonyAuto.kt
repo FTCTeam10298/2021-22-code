@@ -2,6 +2,7 @@ package us.brainstormz.rattatoni
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
+import org.openftc.easyopencv.OpenCvCameraRotation
 import us.brainstormz.openCvAbstraction.OpenCvAbstraction
 import us.brainstormz.hardwareClasses.EncoderDriveMovement
 import us.brainstormz.hardwareClasses.JamesEncoderMovement
@@ -29,19 +30,23 @@ class RataTonyAuto: LinearOpMode() {
         /** INIT PHASE */
         hardware.init(hardwareMap)
 
-        wizard.newMenu("Alliance", "Which alliance are we on?", listOf("Blue", "Red"), firstMenu = true)
-        wizard.summonWizard(gamepad1)
         opencv.init(hardwareMap)
         opencv.cameraName = hardware.cameraName
+        opencv.cameraOrientation = OpenCvCameraRotation.SIDEWAYS_RIGHT
         opencv.start()
         opencv.onFirstFrame(tseDetector::init)
         opencv.onNewFrame(tseDetector::processFrame)
 
+        wizard.newMenu("Alliance", "Which alliance are we on?", listOf("Blue", "Red"), firstMenu = true)
+        wizard.summonWizard(gamepad1)
+
         console.display(1, "Initialization Complete")
         waitForStart()
         /** AUTONOMOUS  PHASE */
+        opencv.stop()
+
         if (wizard.wasItemChosen("Alliance", "Blue")) {
-            //        deliver
+//        deliver
             movement.driveRobotStrafe(1.0, 5.0, true)
             movement.driveRobotTurn(1.0,40.0,true)
             depositor.yToPosition(depositor.midGoalHeight)
@@ -71,7 +76,7 @@ class RataTonyAuto: LinearOpMode() {
             movement.driveRobotPosition(1.0,-49.0,true)
         }
         if (wizard.wasItemChosen("Alliance", "Red")) {
-            //        deliver
+//          deliver
             movement.driveRobotStrafe(1.0, 5.0, true)
             movement.driveRobotTurn(1.0,-140.0,true)
             depositor.yToPosition(depositor.midGoalHeight)

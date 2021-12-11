@@ -43,7 +43,7 @@ class TeamScoringElementDetector(private val console: TelemetryConsole) {
     }
 
     fun processFrame(frame: Mat): Mat {
-        val cbFrame = inputToCb(frame)
+//        val cbFrame = inputToCb(frame)
 
         val result = submats.firstOrNull {
             colorInRect(it.second) > tseThreshold

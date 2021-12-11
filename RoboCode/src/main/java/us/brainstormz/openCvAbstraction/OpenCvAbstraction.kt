@@ -36,6 +36,8 @@ class PipelineAbstraction: OpenCvPipeline() {
             return input
         }
 
+
+
         return if (onFirstFrame != null && isFirstFrame) {
             isFirstFrame = false
             onFirstFrame?.invoke(frame)
