@@ -29,7 +29,8 @@ class RataTonyAuto: LinearOpMode() {
         /** INIT PHASE */
         hardware.init(hardwareMap)
 
-        wizard.newMenu("Alliance", "Which alliance are we on?", listOf("Red", "Blue"), firstMenu = true)
+        wizard.newMenu("Alliance", "Which alliance are we on?", listOf("Blue", "Red"), firstMenu = true)
+        wizard.summonWizard(gamepad1)
 
         console.display(1, "Initialization Complete")
         waitForStart()
@@ -50,24 +51,24 @@ class RataTonyAuto: LinearOpMode() {
             sleep(1000)
             depositor.drop()
             sleep(1000)
+            depositor.yToPositionBlocking(depositor.midGoalHeight+60)
             hardware.horiServo.power = -1.0
-            sleep(500)
+            sleep(1000)
             depositor.close()
             hardware.horiServo.power = -1.0
-            sleep(500)
+            sleep(1000)
             hardware.horiServo.power = 0.0
             depositor.yToPosition(depositor.state)
-
 //        go to warehouse
-            movement.driveRobotStrafe(1.0, 9.0, true)
+            movement.driveRobotStrafe(1.0, -10.0, true)
             movement.driveRobotTurn(1.0,-40.0,true)
-            movement.driveRobotPosition(1.0,20.0,true)
-            movement.driveRobotPosition(1.0,-36.0,true)
+            movement.driveRobotStrafe(1.0, -37.0, true)
+            movement.driveRobotPosition(1.0,-49.0,true)
         }
         if (wizard.wasItemChosen("Alliance", "Red")) {
-//        deliver
+            //        deliver
             movement.driveRobotStrafe(1.0, 5.0, true)
-            movement.driveRobotTurn(1.0, 140.0, true)
+            movement.driveRobotTurn(1.0,-140.0,true)
             depositor.yToPosition(depositor.midGoalHeight)
             movement.driveRobotStrafe(1.0, 11.0, true)
             movement.driveRobotPosition(1.0, -5.0, true)
@@ -80,23 +81,19 @@ class RataTonyAuto: LinearOpMode() {
             sleep(1000)
             depositor.drop()
             sleep(1000)
+            depositor.yToPositionBlocking(depositor.midGoalHeight+60)
             hardware.horiServo.power = -1.0
-            sleep(500)
+            sleep(1000)
             depositor.close()
             hardware.horiServo.power = -1.0
-            sleep(500)
+            sleep(1000)
             hardware.horiServo.power = 0.0
             depositor.yToPosition(depositor.state)
-
 //        go to warehouse
-            movement.driveRobotStrafe(1.0, 9.0, true)
-            movement.driveRobotTurn(1.0, -140.0, true)
-            movement.driveRobotPosition(1.0, -20.0, true)
-            movement.driveRobotPosition(1.0, 36.0, true)
+            movement.driveRobotStrafe(1.0, -10.0, true)
+            movement.driveRobotTurn(1.0,140.0,true)
+            movement.driveRobotStrafe(1.0, -37.0, true)
+            movement.driveRobotPosition(1.0,49.0,true)
         }
-
-
-
-        
     }
 }
