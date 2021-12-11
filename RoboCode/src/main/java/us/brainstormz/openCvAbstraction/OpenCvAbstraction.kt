@@ -57,22 +57,25 @@ class OpenCvAbstraction(private val opmode: OpMode) {
     var optimizeView = false
     var openCameraDeviceAsync = false
     var cameraOrientation = OpenCvCameraRotation.UPRIGHT
+    var internalCamera = false
     var cameraName: String = "Webcam 1"
 
 
     fun init(hardwareMap: HardwareMap) {
         val cameraMonitorViewId: Int = opmode.hardwareMap.appContext.resources.getIdentifier("cameraMonitorViewId", "id", opmode.hardwareMap.appContext.packageName)
         val webcamName = hardwareMap.get(WebcamName::class.java, cameraName)
+        camera = if (!internalCamera)
+            OpenCvCameraFactory.getInstance().createWebcam(webcamName, cameraMonitorViewId)
+        else
+            OpenCvCameraFactory.getInstance().createInternalCamera(OpenCvInternalCamera.CameraDirection.FRONT)
 
-//        camera = OpenCvCameraFactory.getInstance().createWebcam(webcamName, cameraMonitorViewId)
-        camera = OpenCvCameraFactory.getInstance().createInternalCamera(OpenCvInternalCamera.CameraDirection.FRONT)
         camera.openCameraDevice()
         camera.setPipeline(pipeline)
     }
 
     fun start() {
-        camera.startStreaming(432, 240, cameraOrientation)
-//        camera.startStreaming(1920, 1080, OpenCvCameraRotation.UPRIGHT)
+//        camera.startStreaming(432, 240, cameraOrientation)
+        camera.startStreaming(1920, 1080, OpenCvCameraRotation.UPRIGHT)
         sleep(100)
 
 //        if (optimizeView)

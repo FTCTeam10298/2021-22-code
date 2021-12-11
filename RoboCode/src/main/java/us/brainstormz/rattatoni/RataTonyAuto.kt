@@ -31,6 +31,11 @@ class RataTonyAuto: LinearOpMode() {
 
         wizard.newMenu("Alliance", "Which alliance are we on?", listOf("Blue", "Red"), firstMenu = true)
         wizard.summonWizard(gamepad1)
+        opencv.init(hardwareMap)
+        opencv.cameraName = hardware.cameraName
+        opencv.start()
+        opencv.onFirstFrame(tseDetector::init)
+        opencv.onNewFrame(tseDetector::processFrame)
 
         console.display(1, "Initialization Complete")
         waitForStart()

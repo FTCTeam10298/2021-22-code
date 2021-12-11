@@ -23,6 +23,8 @@ class TeamScoringElementDetector(private val console: TelemetryConsole) {
         TSEPosition.Three to Rect(Point(100.0, 197.0), Point(125.0, 222.0))
     )
 
+    private lateinit var submats: List<Pair<TSEPosition, Mat>>
+
     private val colors = listOf(
         TSEPosition.One to blue,
         TSEPosition.Two to black,
@@ -32,17 +34,19 @@ class TeamScoringElementDetector(private val console: TelemetryConsole) {
     @Volatile // Volatile since accessed by OpMode thread w/o synchronization
     var position = TSEPosition.One
 
-//    fun init(frame: Mat): Mat {
-//        val cbFrame = inputToCb(frame)
-//
-//        return frame
-//    }
+    fun init(frame: Mat): Mat {
+        val cbFrame = inputToCb(frame)
+        submats = regions.map {
+            it.first to cbFrame.submat(it.second)
+        }
+        return frame
+    }
 
     fun processFrame(frame: Mat): Mat {
         val cbFrame = inputToCb(frame)
 
-        val result = regions.firstOrNull {
-            colorInRect(cbFrame.submat(it.second)) > tseThreshold
+        val result = submats.firstOrNull {
+            colorInRect(it.second) > tseThreshold
         }?.first
 
         position = result ?: TSEPosition.Three
