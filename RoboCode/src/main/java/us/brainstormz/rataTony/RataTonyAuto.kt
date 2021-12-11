@@ -1,4 +1,4 @@
-package us.brainstormz.rattatoni
+package us.brainstormz.rataTony
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
@@ -8,7 +8,7 @@ import us.brainstormz.hardwareClasses.EncoderDriveMovement
 import us.brainstormz.hardwareClasses.JamesEncoderMovement
 import us.brainstormz.telemetryWizard.TelemetryConsole
 import us.brainstormz.telemetryWizard.TelemetryWizard
-import us.brainstormz.rattatoni.TeamScoringElementDetector.TSEPosition
+import us.brainstormz.rataTony.TeamScoringElementDetector.TSEPosition
 
 @Autonomous(name="Minibot Auto", group="Minibot")
 class RataTonyAuto: LinearOpMode() {
@@ -33,10 +33,10 @@ class RataTonyAuto: LinearOpMode() {
         opencv.cameraName = hardware.cameraName
         opencv.cameraOrientation = OpenCvCameraRotation.SIDEWAYS_RIGHT
         opencv.start()
-        opencv.onFirstFrame(tseDetector::init)
         opencv.onNewFrame(tseDetector::processFrame)
 
-        wizard.newMenu("Alliance", "Which alliance are we on?", listOf("Blue", "Red"), firstMenu = true)
+        wizard.newMenu("Alliance", "Which alliance are we on?", listOf("Blue", "Red"), "Starting Position", firstMenu = true)
+        wizard.newMenu("Starting Position", "Which side are we starting on?", listOf("Warehouse", "Ducc"))
         wizard.summonWizard(gamepad1)
 
         console.display(1, "Initialization Complete")
