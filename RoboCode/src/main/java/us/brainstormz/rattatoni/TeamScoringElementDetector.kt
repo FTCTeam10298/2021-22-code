@@ -21,6 +21,9 @@ class TeamScoringElementDetector(private val console: TelemetryConsole) {
         TSEPosition.One to Rect(Point(300.0, 197.0), Point(335.0, 222.0)),
         TSEPosition.Two to Rect(Point(200.0, 197.0), Point(235.0, 222.0)),
         TSEPosition.Three to Rect(Point(100.0, 197.0), Point(125.0, 222.0))
+//        TSEPosition.One to Rect(Point(1000.0, 197.0), Point(1135.0, 222.0)),
+//        TSEPosition.Two to Rect(Point(200.0, 197.0), Point(235.0, 222.0)),
+//        TSEPosition.Three to Rect(Point(0.0, 0.0), Point(0.0, 0.0))
     )
 
     private lateinit var submats: List<Pair<TSEPosition, Mat>>
