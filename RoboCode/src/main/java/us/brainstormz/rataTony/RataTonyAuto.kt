@@ -62,7 +62,7 @@ class RataTonyAuto: LinearOpMode() {
                         movement.driveRobotStrafe(1.0, 3.5, true)
                         if (tsePosition != TSEPosition.One)
                             movement.driveRobotStrafe(1.0, 0.7, true)
-                        depositor.yToPosition(level)
+                        depositor.yToPositionBlocking(level)
                         deposit(level)
 
                         if (tsePosition != TSEPosition.Three)
@@ -89,11 +89,16 @@ class RataTonyAuto: LinearOpMode() {
                         movement.driveRobotStrafe(1.0, 5.0, true)
                         movement.driveRobotTurn(1.0,40.0,true)
                         depositor.yToPosition(level)
-                        movement.driveRobotStrafe(1.0, 11.0, true)
-                        movement.driveRobotPosition(1.0, 5.0, true)
-                        movement.driveRobotStrafe(1.0, 15.0, true)
-                        movement.driveRobotPosition(1.0, -9.0, true)
-                        movement.driveRobotStrafe(1.0, 9.0, true)
+//                        if (tsePosition == TSEPosition.Two) {
+                            movement.driveRobotStrafe(0.8, 34.0, true)
+                            movement.driveRobotTurn(1.0, -5.0, true)
+//                        } else {
+//                            movement.driveRobotStrafe(1.0, 11.0, true)
+//                            movement.driveRobotPosition(1.0, 5.0, true)
+//                            movement.driveRobotStrafe(1.0, 15.0, true)
+//                            movement.driveRobotPosition(1.0, -10.0, true)
+//                            movement.driveRobotStrafe(1.0, 9.0, true)
+//                        }
                         hardware.horiServo.power = 1.0
                         sleep(2000)
                         hardware.horiServo.power = 0.0
@@ -161,8 +166,13 @@ class RataTonyAuto: LinearOpMode() {
                         movement.driveRobotStrafe(1.0, 11.0, true)
                         movement.driveRobotPosition(1.0, -5.0, true)
                         movement.driveRobotStrafe(1.0, 15.0, true)
-                        movement.driveRobotPosition(1.0, 6.5, true)
+                        movement.driveRobotPosition(1.0, 12.0, true)
+
+//                        if (tsePosition == TSEPosition.Two) {
+//                            movement.driveRobotTurn(1.0, 10.0, true)
+//                        }
                         movement.driveRobotStrafe(1.0, 8.0, true)
+
                         hardware.horiServo.power = 1.0
                         sleep(2000)
                         hardware.horiServo.power = 0.0
@@ -180,8 +190,9 @@ class RataTonyAuto: LinearOpMode() {
         //        go to warehouse
                         movement.driveRobotStrafe(1.0, -10.0, true)
                         movement.driveRobotTurn(1.0, 40.0, true)
-                        movement.driveRobotStrafe(1.0, -37.0, true)
-                        movement.driveRobotPosition(1.0, 47.0, true)
+                        movement.driveRobotStrafe(1.0, -40.0, true)
+                        movement.driveRobotTurn(1.0, 3.0, true)
+                        movement.driveRobotPosition(1.0, 60.0, true)
                     }
                 }
             }
