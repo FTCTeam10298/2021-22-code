@@ -80,7 +80,7 @@ class JamesEncoderMovement (private val hardware: MecanumHardware, private val c
 
 }
 
-@Autonomous
+//@Autonomous
 class NewMovementTest: LinearOpMode() {
 
     val console = TelemetryConsole(telemetry)

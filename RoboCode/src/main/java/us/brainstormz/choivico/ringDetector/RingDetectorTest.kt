@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import us.brainstormz.openCvAbstraction.OpenCvAbstraction
 import us.brainstormz.telemetryWizard.TelemetryConsole
 
-@TeleOp(name="Ring Detector Test", group="Tests")
+//@TeleOp(name="Ring Detector Test", group="Tests")
 class RingDetectorTest: LinearOpMode()  {
 
     val console = TelemetryConsole(telemetry)

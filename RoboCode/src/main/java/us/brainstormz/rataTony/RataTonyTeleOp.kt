@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import us.brainstormz.hardwareClasses.MecanumDriveTrain
 import us.brainstormz.telemetryWizard.TelemetryConsole
 
-@TeleOp(name="Minibot TeleOp", group="Minibot")
+@TeleOp(name="Minibot TeleOp", group="A")
 class RataTonyTeleOp: OpMode() {
 
     val console = TelemetryConsole(telemetry)

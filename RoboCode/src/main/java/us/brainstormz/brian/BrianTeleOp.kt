@@ -38,7 +38,7 @@ import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.util.Range
 import kotlin.math.abs
 
-@TeleOp(name = "Brian TeleOp", group = "Brian")
+@TeleOp(name = "Brian TeleOp", group = "B")
 class BrianTeleOp : OpMode() {
     /* Declare OpMode members. */
     var robot = BrianHardware() // use the class created to define FutureBot's hardware

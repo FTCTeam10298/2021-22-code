@@ -15,7 +15,7 @@ import us.brainstormz.hardwareClasses.OdometryDriveMovement
 import us.brainstormz.telemetryWizard.TelemetryConsole
 import us.brainstormz.telemetryWizard.TelemetryWizard
 
-@Autonomous(name="Auto ChoiVico", group="ChoiVico")
+//@Autonomous(name="Auto ChoiVico", group="ChoiVico")
 class ChoiVicoAuto: LinearOpMode() {
 
     val opencv = OpenCvAbstraction(this)

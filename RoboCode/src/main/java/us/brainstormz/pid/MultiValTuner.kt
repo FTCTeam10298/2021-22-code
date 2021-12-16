@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import com.qualcomm.robotcore.hardware.Gamepad
 import us.brainstormz.telemetryWizard.TelemetryConsole
 
-@TeleOp(name="PID Tuner", group="Tests")
+//@TeleOp(name="PID Tuner", group="Tests")
 class PIDTuner: OpMode() {
     val console = TelemetryConsole(telemetry)
     val tuner = MultiValTuner(listOf(2.0, 4.4, 232.0), 0.5, console)
