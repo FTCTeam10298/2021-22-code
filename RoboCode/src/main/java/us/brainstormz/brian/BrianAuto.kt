@@ -9,7 +9,7 @@ import us.brainstormz.hardwareClasses.JamesEncoderMovement
 import us.brainstormz.telemetryWizard.TelemetryConsole
 import us.brainstormz.telemetryWizard.TelemetryWizard
 
-@Autonomous(name = "Meet 0 Brian Auto", group = "Brian")
+//@Autonomous(name = "Meet 0 Brian Auto", group = "B")
 class BrianAuto: LinearOpMode() {
     val hardware = BrianHardware()
     val movement = EncoderDriveMovement(hardware, TelemetryConsole(telemetry))

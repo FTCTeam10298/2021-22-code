@@ -10,7 +10,7 @@ import us.brainstormz.hardwareClasses.EncoderDriveMovement
 import us.brainstormz.telemetryWizard.TelemetryConsole
 
 
-@Autonomous(name="Creamsicle Test and Calibration", group="Tests")
+//@Autonomous(name="Creamsicle Test and Calibration", group="Tests")
 class CreamsicleAutoAimTestAndCal : OpMode() {
     val hardware = ChoiVicoHardware()
     val console = TelemetryConsole(telemetry)

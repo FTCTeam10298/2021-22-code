@@ -3,7 +3,7 @@ package us.brainstormz.telemetryWizard
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 
-@TeleOp(name="Telemetry Wizard Test", group="Tests")
+//@TeleOp(name="Telemetry Wizard Test", group="Tests")
 class TelemetryWizardTest(): LinearOpMode() {
     val console = TelemetryConsole(telemetry)
     val wizard = TelemetryWizard(console, this)

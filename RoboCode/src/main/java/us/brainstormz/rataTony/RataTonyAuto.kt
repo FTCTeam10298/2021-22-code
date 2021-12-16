@@ -10,7 +10,7 @@ import us.brainstormz.telemetryWizard.TelemetryConsole
 import us.brainstormz.telemetryWizard.TelemetryWizard
 import us.brainstormz.rataTony.TeamScoringElementDetector.TSEPosition
 
-@Autonomous(name="Minibot Auto", group="Minibot")
+@Autonomous(name="Minibot Auto", group="A")
 class RataTonyAuto: LinearOpMode() {
 
     val console = TelemetryConsole(telemetry)

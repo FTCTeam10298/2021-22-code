@@ -9,7 +9,7 @@ import us.brainstormz.pathexecution.DifferentialDrivePathExecutor
 import us.brainstormz.pathexecution.PathExecutor
 
 
-@Autonomous(name="PathExecutorTest", group="test")
+//@Autonomous(name="PathExecutorTest", group="test")
 class ChoiVicoPathExecutorTestOp: LinearOpMode() {
 
     val hardware = ChoiVicoHardware()
