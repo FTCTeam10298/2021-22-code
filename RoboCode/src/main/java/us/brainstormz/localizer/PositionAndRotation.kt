@@ -93,5 +93,18 @@ open class PositionAndRotation(var x: Double = 0.0, var y: Double = 0.0, var r: 
     }
 
     override fun hashCode(): Int = x.hashCode() + y.hashCode() + r.hashCode()
+    operator fun times(n: Double): PositionAndRotation = PositionAndRotation(n*x, n*y, n*r)
+    operator fun compareTo(other: PositionAndRotation): Int {
+        val asdf = this - other
+
+        return when {
+            asdf == 0.0 -> 0
+            asdf > 0 -> 1
+            asdf < 0 -> -1
+            else -> 1
+        }
+    }
+
+    private operator fun minus(other: PositionAndRotation): Double = (this.x - other.x + this.y - other.y + this.r - other.r) / 3
 
 }
