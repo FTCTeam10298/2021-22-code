@@ -105,6 +105,5 @@ open class PositionAndRotation(var x: Double = 0.0, var y: Double = 0.0, var r: 
         }
     }
 
-    private operator fun minus(other: PositionAndRotation): Double = (this.x - other.x + this.y - other.y + this.r - other.r) / 3
-
+    operator fun minus(other: PositionAndRotation): Double = (this.x - other.x + this.y - other.y + this.r - other.r) / 3
 }
