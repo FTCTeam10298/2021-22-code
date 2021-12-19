@@ -119,6 +119,8 @@ class EncoderDriveMovement(private val hardware: MecanumHardware, private val co
         val position: Double = degree * COUNTS_PER_DEGREE
         var state = 0 // 0 = NONE, 1 = ACCEL, 2 = DRIVE, 3 = DECEL
 
+        console.display(15, "target angle: $position")
+
         driveSetRunToPosition()
         if (smartAccel) {
             state = 1

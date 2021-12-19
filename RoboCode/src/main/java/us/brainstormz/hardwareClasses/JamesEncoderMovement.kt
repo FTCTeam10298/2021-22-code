@@ -2,17 +2,16 @@ package us.brainstormz.hardwareClasses
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
-import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import com.qualcomm.robotcore.hardware.DcMotor
 import us.brainstormz.localizer.PositionAndRotation
 import us.brainstormz.pid.PID
 import us.brainstormz.rataTony.RataTonyHardware
 import us.brainstormz.telemetryWizard.TelemetryConsole
-import java.lang.Thread.sleep
 import kotlin.math.PI
+import kotlin.math.cos
+import kotlin.math.sin
 
 class JamesEncoderMovement (private val hardware: MecanumHardware, private val console: TelemetryConsole): MecanumDriveTrain(hardware) {
-
 
     val countsPerMotorRev = 28.0 // Rev HD Hex v2.1 Motor encoder
     val gearboxRatio = 19.2 // 40 for 40:1, 20 for 20:1
@@ -22,17 +21,12 @@ class JamesEncoderMovement (private val hardware: MecanumHardware, private val c
     val countsPerInch = countsPerMotorRev * gearboxRatio * driveGearReduction / (wheelDiameterInches * PI) / drivetrainError
     val countsPerDegree: Double = countsPerInch * 0.268 * 2/3 // Found by testing
 
-    var pid = PID(0.001, 0.0, 0.0)
-    val precision = -1.0..1.0
+    var pid = PID(0.01, 0.00000001, 0.0)
+    val precision = -0.1..0.1
 
     private var opModeStop = false
 
-    /**
-     * DriveRobotPosition drives the robot the set number of inches at the given power level.
-     * @param power Power level to set motors to. 0 - 1.0
-     * @param forwardIn Number of inches to move forward. Can be negative.
-     * @param sidewaysIn Number of inches to move sideways. Can be negative.
-     */
+
     fun changePosition(power: Double, forwardIn: Double, sidewaysIn: Double, rotationDegrees: Double) {
         driveSetMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER)
         driveSetMode(DcMotor.RunMode.RUN_USING_ENCODER)
@@ -42,40 +36,53 @@ class JamesEncoderMovement (private val hardware: MecanumHardware, private val c
         val r = rotationDegrees * countsPerDegree
         val targetPos = PositionAndRotation(x, y, r)
 
+        var previousPos = PositionAndRotation(0.0, 0.0, 0.0)
+
+        console.display(1, "Target: $targetPos")
+
         while (!opModeStop) {
             val lF = hardware.lFDrive.currentPosition
             val rF = hardware.rFDrive.currentPosition
             val lB = hardware.lBDrive.currentPosition
             val rB = hardware.rBDrive.currentPosition
 
-            val currentX = -lF + rF + lB - rB
-            val currentY = lF + rF + lB + rB
-            val currentR = -lF + rF - lB + rB
+            val currentX = (-lF + rF + lB - rB) / 4
+            val currentY = (lF + rF + lB + rB) / 4
+            val currentR = (-lF + rF - lB + rB) / 4
+//
+//            val deltaY = cos(previousPos.r) * currentY - sin(previousPos.r) * currentX
+//            val deltaX = sin(previousPos.r) * currentY + cos(previousPos.r) * currentX
+//            val deltaPos = PositionAndRotation(deltaX, deltaY, (currentR - previousPos.r))
+//
+//            val currentPos = previousPos + deltaPos
             val currentPos = PositionAndRotation(currentX.toDouble(), currentY.toDouble(), currentR.toDouble())
+//            previousPos = currentPos
+//
+//            val posDifferance = targetPos - currentPos
             val posDifferance = targetPos - currentPos
+            val posDiffTotal = posDifferance.x + posDifferance.y + posDifferance.r
 
-            if (posDifferance in precision) {
+            if (posDiffTotal in precision) {
                 console.display(20, "done with it")
                 break
             }
 
-            val lfSpeed = (targetPos.y + targetPos.x - targetPos.r).toInt()
-            val rfSpeed = (targetPos.y - targetPos.x + targetPos.r).toInt()
-            val lbSpeed = (targetPos.y - targetPos.x - targetPos.r).toInt()
-            val rbSpeed = (targetPos.y + targetPos.x + targetPos.r).toInt()
+            val pidValue: Double = pid.calcPID(posDiffTotal).coerceIn(-power, power)
 
-            val pidValue: Double = pid.calcPID(posDifferance).coerceIn(-power, power)
+            val lfDirection = (targetPos.y + targetPos.x - targetPos.r).toInt()
+            val rfDirection = (targetPos.y - targetPos.x + targetPos.r).toInt()
+            val lbDirection = (targetPos.y - targetPos.x - targetPos.r).toInt()
+            val rbDirection = (targetPos.y + targetPos.x + targetPos.r).toInt()
 
-            val lfPower: Double = posOrNeg(lfSpeed) * pidValue
-            val rfPower: Double = posOrNeg(rfSpeed) * pidValue
-            val lbPower: Double = posOrNeg(lbSpeed) * pidValue
-            val rbPower: Double = posOrNeg(rbSpeed) * pidValue
+            val lfPower: Double = posOrNeg(lfDirection) * pidValue
+            val rfPower: Double = posOrNeg(rfDirection) * pidValue
+            val lbPower: Double = posOrNeg(lbDirection) * pidValue
+            val rbPower: Double = posOrNeg(rbDirection) * pidValue
 
             driveSetPower(lfPower, rfPower, lbPower, rbPower)
 
-            console.display(1, "avg Target: $targetPos")
-            console.display(5, "avg current: $currentPos")
-
+            console.display(12, "diff: ${posDiffTotal / countsPerInch}")
+            console.display(5, "currentPos: $currentPos")
             console.display(8, "lfPower $lfPower")
             console.display(9, "rfPower $rfPower")
             console.display(10, "lbPower $lbPower")
@@ -98,7 +105,7 @@ class JamesEncoderMovement (private val hardware: MecanumHardware, private val c
 }
 
 @Autonomous(name= "James Movement Test", group= "Tests")
-class NewMovementTest: OpMode() {
+class NewMovementTest: LinearOpMode() {
 
     val console = TelemetryConsole(telemetry)
     val hardware = RataTonyHardware()
@@ -106,21 +113,14 @@ class NewMovementTest: OpMode() {
     val joovement = JamesEncoderMovement(hardware, console)
     val movement = EncoderDriveMovement(hardware, console)
 
-    override fun init() {
-        hardware.init(hardwareMap)
-    }
+    override fun runOpMode() {
 
-    override fun loop() {
-        movement.driveRobotTurn(1.0, 90.0, true)
-        console.display(20, "turned!")
+        hardware.init(hardwareMap)
+
+        waitForStart()
+        joovement.changePosition(1.0, 10.0, 10.0, 90.0)
         sleep(1000)
-        joovement.changePosition(1.0, 0.0, 0.0, 90.0)
         console.display(20, "jooved!")
         sleep(1000)
-        requestOpModeStop()
-    }
-
-    override fun stop() {
-        joovement.onStop()
     }
 }
