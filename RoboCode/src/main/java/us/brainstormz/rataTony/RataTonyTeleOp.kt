@@ -13,20 +13,30 @@ class RataTonyTeleOp: OpMode() {
 
     val robot = MecanumDriveTrain(hardware)
     val depositor = Depositor(hardware)
+    var isStickButtonDown = false
+    var driveReversed = 1
 
     override fun init() {
         hardware.init(hardwareMap)
     }
 
     override fun loop() {
+        // Drive Polarity Switcher
+        if (gamepad1.left_stick_button || gamepad1.right_stick_button && !isStickButtonDown) {
+            isStickButtonDown = true
+            driveReversed = -driveReversed
+        } else if (!gamepad1.left_stick_button && !gamepad1.right_stick_button) {
+            isStickButtonDown = false
+        }
+
         // DRONE DRIVE
         val yInput = gamepad1.left_stick_y.toDouble()
         val xInput = gamepad1.left_stick_x.toDouble()
         val rInput = gamepad1.right_stick_x.toDouble()
 
-        val y = -yInput
-        val x = xInput
-        val r = -rInput *.8
+        val y = -yInput * driveReversed
+        val x = xInput * driveReversed
+        val r = -rInput * .8
 
         robot.driveSetPower(
                 (y + x - r),
