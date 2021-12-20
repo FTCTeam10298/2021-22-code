@@ -13,5 +13,9 @@ class RatLocalize:Localizer {
         TODO("Gabe will implement me!")
     }
 
+    override fun startNewMovement() {
+        TODO("Not yet implemented")
+    }
+
 
 }
