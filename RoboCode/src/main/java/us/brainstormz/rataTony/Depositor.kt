@@ -4,6 +4,77 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import com.qualcomm.robotcore.hardware.DcMotor
 import us.brainstormz.pid.PID
 import java.lang.Thread.sleep
+import kotlinx.coroutines.*
+
+
+class Depositor2(private val hardware: RataTonyHardware) {
+    private enum class Bucket(val position: Double) {
+        Open(0.7),
+        Closed(0.0)
+    }
+
+    enum class Lift(val position: Int) {
+        LowGoal(300),
+        MidGoal(820),
+        HighGoal(1430)
+    }
+
+    private val yPID = PID(kp = 0.002, ki = 0.002)
+    private val yLimits: IntRange = 0..1430
+
+    private val extendableHeight = 190
+
+    private val xPID = PID(kp = 0.0015, ki = 0.001)
+    private val xPower = 1.0
+
+    fun xToPositionBlocking(targetPos: Int) {
+
+    }
+
+    fun xToPosition(targetPos: Int): Unit = runBlocking { async {
+        xToPositionBlocking(targetPos)
+    } }
+
+    fun yToPositionBlocking(targetPos: Int) {
+
+    }
+
+    fun yToPosition(targetPos: Int): Unit = runBlocking { async {
+        yToPositionBlocking(targetPos)
+    } }
+
+    fun drop() {
+        hardware.dropperServo.position = Bucket.Open.position
+    }
+
+    fun close() {
+        hardware.dropperServo.position = Bucket.Closed.position
+    }
+
+    fun home() {
+        hardware.dropperServo.position = Bucket.Closed.position
+        xToPosition(0)
+        yToPosition(0)
+    }
+
+    private fun liftManager() {
+
+    }
+
+    fun init() = runBlocking { async {
+        liftManager()
+    } }
+
+
+    private fun posOrNeg(num: Int): Int {
+        return when {
+            num > 0 -> 1
+            num < 0 -> -1
+            else -> 0
+        }
+    }
+
+}
 
 class Depositor(private val hardware: RataTonyHardware) {
     enum class XPosition {
