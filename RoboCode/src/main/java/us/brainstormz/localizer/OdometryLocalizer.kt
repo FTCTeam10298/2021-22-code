@@ -76,4 +76,6 @@ class OdometryLocalizer(
 //        if (r > Math.PI)
 //            r -= 2 * Math.PI
     }
+
+    override fun startNewMovement() {}
 }

@@ -34,5 +34,7 @@ class EncoderLocalizer(private val hardware: MecanumHardware): Localizer {
         currentPos.setCoordinate(x, y, r)
     }
 
-
+    override fun startNewMovement() {
+        setPositionAndRotation(0.0, 0.0, 0.0)
+    }
 }

@@ -1,8 +1,10 @@
 package us.brainstormz.motion
 
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.util.Range
 import us.brainstormz.hardwareClasses.MecanumDriveTrain
 import us.brainstormz.hardwareClasses.MecanumHardware
+import us.brainstormz.hardwareClasses.OdometryDriveMovement
 import us.brainstormz.localizer.Localizer
 import us.brainstormz.localizer.PositionAndRotation
 import us.brainstormz.pid.PID
@@ -12,10 +14,31 @@ import kotlin.math.hypot
 import kotlin.math.sin
 
 class MecanumMovement(override val localizer: Localizer, override val hardware: MecanumHardware): Movement, MecanumDriveTrain(hardware) {
+
     override var movementPID = PID(0.0001)
     override var precisionRange: ClosedRange<Double> = 1.0..1.0
 
-    override fun move(target: PositionAndRotation, powerRange: ClosedRange<Double>) {
+    /**
+     * Only required when using goToPosition
+     */
+    override lateinit var linearOpMode: LinearOpMode
+
+    /**
+     * Blocking function
+     */
+    override fun goToPosition(target: PositionAndRotation, powerRange: ClosedRange<Double>) {
+        localizer.startNewMovement()
+        while (linearOpMode.opModeIsActive()) {
+
+            localizer.recalculatePositionAndRotation()
+            val targetReached = moveTowardTarget(target, powerRange)
+
+            if (targetReached)
+                break
+        }
+    }
+
+    override fun moveTowardTarget(target: PositionAndRotation, powerRange: ClosedRange<Double>): Boolean {
         val posError = target - localizer.currentPositionAndRotation()
 
 //        adjust angle error
@@ -29,28 +52,27 @@ class MecanumMovement(override val localizer: Localizer, override val hardware: 
         val distanceError = hypot(posError.x, posError.y)
 
         // Check to see if we've reached the desired position already
-        if (abs(distanceError) >= precisionRange.start && abs(posError.r) >= Math.toRadians(precisionRange.start)) {
 
-            // Calculate the error in x and y and use the PID to find the error in angle
-            val speedX: Double = movementPID.calcPID(
-                sin(localizer.currentPositionAndRotation().r) * posError.y + cos(localizer.currentPositionAndRotation().r) * -posError.x
-            )
-            val speedY: Double = movementPID.calcPID(
-                cos(localizer.currentPositionAndRotation().r) * posError.y + sin(localizer.currentPositionAndRotation().r) * posError.x
-            )
-            val speedA: Double = movementPID.calcPID(posError.r)
-
-            setSpeedAll(speedX, speedY, speedA, powerRange.start, powerRange.endInclusive)
+        // Check to see if we've reached the desired position already
+        if (abs(distanceError) <= precisionRange.start &&
+            abs(posError.r) <= Math.toRadians(precisionRange.start)) {
+            return true
         }
+
+        // Calculate the error in x and y and use the PID to find the error in angle
+        val speedX: Double = movementPID.calcPID(
+            sin(localizer.currentPositionAndRotation().r) * posError.y + cos(localizer.currentPositionAndRotation().r) * -posError.x
+        )
+        val speedY: Double = movementPID.calcPID(
+            cos(localizer.currentPositionAndRotation().r) * posError.y + sin(localizer.currentPositionAndRotation().r) * posError.x
+        )
+        val speedA: Double = movementPID.calcPID(posError.r)
+
+        setSpeedAll(speedX, speedY, speedA, powerRange.start, powerRange.endInclusive)
+
+        return false
     }
 
-    override fun completeMovement(target: PositionAndRotation, powerRange: ClosedRange<Double>) {
-
-        while (true) {
-            localizer.recalculatePositionAndRotation()
-            move(PositionAndRotation(0.0, 10.0, 0.0), 0.0..1.0)
-        }
-    }
 
     private fun setSpeedAll(vX: Double, vY: Double, vA: Double, minPower: Double, maxPower: Double) {
 

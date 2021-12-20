@@ -9,19 +9,15 @@ import us.brainstormz.motion.MecanumMovement
 @Autonomous(name= "NewEncoderMovementTest", group= "Tests")
 class NewEncoderMovementTest: LinearOpMode() {
     val hardware = RataTonyHardware()
-    val localizer = EncoderLocalizer(hardware)
-    val movement = MecanumMovement(localizer, hardware)
+    val movement = MecanumMovement(EncoderLocalizer(hardware), hardware)
 
     override fun runOpMode() {
         hardware.init(hardwareMap)
+        movement.linearOpMode = this
 
         waitForStart()
 
-        while (opModeIsActive()) {
-            localizer.recalculatePositionAndRotation()
-            movement.move(PositionAndRotation(0.0, 10.0, 0.0), 0.0..1.0)
-        }
-
+        movement.goToPosition(PositionAndRotation(0.0, 10.0, 0.0))
     }
 
 }
