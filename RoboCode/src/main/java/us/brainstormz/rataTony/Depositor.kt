@@ -8,12 +8,13 @@ import kotlinx.coroutines.*
 
 
 class Depositor2(private val hardware: RataTonyHardware) {
-    private enum class Bucket(val position: Double) {
+
+    private enum class DropperPos(val ticks: Double) {
         Open(0.7),
         Closed(0.0)
     }
 
-    enum class Lift(val position: Int) {
+    enum class LiftPos(val ticks: Int) {
         LowGoal(300),
         MidGoal(820),
         HighGoal(1430)
@@ -21,49 +22,157 @@ class Depositor2(private val hardware: RataTonyHardware) {
 
     private val yPID = PID(kp = 0.002, ki = 0.002)
     private val yLimits: IntRange = 0..1430
+    private val yPrecision = -5..5
 
-    private val extendableHeight = 190
 
     private val xPID = PID(kp = 0.0015, ki = 0.001)
     private val xPower = 1.0
-
-    fun xToPositionBlocking(targetPos: Int) {
-
-    }
-
-    fun xToPosition(targetPos: Int): Unit = runBlocking { async {
-        xToPositionBlocking(targetPos)
-    } }
-
-    fun yToPositionBlocking(targetPos: Int) {
-
-    }
-
-    fun yToPosition(targetPos: Int): Unit = runBlocking { async {
-        yToPositionBlocking(targetPos)
-    } }
+    private val xPrecision = -5..5
 
     fun drop() {
-        hardware.dropperServo.position = Bucket.Open.position
+        if (canDropperDrop(DropperPos.Open))
+            hardware.dropperServo.position = DropperPos.Open.ticks
     }
 
     fun close() {
-        hardware.dropperServo.position = Bucket.Closed.position
+        if (canDropperDrop(DropperPos.Closed))
+            hardware.dropperServo.position = DropperPos.Closed.ticks
     }
 
-    fun home() {
-        hardware.dropperServo.position = Bucket.Closed.position
-        xToPosition(0)
-        yToPosition(0)
+    fun xToPosition(targetPos: Int) {
+        while (true) {
+            val error = targetPos - hardware.horiMotor.currentPosition
+
+            if (canXMove(targetPos))
+                hardware.horiMotor.power = yPID.calcPID(error.toDouble())
+
+            if (error in xPrecision)
+                break
+        }
     }
 
-    private fun liftManager() {
+    fun yToPosition(targetPos: Int) {
+        while (true) {
+            val error = targetPos - hardware.liftMotor.currentPosition
 
+            if (canYMove(targetPos))
+                hardware.liftMotor.power = yPID.calcPID(error.toDouble())
+
+            if (error in yPrecision)
+                break
+        }
     }
 
-    fun init() = runBlocking { async {
-        liftManager()
+    fun xAtPower(power: Double) {
+        val anticipatedStop = 0
+
+        if (canXMove(anticipatedStop))
+            hardware.horiMotor.power = power
+
+        TODO("anticipatedStop calculation not implemented!")
+    }
+
+    fun yAtPower(power: Double) {
+        val anticipatedStop = 0
+
+        if (canYMove(anticipatedStop))
+            hardware.liftMotor.power = power
+
+        TODO("anticipatedStop calculation not implemented!")
+    }
+
+    fun xToPositionAsync(targetPos: Int): Unit = runBlocking { async {
+        xToPosition(targetPos)
     } }
+
+    fun yToPositionAsync(targetPos: Int): Unit = runBlocking { async {
+        yToPosition(targetPos)
+    } }
+
+    /**
+     * Pre-set routines
+     */
+    fun home() {
+        close()
+        xToPositionAsync(0)
+        yToPositionAsync(0)
+    }
+
+    fun lowGoal() {
+        yToPositionAsync(LiftPos.LowGoal.ticks)
+    }
+
+    /**
+     * Synchronizes movements to avoid internal collisions
+     */
+
+//    Bucket stay closed conditions
+    private val closedCauseX = 10..20
+    private val closedCauseY = 10..20
+
+//    x/y collisions
+    private val collideCauseX = 20..100
+    private val collideCauseY = 0..190
+
+//    target trackers
+    private var xTarget: Int? = null
+    private var yTarget: Int? = null
+    private var dropperTarget: DropperPos? = null
+
+//    target determiners
+    private val yMoveAt100 = 1
+
+    private fun canXMove(target: Int): Boolean {
+        xTarget = target
+        return when (target !in collideCauseX) {
+            true -> {
+                true
+            }
+            false -> {
+                if (yTarget in collideCauseY || dropperTarget == DropperPos.Open) {
+                    xTarget = null
+                    false
+                } else {
+                    true
+                }
+            }
+        }
+    }
+
+    private fun canYMove(target: Int): Boolean {
+        yTarget = target
+        return when (target >= hardware.liftMotor.currentPosition) {
+            true -> {
+                true
+            }
+            false -> {
+                if (target in collideCauseY && xTarget in collideCauseX) {
+                    yTarget = null
+                    false
+                }
+                else {
+                    true
+                }
+            }
+        }
+    }
+
+    private fun canDropperDrop(target: DropperPos): Boolean {
+        dropperTarget = target
+        return when (target) {
+            DropperPos.Closed -> {
+                true
+            }
+            DropperPos.Open -> {
+                if (xTarget in closedCauseX || yTarget in closedCauseY) {
+                    dropperTarget = null
+                    false
+                } else
+                    true
+            }
+        }
+
+    }
 
 
     private fun posOrNeg(num: Int): Int {

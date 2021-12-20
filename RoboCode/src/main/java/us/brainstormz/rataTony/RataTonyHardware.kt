@@ -11,6 +11,7 @@ class RataTonyHardware: MecanumHardware {
     lateinit var carouselSpinner: CRServo
     lateinit var liftMotor: DcMotorEx
     lateinit var horiServo: CRServo
+    lateinit var horiMotor: DcMotorEx
     lateinit var dropperServo: Servo
     lateinit var collector: DcMotor
     val cameraName = "Webcam 1"
