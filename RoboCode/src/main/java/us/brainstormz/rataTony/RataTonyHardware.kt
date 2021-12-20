@@ -1,19 +1,27 @@
 package us.brainstormz.rataTony
 
+import com.qualcomm.hardware.rev.RevTouchSensor
 import com.qualcomm.robotcore.hardware.*
 import us.brainstormz.hardwareClasses.MecanumHardware
+import us.brainstormz.rataTony.Depositor2.DropperPos
 
 class RataTonyHardware: MecanumHardware {
     override lateinit var lFDrive: DcMotor
     override lateinit var rFDrive: DcMotor
     override lateinit var lBDrive: DcMotor
     override lateinit var rBDrive: DcMotor
+
+    lateinit var collector: DcMotor
+
     lateinit var carouselSpinner: CRServo
+
     lateinit var liftMotor: DcMotorEx
     lateinit var horiServo: CRServo
     lateinit var horiMotor: DcMotorEx
     lateinit var dropperServo: Servo
-    lateinit var collector: DcMotor
+    lateinit var yLowerLimit: RevTouchSensor
+    lateinit var xInnerLimit: RevTouchSensor
+
     val cameraName = "Webcam 1"
 
     override lateinit var hwMap: HardwareMap
@@ -62,6 +70,7 @@ class RataTonyHardware: MecanumHardware {
         dropperServo = hwMap["dropper"] as Servo
         dropperServo.direction = Servo.Direction.REVERSE
         dropperServo.position = Depositor(this).dropperClosed
+//        dropperServo.position = DropperPos.Closed.ticks
 
 //        Collector
         collector = hwMap["collector"] as DcMotor
