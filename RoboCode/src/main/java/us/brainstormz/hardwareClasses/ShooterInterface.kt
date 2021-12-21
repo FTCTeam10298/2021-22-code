@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.hardware.Servo
 import us.brainstormz.pid.MotorWithPID
 import us.brainstormz.choivico.robotCode.aimBot.AimBotHardware
 
-@Autonomous
+//@Autonomous
 class ShooterTest(): OpMode() {
 
     val hardware = AimBotHardware()

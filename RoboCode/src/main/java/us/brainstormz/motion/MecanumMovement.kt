@@ -4,19 +4,19 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.util.Range
 import us.brainstormz.hardwareClasses.MecanumDriveTrain
 import us.brainstormz.hardwareClasses.MecanumHardware
-import us.brainstormz.hardwareClasses.OdometryDriveMovement
 import us.brainstormz.localizer.Localizer
 import us.brainstormz.localizer.PositionAndRotation
 import us.brainstormz.pid.PID
+import us.brainstormz.telemetryWizard.TelemetryConsole
 import kotlin.math.abs
 import kotlin.math.cos
 import kotlin.math.hypot
 import kotlin.math.sin
 
-class MecanumMovement(override val localizer: Localizer, override val hardware: MecanumHardware): Movement, MecanumDriveTrain(hardware) {
+class MecanumMovement(override val localizer: Localizer, override val hardware: MecanumHardware, private val console: TelemetryConsole): Movement, MecanumDriveTrain(hardware) {
 
-    override var movementPID = PID(0.0001)
-    override var precisionRange: ClosedRange<Double> = 1.0..1.0
+    override var movementPID = PID(0.1, 0.0000001, 0.0)
+    override var precisionRange: ClosedRange<Double> = -1.0..1.0
 
     /**
      * Only required when using goToPosition
@@ -28,8 +28,9 @@ class MecanumMovement(override val localizer: Localizer, override val hardware: 
      */
     override fun goToPosition(target: PositionAndRotation, powerRange: ClosedRange<Double>) {
         localizer.startNewMovement()
+        console.display(1, "Target position: $target")
         while (linearOpMode.opModeIsActive()) {
-
+            console.display(3, "Current position: ${localizer.currentPositionAndRotation()}")
             localizer.recalculatePositionAndRotation()
             val targetReached = moveTowardTarget(target, powerRange)
 
@@ -50,12 +51,13 @@ class MecanumMovement(override val localizer: Localizer, override val hardware: 
 
 //        calculate distance error
         val distanceError = hypot(posError.x, posError.y)
+        console.display(7, "Distance error: $distanceError")
+        console.display(8, "Overall error: $posError")
 
-        // Check to see if we've reached the desired position already
-
-        // Check to see if we've reached the desired position already
-        if (abs(distanceError) <= precisionRange.start &&
-            abs(posError.r) <= Math.toRadians(precisionRange.start)) {
+        // Check to see if we've reached the target
+        if (distanceError in precisionRange && posError.r in precisionRange) {
+//        if (abs(distanceError) <= precisionRange.start &&
+//            abs(posError.r) <= precisionRange.start) {
             return true
         }
 
@@ -66,15 +68,17 @@ class MecanumMovement(override val localizer: Localizer, override val hardware: 
         val speedY: Double = movementPID.calcPID(
             cos(localizer.currentPositionAndRotation().r) * posError.y + sin(localizer.currentPositionAndRotation().r) * posError.x
         )
-        val speedA: Double = movementPID.calcPID(posError.r)
+        val speedR: Double = movementPID.calcPID(posError.r)
 
-        setSpeedAll(speedX, speedY, speedA, powerRange.start, powerRange.endInclusive)
+        console.display(11, "Speed X: $speedX, Y: $speedY, R: $speedR")
+        setSpeedAll(speedX, speedY, speedR, powerRange.start, powerRange.endInclusive)
+//        setSpeedAll(0.0, 0.0, 0.0, powerRange.start, powerRange.endInclusive)
 
         return false
     }
 
 
-    private fun setSpeedAll(vX: Double, vY: Double, vA: Double, minPower: Double, maxPower: Double) {
+    fun setSpeedAll(vX: Double, vY: Double, vA: Double, minPower: Double, maxPower: Double) {
 
         // Calculate theoretical values for motor powers using transformation matrix
         var fl = vY - vX + vA
