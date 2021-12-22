@@ -173,7 +173,7 @@ class clutterAvatar(private val console: TelemetryConsole){
                     in 11..19 -> {
                         Imgproc.putText(frame, "circle", Point(point.x, point.y), font, 1.0, Scalar(22.0, 100.0, 100.0))
                     }
-                    8-> {
+                    6-> {
                         Imgproc.putText(frame, "goalCandidate", Point(point.x, point.y), font, 0.05, Scalar(22.0, 100.0, 100.0))
 
                         val pointsArray = points.toArray()

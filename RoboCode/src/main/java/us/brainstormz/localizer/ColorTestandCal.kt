@@ -71,7 +71,16 @@ class LocalizerAutoAimTestAndCal : OpMode() {
             clutterAvatar.goalColor.U_V.value = 0.0
             render()
         }
-
+        if (YbuttonHelper.stateChanged(gamepad1.y) && gamepad1.y) {
+            console.display(1, "Vals Recalled")
+            clutterAvatar.goalColor.L_H.value = 5.0
+            clutterAvatar.goalColor.L_S.value = 10.0
+            clutterAvatar.goalColor.L_V.value = 110.0
+            clutterAvatar.goalColor.U_H.value = 95.0
+            clutterAvatar.goalColor.U_S.value = 200.0
+            clutterAvatar.goalColor.U_V.value = 255.0
+            render()
+        }
         if (RbumperHelper.stateChanged(gamepad1.right_bumper) && gamepad1.right_bumper) {
             varBeingEdited.value += 5
             render()
