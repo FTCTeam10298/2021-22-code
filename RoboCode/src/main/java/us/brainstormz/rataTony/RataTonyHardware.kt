@@ -4,6 +4,7 @@ import com.qualcomm.hardware.rev.RevTouchSensor
 import com.qualcomm.robotcore.hardware.*
 import us.brainstormz.hardwareClasses.MecanumHardware
 import us.brainstormz.rataTony.Depositor2.DropperPos
+import java.util.*
 
 class RataTonyHardware: MecanumHardware {
     override lateinit var lFDrive: DcMotor
@@ -16,7 +17,6 @@ class RataTonyHardware: MecanumHardware {
     lateinit var carouselSpinner: CRServo
 
     lateinit var liftMotor: DcMotorEx
-    lateinit var horiServo: CRServo
     lateinit var horiMotor: DcMotorEx
     lateinit var dropperServo: Servo
     lateinit var yLowerLimit: RevTouchSensor
@@ -57,20 +57,24 @@ class RataTonyHardware: MecanumHardware {
 
 //        Depositor
         liftMotor = hwMap["liftMotor"] as DcMotorEx
-
         liftMotor.direction = DcMotorSimple.Direction.REVERSE
         liftMotor.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
         liftMotor.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
         liftMotor.mode = DcMotor.RunMode.RUN_USING_ENCODER
 
-        horiServo = hwMap["horiServo"] as CRServo
-        horiServo.direction = DcMotorSimple.Direction.REVERSE
-        horiServo.power = 0.0
+        horiMotor = hwMap["horiMotor"] as DcMotorEx
+        horiMotor.direction = DcMotorSimple.Direction.FORWARD
+        horiMotor.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
+        horiMotor.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
+        horiMotor.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
 
         dropperServo = hwMap["dropper"] as Servo
         dropperServo.direction = Servo.Direction.REVERSE
         dropperServo.position = Depositor(this).dropperClosed
 //        dropperServo.position = DropperPos.Closed.ticks
+
+        xInnerLimit = hwMap["innerLimit"] as RevTouchSensor
+        yLowerLimit = hwMap["lowerLimit"] as RevTouchSensor
 
 //        Collector
         collector = hwMap["collector"] as DcMotor

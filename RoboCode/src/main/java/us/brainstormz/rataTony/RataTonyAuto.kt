@@ -99,19 +99,19 @@ class RataTonyAuto: LinearOpMode() {
 //                            movement.driveRobotPosition(1.0, -10.0, true)
 //                            movement.driveRobotStrafe(1.0, 9.0, true)
 //                        }
-                        hardware.horiServo.power = 1.0
+//                        hardware.horiServo.power = 1.0
                         sleep(2000)
-                        hardware.horiServo.power = 0.0
+//                        hardware.horiServo.power = 0.0
                         sleep(1000)
                         depositor.drop()
                         sleep(1000)
                         depositor.yToPositionBlocking(level+60)
-                        hardware.horiServo.power = -1.0
+//                        hardware.horiServo.power = -1.0
                         sleep(1000)
                         depositor.close()
-                        hardware.horiServo.power = -1.0
+//                        hardware.horiServo.power = -1.0
                         sleep(1000)
-                        hardware.horiServo.power = 0.0
+//                        hardware.horiServo.power = 0.0
                         depositor.yToPosition(0)
 //        go to warehouse
                         movement.driveRobotStrafe(1.0, -10.0, true)
@@ -173,19 +173,19 @@ class RataTonyAuto: LinearOpMode() {
 //                        }
                         movement.driveRobotStrafe(1.0, 8.0, true)
 
-                        hardware.horiServo.power = 1.0
+//                        hardware.horiServo.power = 1.0
                         sleep(2000)
-                        hardware.horiServo.power = 0.0
+//                        hardware.horiServo.power = 0.0
                         sleep(1000)
                         depositor.drop()
                         sleep(1000)
                         depositor.yToPositionBlocking(level + 100)
-                        hardware.horiServo.power = -1.0
+//                        hardware.horiServo.power = -1.0
                         sleep(1000)
                         depositor.close()
-                        hardware.horiServo.power = -1.0
+//                        hardware.horiServo.power = -1.0
                         sleep(1000)
-                        hardware.horiServo.power = 0.0
+//                        hardware.horiServo.power = 0.0
                         depositor.yToPosition(0)
         //        go to warehouse
                         movement.driveRobotStrafe(1.0, -10.0, true)
@@ -201,30 +201,30 @@ class RataTonyAuto: LinearOpMode() {
 
 //        make sure lift is down
         depositor.yToPositionBlocking(300)
-        hardware.horiServo.power = 1.0
+//        hardware.horiServo.power = 1.0
         sleep(500)
-        hardware.horiServo.power = -1.0
+//        hardware.horiServo.power = -1.0
         sleep(1000)
-        hardware.horiServo.power = 0.0
+//        hardware.horiServo.power = 0.0
         depositor.yToPositionBlocking(0)
     }
 
 //    out, drop, home
     fun deposit(yLevel: Int) {
-        hardware.horiServo.power = 1.0
+//        hardware.horiServo.power = 1.0
         sleep(2000)
-        hardware.horiServo.power = 0.0
+//        hardware.horiServo.power = 0.0
         sleep(100)
 
         depositor.drop()
         sleep(1000)
 
         depositor.yToPositionBlocking(yLevel+100)
-        hardware.horiServo.power = -1.0
+//        hardware.horiServo.power = -1.0
         sleep(800)
         depositor.close()
         sleep(1700)
-        hardware.horiServo.power = 0.0
+//        hardware.horiServo.power = 0.0
         depositor.yToPosition(0)
     }
 }

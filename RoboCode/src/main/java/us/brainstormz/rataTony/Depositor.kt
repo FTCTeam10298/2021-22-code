@@ -5,26 +5,27 @@ import com.qualcomm.robotcore.hardware.DcMotor
 import us.brainstormz.pid.PID
 import java.lang.Thread.sleep
 import kotlinx.coroutines.*
+import us.brainstormz.telemetryWizard.TelemetryConsole
 
 
-class Depositor2(private val hardware: RataTonyHardware) {
+class Depositor2(private val hardware: RataTonyHardware, private val console: TelemetryConsole) {
 
     enum class DropperPos(val posValue: Double) {
         Open(0.7),
         Closed(0.0)
     }
 
-    private val xPID = PID(kp = 0.0015, ki = 0.001)
-    private val xPrecision = -5..5
-    val outerLimit = 1000
+    private val xPID = PID(kp = 0.0018, ki = 0.0)
+    private val xPrecision = -10..10
+    val outerLimit = 2500
 
-    private val yPID = PID(kp = 0.002, ki = 0.002)
-    private val yPrecision = -5..5
-    val upperLimit = 100
+    private val yPID = PID(kp = 0.00015, ki = 0.0)
+    private val yPrecision = -10..10
+    val upperLimit = 900
     enum class LiftPos(val counts: Int) {
-        LowGoal(300),
-        MidGoal(820),
-        HighGoal(1430)
+        LowGoal(130),
+        MidGoal(500),
+        HighGoal(800)
     }
 
     fun xToPosition(targetPos: Int) {
@@ -52,21 +53,33 @@ class Depositor2(private val hardware: RataTonyHardware) {
     }
 
     fun xAtPower(power: Double) {
-        val anticipatedStop = 0
+        val anticipatedStop = hardware.horiMotor.currentPosition + 50 * posOrNeg(power.toInt())
+
+        val target = when {
+            power > 0 -> outerLimit
+            power < 0 -> 0
+            else -> hardware.horiMotor.currentPosition
+        }
 
         if (canXMove(anticipatedStop))
-            hardware.horiMotor.power = power
-
-        TODO("anticipatedStop calculation not implemented!")
+            hardware.horiMotor.power = xPID.calcPID(target.toDouble(), hardware.horiMotor.currentPosition.toDouble())
+        else
+            hardware.horiMotor.power = 0.0
     }
 
     fun yAtPower(power: Double) {
-        val anticipatedStop = 0
+        val anticipatedStop = hardware.liftMotor.currentPosition + 50 * posOrNeg(power.toInt())
+
+        val target = when {
+            power > 0 -> upperLimit
+            power < 0 -> 0
+            else -> hardware.liftMotor.currentPosition
+        }
 
         if (canYMove(anticipatedStop))
-            hardware.liftMotor.power = power
-
-        TODO("anticipatedStop calculation not implemented!")
+            hardware.liftMotor.power = yPID.calcPID(target.toDouble(), hardware.liftMotor.currentPosition.toDouble())
+        else
+            hardware.horiMotor.power = 0.0
     }
 
     fun xToPositionAsync(targetPos: Int): Unit = runBlocking { async {
@@ -105,12 +118,11 @@ class Depositor2(private val hardware: RataTonyHardware) {
      */
 
 //    Bucket stay closed conditions
-    private val closedCauseX = 10..20
-    private val closedCauseY = 10..20
+    private val closedCauseX = 100..795
 
 //    x/y collisions
-    private val collideCauseX = 20..100
-    private val collideCauseY = 0..190
+    private val collideCauseX = 100..795
+    private val collideCauseY = 100
 
 //    target trackers
     private var xTarget: Int? = null
@@ -122,16 +134,18 @@ class Depositor2(private val hardware: RataTonyHardware) {
             hardware.horiMotor.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
         }
 
-        val direction = posOrNeg(target - hardware.horiMotor.currentPosition)
+        val direction = posOrNeg(target - hardware.liftMotor.currentPosition)
         val rangeToTarget = hardware.horiMotor.currentPosition..target
 
         val result = when {
             hardware.xInnerLimit.isPressed && direction == -1 -> false
             target > outerLimit && direction == 1 -> false
-            target in collideCauseX && yTarget in collideCauseY -> false
+            (yTarget ?: hardware.liftMotor.currentPosition) <= collideCauseY -> false
             target in collideCauseX && DropperPos.Open.posValue == hardware.dropperServo.position -> false
             else -> true
         }
+
+        console.display(6, "X condition: $result")
 
         xTarget = if (result)
             target
@@ -152,9 +166,11 @@ class Depositor2(private val hardware: RataTonyHardware) {
         val result = when {
             hardware.xInnerLimit.isPressed && direction == -1 -> false
             target > upperLimit && direction == 1 -> false
-            (target in collideCauseY && xTarget in collideCauseX) && direction == -1 -> false
+            (target <= collideCauseY && xTarget in collideCauseX) && direction == -1 -> false
             else -> true
         }
+
+        console.display(7, "y condition: $result")
 
         yTarget = if (result)
             target
@@ -164,10 +180,10 @@ class Depositor2(private val hardware: RataTonyHardware) {
         return result
     }
 
-    private fun canDropperDrop(target: DropperPos): Boolean {
+    fun canDropperDrop(target: DropperPos): Boolean {
         return when {
             xTarget in closedCauseX && DropperPos.Open == target -> false
-            yTarget in closedCauseY && DropperPos.Open == target -> false
+            (yTarget ?: hardware.liftMotor.currentPosition) <= collideCauseY && DropperPos.Open == target -> false
             else -> true
         }
     }
@@ -212,18 +228,18 @@ class Depositor(private val hardware: RataTonyHardware) {
         if (hardware.liftMotor.currentPosition > extendableHeight) {
             when {
                 (newPos == XPosition.Extend) && (xAbsPos == XPosition.Retract) -> {
-                    hardware.horiServo.power = xPower
+//                    hardware.horiServo.power = xPower
                     sleep(xExtendTime)
                     xAbsPos = XPosition.Extend
-                    hardware.horiServo.power = 0.0
+//                    hardware.horiServo.power = 0.0
                 }
                 (newPos == XPosition.Retract) && (xAbsPos == XPosition.Extend) -> {
-                    hardware.horiServo.power = -xPower
+//                    hardware.horiServo.power = -xPower
                     sleep(xRetractTime)
                     xAbsPos = XPosition.Retract
-                    hardware.horiServo.power = 0.0
+//                    hardware.horiServo.power = 0.0
                 }
-                else -> hardware.horiServo.power = 0.0
+                else -> {} //hardware.horiServo.power = 0.0
             }
         }
 
@@ -349,7 +365,8 @@ class Depositor(private val hardware: RataTonyHardware) {
 class DepositorTuner: OpMode() {
 
     val hardware = RataTonyHardware()
-    val depositor = Depositor2(hardware)
+    val console = TelemetryConsole(telemetry)
+    val depositor = Depositor2(hardware, console)
 
     override fun init() {
         hardware.init(hardwareMap)
