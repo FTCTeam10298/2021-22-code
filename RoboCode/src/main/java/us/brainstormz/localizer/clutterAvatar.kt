@@ -76,7 +76,7 @@ class clutterAvatar(private val console: TelemetryConsole){
     )
 
     // trained for rooms so you can prove AAY! IM A G$$D PERS$N! (blame it on Odd1sOut)
-
+    //storage unit config: 5, 10, 110, 95, 200, 255 WARNING: GREEN DETECTED
     private val redColor = ColorRange(
             L_H = NamedVar("Low Hue", 120.0),
             L_S = NamedVar("Low Saturation", 115.0),
@@ -214,7 +214,7 @@ class clutterAvatar(private val console: TelemetryConsole){
                 }
             }
         }
-
+        console.display(1,"Still alive")
         return when (displayMode) {
             "frame" -> frame
             "kernel" -> kernel
