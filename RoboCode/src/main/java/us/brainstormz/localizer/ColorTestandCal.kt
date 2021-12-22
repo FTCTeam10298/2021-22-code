@@ -10,7 +10,7 @@ import us.brainstormz.hardwareClasses.EncoderDriveMovement
 import us.brainstormz.telemetryWizard.TelemetryConsole
 
 
-@Autonomous(name="Creamsicle Test and Calibration", group="Tests")
+@Autonomous(name="Color Test and Calibration", group="Tests")
 class LocalizerAutoAimTestAndCal : OpMode() {
     val console = TelemetryConsole(telemetry)
     val opencv = OpenCvAbstraction(this)
@@ -24,6 +24,7 @@ class LocalizerAutoAimTestAndCal : OpMode() {
     val AbuttonHelper = ButtonHelper()
 
     override fun init() {
+        opencv.init(hardwareMap)
         opencv.start()
         opencv.onNewFrame(clutterAvatar::scoopFrame)
     }
@@ -35,7 +36,7 @@ class LocalizerAutoAimTestAndCal : OpMode() {
     }
 
     override fun init_loop() {
-        if (XbuttonHelper.stateChanged(gamepad1.x) && gamepad1.x) {
+     if (XbuttonHelper.stateChanged(gamepad1.x) && gamepad1.x) {
             console.display(3, "TrainerMODE; ${clutterAvatar.displayMode}")
             when (clutterAvatar.displayMode) {
                 "frame" -> clutterAvatar.displayMode = "mask"
