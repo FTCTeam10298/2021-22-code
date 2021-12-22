@@ -12,7 +12,7 @@ class RataTonyTeleOp: OpMode() {
     val hardware = RataTonyHardware()
 
     val robot = MecanumDriveTrain(hardware)
-    val depositor = Depositor(hardware)
+    val depositor = Depositor2(hardware, console)
     var isStickButtonDown = false
     var driveReversed = 1
 
@@ -46,29 +46,17 @@ class RataTonyTeleOp: OpMode() {
         )
 
         // Depositor
-        if (gamepad2.right_stick_x > 0.1f || gamepad2.right_stick_x < -0.1f)
-            depositor.state = 0
-
-        hardware.horiServo.power = gamepad2.right_stick_x.toDouble()
-
-        val yTarget = gamepad2.right_stick_y.toInt()
-        if (yTarget != 0) {
-            depositor.state = 0
-        }
-        if (depositor.state == 0)
-            depositor.yInDirection(yTarget)
+        depositor.yAtPower(-gamepad2.left_stick_y.toDouble())
+        depositor.xAtPower(gamepad2.right_stick_x.toDouble())
 
         if (gamepad2.right_trigger != 0.0f || gamepad2.left_trigger != 0.0f)
             depositor.drop()
         else
             depositor.close()
-//        if (depositor.state == 1 && !hardware.liftMotor.isBusy) {
-//            depositor.xToPosition(Depositor.XPosition.Extend)
-//            depositor.state = 0
-//        }
 
+        console.display(9, "dropper can open ${depositor.canDropperDrop(Depositor2.DropperPos.Open)}")
         console.display(2, "y pos: ${hardware.liftMotor.currentPosition}")
-        console.display(3, "x pos: ${depositor.xAbsPos}ed")
+        console.display(3, "x pos: ${hardware.horiMotor.currentPosition}")
         console.display(4, "dropper: ${hardware.dropperServo.position}")
 
         // Collector
