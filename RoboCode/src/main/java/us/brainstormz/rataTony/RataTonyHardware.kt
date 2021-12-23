@@ -13,6 +13,7 @@ class RataTonyHardware: MecanumHardware {
     override lateinit var rBDrive: DcMotor
 
     lateinit var collector: DcMotor
+    lateinit var collector2: DcMotor
 
     lateinit var carouselSpinner: CRServo
 
@@ -78,9 +79,12 @@ class RataTonyHardware: MecanumHardware {
 
 //        Collector
         collector = hwMap["collector"] as DcMotor
-
         collector.direction = DcMotorSimple.Direction.FORWARD
         collector.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.FLOAT
+
+        collector2 = hwMap["collector2"] as DcMotor
+        collector2.direction = DcMotorSimple.Direction.FORWARD
+        collector2.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.FLOAT
 
 //        Ducc
         carouselSpinner = hwMap["duccSpinner"] as CRServo

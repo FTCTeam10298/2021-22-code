@@ -60,12 +60,19 @@ class RataTonyTeleOp: OpMode() {
         console.display(4, "dropper: ${hardware.dropperServo.position}")
 
         // Collector
-        if (gamepad1.right_bumper || gamepad2.right_bumper) {
+        when {
+            gamepad1.left_bumper -> {
             hardware.collector.power = 1.0
-        } else if (gamepad1.left_bumper || gamepad2.left_bumper) {
-            hardware.collector.power = -1.0
-        } else {
+                hardware.collector2.power = -0.5
+            }
+            gamepad1.right_bumper -> {
+                hardware.collector.power = -0.5
+                hardware.collector2.power = 1.0
+            }
+            else -> {
             hardware.collector.power = 0.0
+                hardware.collector2.power = 0.0
+            }
         }
 
         // Ducc Spinner
