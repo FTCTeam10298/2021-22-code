@@ -54,7 +54,7 @@ class RataTonyTeleOp: OpMode() {
         else
             depositor.close()
 
-        depositor.holdLiftPos()
+        depositor.updateYPosition()
 //        console.display(9, "dropper can open ${depositor.canDropperDrop(Depositor.DropperPos.Open)}")
         console.display(2, "y pos: ${hardware.liftMotor.currentPosition}")
         console.display(3, "x pos: ${hardware.horiMotor.currentPosition}")
@@ -62,11 +62,11 @@ class RataTonyTeleOp: OpMode() {
 
         // Collector
         when {
-            gamepad1.left_bumper -> {
+            gamepad1.right_bumper -> {
                 hardware.collector.power = 1.0
                 hardware.collector2.power = -0.5
             }
-            gamepad1.right_bumper -> {
+            gamepad1.left_bumper -> {
                 hardware.collector.power = -0.5
                 hardware.collector2.power = 1.0
             }

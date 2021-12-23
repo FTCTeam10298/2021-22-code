@@ -17,9 +17,11 @@ class Depositor(private val hardware: RataTonyHardware, private val console: Tel
 
     private val xPID = PID(kp = 0.0018, ki = 0.0)
     private val xPrecision = -10..10
-    val outerLimit = 2500
+    private val outerLimit = 2500
+    private val innerLimit = -35
 
-    private val yPID = PID(kp = 0.0005, ki = 0.0)
+    private val yPID = PID(kp = 0.0012, ki = 0.0)
+    private var liftPower = 0.0
     private val yPrecision = -10..10
     val upperLimit = 900
     enum class LiftPos(val counts: Int) {
@@ -45,7 +47,7 @@ class Depositor(private val hardware: RataTonyHardware, private val console: Tel
         val error = targetPos - hardware.liftMotor.currentPosition
 
         if (canYMove(targetPos))
-            hardware.liftMotor.power = yPID.calcPID(error.toDouble())
+            liftPower = yPID.calcPID(error.toDouble())
 
         return error in yPrecision
     }
@@ -94,9 +96,9 @@ class Depositor(private val hardware: RataTonyHardware, private val console: Tel
         }
 
         if (canYMove(anticipatedStop))
-            hardware.liftMotor.power = yPID.calcPID(target.toDouble(), hardware.liftMotor.currentPosition.toDouble())
+            liftPower = yPID.calcPID(target.toDouble(), hardware.liftMotor.currentPosition.toDouble())
         else
-            hardware.horiMotor.power = 0.0
+            liftPower = 0.0
     }
 
     fun xToPositionAsync(targetPos: Int): Unit = runBlocking { async {
@@ -151,10 +153,10 @@ class Depositor(private val hardware: RataTonyHardware, private val console: Tel
             hardware.horiMotor.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
         }
 
-        val direction = posOrNeg(target - hardware.liftMotor.currentPosition)
+        val direction = posOrNeg(target - hardware.horiMotor.currentPosition)
 
         val result = when {
-            target <= 0 -> false
+            target < innerLimit && direction == -1 -> false
 //            hardware.xInnerLimit.isPressed && direction == -1 -> false
             target > outerLimit && direction == 1 -> false
             (yTarget ?: hardware.liftMotor.currentPosition) <= collideCauseY -> false
@@ -163,7 +165,6 @@ class Depositor(private val hardware: RataTonyHardware, private val console: Tel
         }
 
         console.display(6, "X condition: $result")
-        console.display(7, "X fully in: ${hardware.xInnerLimit.isPressed}")
 
         xTarget = if (result)
             target
@@ -211,8 +212,15 @@ class Depositor(private val hardware: RataTonyHardware, private val console: Tel
 
     }
 
-    fun holdLiftPos() {
-        yTowardPosition(hardware.liftMotor.currentPosition)
+    private var previousLiftPower = 0.0
+    fun updateYPosition() {
+        if (liftPower != 0.0) {
+            hardware.liftMotor.power = liftPower
+            previousLiftPower = liftPower
+        } else if (liftPower == 0.0 && previousLiftPower != 0.0) {
+            yTowardPosition(hardware.liftMotor.currentPosition)
+            previousLiftPower = liftPower
+        }
     }
 
     private fun posOrNeg(num: Int): Int {
