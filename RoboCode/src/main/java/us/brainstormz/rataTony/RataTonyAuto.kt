@@ -19,7 +19,7 @@ class RataTonyAuto: LinearOpMode() {
     val hardware = RataTonyHardware()
     val movement = EncoderDriveMovement(hardware, console)
     val jovement = JamesEncoderMovement(hardware,console)
-    val depositor = Depositor(hardware)
+    val depositor = OldDepositor(hardware)
 
 
     val opencv = OpenCvAbstraction(this)

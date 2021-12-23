@@ -3,8 +3,7 @@ package us.brainstormz.rataTony
 import com.qualcomm.hardware.rev.RevTouchSensor
 import com.qualcomm.robotcore.hardware.*
 import us.brainstormz.hardwareClasses.MecanumHardware
-import us.brainstormz.rataTony.Depositor2.DropperPos
-import java.util.*
+import us.brainstormz.rataTony.Depositor.DropperPos
 
 class RataTonyHardware: MecanumHardware {
     override lateinit var lFDrive: DcMotor
@@ -71,8 +70,7 @@ class RataTonyHardware: MecanumHardware {
 
         dropperServo = hwMap["dropper"] as Servo
         dropperServo.direction = Servo.Direction.REVERSE
-        dropperServo.position = Depositor(this).dropperClosed
-//        dropperServo.position = DropperPos.Closed.ticks
+        dropperServo.position = DropperPos.Closed.posValue
 
         xInnerLimit = hwMap["innerLimit"] as RevTouchSensor
         yLowerLimit = hwMap["lowerLimit"] as RevTouchSensor

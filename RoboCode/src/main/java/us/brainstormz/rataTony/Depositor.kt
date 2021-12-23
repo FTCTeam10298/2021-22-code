@@ -8,18 +8,18 @@ import kotlinx.coroutines.*
 import us.brainstormz.telemetryWizard.TelemetryConsole
 
 
-class Depositor2(private val hardware: RataTonyHardware, private val console: TelemetryConsole) {
+class Depositor(private val hardware: RataTonyHardware, private val console: TelemetryConsole) {
 
     enum class DropperPos(val posValue: Double) {
-        Open(0.7),
-        Closed(0.0)
+        Open(0.0),
+        Closed(0.7)
     }
 
     private val xPID = PID(kp = 0.0018, ki = 0.0)
     private val xPrecision = -10..10
     val outerLimit = 2500
 
-    private val yPID = PID(kp = 0.00015, ki = 0.0)
+    private val yPID = PID(kp = 0.0005, ki = 0.0)
     private val yPrecision = -10..10
     val upperLimit = 900
     enum class LiftPos(val counts: Int) {
@@ -28,32 +28,49 @@ class Depositor2(private val hardware: RataTonyHardware, private val console: Te
         HighGoal(800)
     }
 
+    fun xTowardPosition(targetPos: Int): Boolean {
+        val error = targetPos - hardware.horiMotor.currentPosition
+
+        if (canXMove(targetPos))
+            hardware.horiMotor.power = xPID.calcPID(error.toDouble())
+
+        return if (error in xPrecision) {
+            hardware.horiMotor.power = 0.0
+            true
+        } else
+            false
+    }
+
+    fun yTowardPosition(targetPos: Int): Boolean {
+        val error = targetPos - hardware.liftMotor.currentPosition
+
+        if (canYMove(targetPos))
+            hardware.liftMotor.power = yPID.calcPID(error.toDouble())
+
+        return error in yPrecision
+    }
+
     fun xToPosition(targetPos: Int) {
         while (true) {
-            val error = targetPos - hardware.horiMotor.currentPosition
+            val atPosition = xTowardPosition(targetPos)
 
-            if (canXMove(targetPos))
-                hardware.horiMotor.power = xPID.calcPID(error.toDouble())
-
-            if (error in xPrecision)
+            if (atPosition)
                 break
         }
     }
 
     fun yToPosition(targetPos: Int) {
         while (true) {
-            val error = targetPos - hardware.liftMotor.currentPosition
+            val atPosition = yTowardPosition(targetPos)
 
-            if (canYMove(targetPos))
-                hardware.liftMotor.power = yPID.calcPID(error.toDouble())
-
-            if (error in yPrecision)
+            if (atPosition) {
                 break
+            }
         }
     }
 
     fun xAtPower(power: Double) {
-        val anticipatedStop = hardware.horiMotor.currentPosition + 50 * posOrNeg(power.toInt())
+        val anticipatedStop = hardware.horiMotor.currentPosition + 10 * posOrNeg(power.toInt())
 
         val target = when {
             power > 0 -> outerLimit
@@ -120,11 +137,11 @@ class Depositor2(private val hardware: RataTonyHardware, private val console: Te
 //    Bucket stay closed conditions
     private val closedCauseX = 100..795
 
-//    x/y collisions
+    //    x/y collisions
     private val collideCauseX = 100..795
     private val collideCauseY = 100
 
-//    target trackers
+    //    target trackers
     private var xTarget: Int? = null
     private var yTarget: Int? = null
 
@@ -135,10 +152,10 @@ class Depositor2(private val hardware: RataTonyHardware, private val console: Te
         }
 
         val direction = posOrNeg(target - hardware.liftMotor.currentPosition)
-        val rangeToTarget = hardware.horiMotor.currentPosition..target
 
         val result = when {
-            hardware.xInnerLimit.isPressed && direction == -1 -> false
+            target <= 0 -> false
+//            hardware.xInnerLimit.isPressed && direction == -1 -> false
             target > outerLimit && direction == 1 -> false
             (yTarget ?: hardware.liftMotor.currentPosition) <= collideCauseY -> false
             target in collideCauseX && DropperPos.Open.posValue == hardware.dropperServo.position -> false
@@ -146,6 +163,7 @@ class Depositor2(private val hardware: RataTonyHardware, private val console: Te
         }
 
         console.display(6, "X condition: $result")
+        console.display(7, "X fully in: ${hardware.xInnerLimit.isPressed}")
 
         xTarget = if (result)
             target
@@ -170,7 +188,8 @@ class Depositor2(private val hardware: RataTonyHardware, private val console: Te
             else -> true
         }
 
-        console.display(7, "y condition: $result")
+        console.display(8, "Y condition: $result")
+        console.display(9, "Y fully down: ${hardware.yLowerLimit.isPressed}")
 
         yTarget = if (result)
             target
@@ -192,163 +211,8 @@ class Depositor2(private val hardware: RataTonyHardware, private val console: Te
 
     }
 
-    private fun posOrNeg(num: Int): Int {
-        return when {
-            num > 0 -> 1
-            num < 0 -> -1
-            else -> 0
-        }
-    }
-}
-
-class Depositor(private val hardware: RataTonyHardware) {
-    enum class XPosition {
-        Extend,
-        Retract
-    }
-
-    private val yPID = PID(kp = 0.002, ki = 0.002)
-    private val yLimits: IntRange = 0..1430
-    private val extendableHeight = 190
-    val highGoalHeight = 1430
-    val midGoalHeight = 820
-    val lowGoalHeight = 300
-    var state = 0
-
-    private val xPID = PID(kp = 0.0015, ki = 0.001)
-    private val xPower = 1.0
-    var xAbsPos = XPosition.Retract
-    private val xExtendTime: Long = 755
-    private val xRetractTime: Long = 765
-
-    private val dropperOpen = 0.0
-    val dropperClosed = 0.7
-
-    fun xToPosition(newPos: XPosition?) {
-        if (hardware.liftMotor.currentPosition > extendableHeight) {
-            when {
-                (newPos == XPosition.Extend) && (xAbsPos == XPosition.Retract) -> {
-//                    hardware.horiServo.power = xPower
-                    sleep(xExtendTime)
-                    xAbsPos = XPosition.Extend
-//                    hardware.horiServo.power = 0.0
-                }
-                (newPos == XPosition.Retract) && (xAbsPos == XPosition.Extend) -> {
-//                    hardware.horiServo.power = -xPower
-                    sleep(xRetractTime)
-                    xAbsPos = XPosition.Retract
-//                    hardware.horiServo.power = 0.0
-                }
-                else -> {} //hardware.horiServo.power = 0.0
-            }
-        }
-
-    }
-
-    fun yInDirection(yDirection: Int) {
-//        hardware.liftMotor.mode = DcMotor.RunMode.RUN_USING_ENCODER
-
-        val direction = posOrNeg(-yDirection)
-        val target = when (direction) {
-                1 -> yLimits.last
-                -1 -> yLimits.first
-                else -> hardware.liftMotor.currentPosition
-            }
-        if (yDirection != 0)
-            yToPosition(target)
-        else
-            hardware.liftMotor.power = 0.0
-
-//        hardware.liftMotor.power = if (yDirection != 0) {
-//            val target = when (direction) {
-//                1 -> yLimits.last
-//                -1 -> yLimits.first
-//                else -> hardware.liftMotor.currentPosition
-//            }
-//            yPID.calcPID(
-//                target.toDouble(),
-//                hardware.liftMotor.currentPosition.toDouble()
-//            )
-//        } else {
-//            0.0
-//        }
-
-//        if (hardware.liftMotor.currentPosition > yLimits.last) {
-//            yToPosition(yLimits.last)
-//        } else if (hardware.liftMotor.currentPosition < yLimits.first) {
-//            yToPosition(yLimits.first)
-//        }
-//
-//        when (hardware.liftMotor.currentPosition) {
-//            in yLimits -> {
-//                if (yDirection != 0) {
-//                    val target = when (direction) {
-//                        1 -> yLimits.last
-//                        -1 -> yLimits.first
-//                        else -> hardware.liftMotor.currentPosition
-//                    }
-//                    val pidPower = yPID.calcPID(
-//                        target.toDouble(),
-//                        hardware.liftMotor.currentPosition.toDouble()
-//                    )
-//                    pidPower
-//                }
-//            }
-//            else -> 0.0
-//        }
-
-    }
-
-    fun yToPosition(targetPos: Int) {
-        val adjustedTarget = targetPos.coerceIn(yLimits)
-
-//        val direction = posOrNeg(targetPos)
-
-//        hardware.liftMotor.power = yPID.calcPID(adjustedTarget.toDouble(), hardware.liftMotor.currentPosition.toDouble())
-        hardware.liftMotor.power = 1.0
-
-        hardware.liftMotor.targetPosition = adjustedTarget
-        hardware.liftMotor.mode = DcMotor.RunMode.RUN_TO_POSITION
-
-
-//        while (hardware.liftMotor.isBusy) {
-//            hardware.liftMotor.power = yPID.calcPID(adjustedTarget.toDouble(), hardware.liftMotor.currentPosition.toDouble())
-//        }
-//
-//        hardware.liftMotor.power = 0.0
-    }
-
-    fun yToPositionBlocking(targetPos: Int) {
-        val adjustedTarget = targetPos.coerceIn(yLimits)
-
-//        val direction = posOrNeg(targetPos)
-
-//        hardware.liftMotor.power = yPID.calcPID(adjustedTarget.toDouble(), hardware.liftMotor.currentPosition.toDouble())
-        hardware.liftMotor.power = 1.0
-
-        hardware.liftMotor.mode = DcMotor.RunMode.RUN_TO_POSITION
-
-        hardware.liftMotor.targetPosition = adjustedTarget
-
-        while (hardware.liftMotor.isBusy) {
-            hardware.liftMotor.power = 1.0
-        }
-//
-//        hardware.liftMotor.power = 0.0
-    }
-
-    fun drop() {
-        hardware.dropperServo.position = dropperOpen
-    }
-
-    fun close() {
-        hardware.dropperServo.position = dropperClosed
-    }
-
-    fun home() {
-        hardware.dropperServo.position = dropperClosed
-        xToPosition(XPosition.Retract)
-        yToPosition(yLimits.first)
+    fun holdLiftPos() {
+        yTowardPosition(hardware.liftMotor.currentPosition)
     }
 
     private fun posOrNeg(num: Int): Int {
@@ -358,28 +222,4 @@ class Depositor(private val hardware: RataTonyHardware) {
             else -> 0
         }
     }
-
-}
-
-//@TeleOp(name="Depositor Tuner", group="Minibot")
-class DepositorTuner: OpMode() {
-
-    val hardware = RataTonyHardware()
-    val console = TelemetryConsole(telemetry)
-    val depositor = Depositor2(hardware, console)
-
-    override fun init() {
-        hardware.init(hardwareMap)
-    }
-
-    override fun loop() {
-        telemetry.addLine("")
-        telemetry.addLine("y position: ${hardware.liftMotor.currentPosition}")
-        val xPosition = "not working atm"
-        telemetry.addLine("x position: $xPosition")
-
-
-        telemetry.update()
-    }
-
 }

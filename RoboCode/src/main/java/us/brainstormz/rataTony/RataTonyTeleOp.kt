@@ -12,7 +12,7 @@ class RataTonyTeleOp: OpMode() {
     val hardware = RataTonyHardware()
 
     val robot = MecanumDriveTrain(hardware)
-    val depositor = Depositor2(hardware, console)
+    val depositor = Depositor(hardware, console)
     var isStickButtonDown = false
     var driveReversed = 1
 
@@ -54,7 +54,8 @@ class RataTonyTeleOp: OpMode() {
         else
             depositor.close()
 
-        console.display(9, "dropper can open ${depositor.canDropperDrop(Depositor2.DropperPos.Open)}")
+        depositor.holdLiftPos()
+//        console.display(9, "dropper can open ${depositor.canDropperDrop(Depositor.DropperPos.Open)}")
         console.display(2, "y pos: ${hardware.liftMotor.currentPosition}")
         console.display(3, "x pos: ${hardware.horiMotor.currentPosition}")
         console.display(4, "dropper: ${hardware.dropperServo.position}")
@@ -62,7 +63,7 @@ class RataTonyTeleOp: OpMode() {
         // Collector
         when {
             gamepad1.left_bumper -> {
-            hardware.collector.power = 1.0
+                hardware.collector.power = 1.0
                 hardware.collector2.power = -0.5
             }
             gamepad1.right_bumper -> {
@@ -70,7 +71,7 @@ class RataTonyTeleOp: OpMode() {
                 hardware.collector2.power = 1.0
             }
             else -> {
-            hardware.collector.power = 0.0
+                hardware.collector.power = 0.0
                 hardware.collector2.power = 0.0
             }
         }
@@ -87,5 +88,6 @@ class RataTonyTeleOp: OpMode() {
                 hardware.carouselSpinner.power = 0.0
             }
         }
+
     }
 }
