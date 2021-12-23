@@ -3,7 +3,7 @@ package us.brainstormz.rataTony
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import us.brainstormz.telemetryWizard.TelemetryConsole
-import us.brainstormz.rataTony.Depositor2.LiftPos
+import us.brainstormz.rataTony.Depositor.LiftPos
 
 @Autonomous(name="Minibot Motor Test", group="Minibot")
 class RataTonyMotorTest: LinearOpMode() {
@@ -12,7 +12,7 @@ class RataTonyMotorTest: LinearOpMode() {
 
     val hardware = RataTonyHardware()
 
-    val depositor = Depositor2(hardware, console)
+    val depositor = Depositor(hardware, console)
 
     override fun runOpMode() {
         /** INIT PHASE */
@@ -23,6 +23,7 @@ class RataTonyMotorTest: LinearOpMode() {
         /** AUTONOMOUS  PHASE */
 
         depositor.yToPosition(LiftPos.LowGoal.counts)
+        depositor.xToPosition(500)
 
 //        console.display(1, "left Front")
 //        hardware.lFDrive.power = 0.3
