@@ -6,6 +6,7 @@ import us.brainstormz.pid.PID
 import java.lang.Thread.sleep
 import kotlinx.coroutines.*
 import us.brainstormz.telemetryWizard.TelemetryConsole
+import kotlin.math.abs
 
 
 class Depositor(private val hardware: RataTonyHardware, private val console: TelemetryConsole) {
@@ -23,11 +24,12 @@ class Depositor(private val hardware: RataTonyHardware, private val console: Tel
     private val yPID = PID(kp = 0.0012, ki = 0.0)
     private var liftPower = 0.0
     private val yPrecision = -10..10
-    val upperLimit = 900
+    private val upperLimit = 900
+    private val lowerLimit = -1
     enum class LiftPos(val counts: Int) {
-        LowGoal(130),
-        MidGoal(500),
-        HighGoal(800)
+        LowGoal(190),
+        MidGoal(510),
+        HighGoal(850)
     }
 
     fun xTowardPosition(targetPos: Int): Boolean {
@@ -72,7 +74,7 @@ class Depositor(private val hardware: RataTonyHardware, private val console: Tel
     }
 
     fun xAtPower(power: Double) {
-        val anticipatedStop = hardware.horiMotor.currentPosition + 10 * posOrNeg(power.toInt())
+        val anticipatedStop = (10 * posOrNeg(power.toInt())) + hardware.horiMotor.currentPosition
 
         val target = when {
             power > 0 -> outerLimit
@@ -80,25 +82,25 @@ class Depositor(private val hardware: RataTonyHardware, private val console: Tel
             else -> hardware.horiMotor.currentPosition
         }
 
-        if (canXMove(anticipatedStop))
-            hardware.horiMotor.power = xPID.calcPID(target.toDouble(), hardware.horiMotor.currentPosition.toDouble())
+        hardware.horiMotor.power = if (canXMove(anticipatedStop))
+            xPID.calcPID(target.toDouble(), hardware.horiMotor.currentPosition.toDouble())
         else
-            hardware.horiMotor.power = 0.0
+            0.0
     }
 
     fun yAtPower(power: Double) {
-        val anticipatedStop = hardware.liftMotor.currentPosition + 50 * posOrNeg(power.toInt())
+        val anticipatedStop = (40 * posOrNeg(power.toInt())) + hardware.liftMotor.currentPosition
 
         val target = when {
             power > 0 -> upperLimit
-            power < 0 -> 0
+            power < 0 -> lowerLimit
             else -> hardware.liftMotor.currentPosition
         }
 
-        if (canYMove(anticipatedStop))
-            liftPower = yPID.calcPID(target.toDouble(), hardware.liftMotor.currentPosition.toDouble())
+        liftPower = if (canYMove(anticipatedStop))
+            yPID.calcPID(target.toDouble(), hardware.liftMotor.currentPosition.toDouble()).coerceAtLeast(-0.7)/*.coerceIn(-abs(power), abs(power))*/
         else
-            liftPower = 0.0
+            0.0
     }
 
     fun xToPositionAsync(targetPos: Int): Unit = runBlocking { async {
@@ -124,12 +126,8 @@ class Depositor(private val hardware: RataTonyHardware, private val console: Tel
      */
     fun home() {
         close()
-        xToPositionAsync(0)
-        yToPositionAsync(0)
-    }
-
-    fun lowGoal() {
-        yToPositionAsync(LiftPos.LowGoal.counts)
+        xTowardPosition(innerLimit)
+        yTowardPosition(lowerLimit)
     }
 
     /**
@@ -183,7 +181,7 @@ class Depositor(private val hardware: RataTonyHardware, private val console: Tel
         val direction = posOrNeg(target - hardware.liftMotor.currentPosition)
 
         val result = when {
-            hardware.xInnerLimit.isPressed && direction == -1 -> false
+            target < lowerLimit && direction == -1 -> false
             target > upperLimit && direction == 1 -> false
             (target <= collideCauseY && xTarget in collideCauseX) && direction == -1 -> false
             else -> true
@@ -220,7 +218,8 @@ class Depositor(private val hardware: RataTonyHardware, private val console: Tel
         } else if (liftPower == 0.0 && previousLiftPower != 0.0) {
             yTowardPosition(hardware.liftMotor.currentPosition)
             previousLiftPower = liftPower
-        }
+        } /*else
+            yTowardPosition(hardware.liftMotor.currentPosition)*/
     }
 
     private fun posOrNeg(num: Int): Int {
