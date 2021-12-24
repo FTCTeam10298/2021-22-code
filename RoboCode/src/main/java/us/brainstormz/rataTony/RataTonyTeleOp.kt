@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import us.brainstormz.hardwareClasses.MecanumDriveTrain
 import us.brainstormz.telemetryWizard.TelemetryConsole
+import us.brainstormz.rataTony.Depositor.LiftPos
 
 @TeleOp(name="Minibot TeleOp", group="A")
 class RataTonyTeleOp: OpMode() {
@@ -46,16 +47,28 @@ class RataTonyTeleOp: OpMode() {
         )
 
         // Depositor
-        depositor.yAtPower(-gamepad2.left_stick_y.toDouble())
-        depositor.xAtPower(gamepad2.right_stick_x.toDouble())
 
         if (gamepad2.right_trigger != 0.0f || gamepad2.left_trigger != 0.0f)
             depositor.drop()
         else
             depositor.close()
 
+        if (gamepad2.right_stick_x != 0.0f)
+            depositor.xAtPower(gamepad2.right_stick_x.toDouble())
+
+        if (gamepad2.left_stick_y != 0.0f)
+            depositor.yAtPower(-gamepad2.left_stick_y.toDouble())
+
+        if (gamepad2.a)
+            depositor.home()
+        
+        if (gamepad2.y)
+            depositor.yTowardPosition(LiftPos.HighGoal.counts)
+        else
+            depositor.yAtPower(0.0)
+
         depositor.updateYPosition()
-//        console.display(9, "dropper can open ${depositor.canDropperDrop(Depositor.DropperPos.Open)}")
+
         console.display(2, "y pos: ${hardware.liftMotor.currentPosition}")
         console.display(3, "x pos: ${hardware.horiMotor.currentPosition}")
         console.display(4, "dropper: ${hardware.dropperServo.position}")
