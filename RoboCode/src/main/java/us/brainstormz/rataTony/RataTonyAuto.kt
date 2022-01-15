@@ -42,7 +42,7 @@ class RataTonyAuto: LinearOpMode() {
         console.display(1, "Initialization Complete")
         waitForStart()
         /** AUTONOMOUS  PHASE */
-        depositor.initalizeYAxis(opmode = this)
+        depositor.runInLinearOpmode(opmode = this)
 
         val tsePosition = tseDetector.position
         opencv.stop()
