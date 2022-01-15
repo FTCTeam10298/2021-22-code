@@ -61,7 +61,7 @@ class RataTonyTeleOp: OpMode() {
 
         if (gamepad2.a)
             depositor.home()
-        
+
         if (gamepad2.y)
             depositor.yTowardPosition(LiftPos.HighGoal.counts)
         else

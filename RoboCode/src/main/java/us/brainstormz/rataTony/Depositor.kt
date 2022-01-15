@@ -1,5 +1,6 @@
 package us.brainstormz.rataTony
 
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import com.qualcomm.robotcore.hardware.DcMotor
 import us.brainstormz.pid.PID
@@ -220,6 +221,17 @@ class Depositor(private val hardware: RataTonyHardware, private val console: Tel
             previousLiftPower = liftPower
         } /*else
             yTowardPosition(hardware.liftMotor.currentPosition)*/
+    }
+
+    /**
+     * run at the beginning of the program
+     * */
+    fun initalizeYAxis(opmode: LinearOpMode) {
+        Thread().run {
+            while (opmode.opModeIsActive()) {
+                updateYPosition()
+            }
+        }
     }
 
     private fun posOrNeg(num: Int): Int {
