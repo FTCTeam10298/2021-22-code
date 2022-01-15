@@ -230,11 +230,11 @@ class Depositor(private val hardware: RataTonyHardware, private val console: Tel
      * */
     fun runInLinearOpmode(opmode: LinearOpMode) {
         this.opmode = opmode
-        Thread().run {
+        val yThread = Thread {
             while (opmode.opModeIsActive()) {
                 updateYPosition()
             }
-        }
+        }.start()
     }
 
     private fun posOrNeg(num: Int): Int {
