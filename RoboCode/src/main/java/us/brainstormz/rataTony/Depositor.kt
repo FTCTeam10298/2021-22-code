@@ -55,9 +55,13 @@ class Depositor(private val hardware: RataTonyHardware, private val console: Tel
         return error in yPrecision
     }
 
+    private lateinit var opmode: LinearOpMode
+
     fun xToPosition(targetPos: Int) {
-        while (true) {
+        while (opmode.opModeIsActive()) {
             val atPosition = xTowardPosition(targetPos)
+
+            updateYPosition()
 
             if (atPosition)
                 break
@@ -65,8 +69,10 @@ class Depositor(private val hardware: RataTonyHardware, private val console: Tel
     }
 
     fun yToPosition(targetPos: Int) {
-        while (true) {
+        while (opmode.opModeIsActive()) {
             val atPosition = yTowardPosition(targetPos)
+            
+            updateYPosition()
 
             if (atPosition) {
                 break
@@ -226,12 +232,13 @@ class Depositor(private val hardware: RataTonyHardware, private val console: Tel
     /**
      * run at the beginning of the program
      * */
-    fun initalizeYAxis(opmode: LinearOpMode) {
-        Thread().run {
-            while (opmode.opModeIsActive()) {
-                updateYPosition()
-            }
-        }
+    fun runInLinearOpmode(opmode: LinearOpMode) {
+        this.opmode = opmode
+//        Thread().run {
+//            while (opmode.opModeIsActive()) {
+//                updateYPosition()
+//            }
+//        }
     }
 
     private fun posOrNeg(num: Int): Int {
