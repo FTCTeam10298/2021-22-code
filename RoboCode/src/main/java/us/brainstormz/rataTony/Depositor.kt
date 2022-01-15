@@ -61,8 +61,6 @@ class Depositor(private val hardware: RataTonyHardware, private val console: Tel
         while (opmode.opModeIsActive()) {
             val atPosition = xTowardPosition(targetPos)
 
-            updateYPosition()
-
             if (atPosition)
                 break
         }
@@ -71,8 +69,6 @@ class Depositor(private val hardware: RataTonyHardware, private val console: Tel
     fun yToPosition(targetPos: Int) {
         while (opmode.opModeIsActive()) {
             val atPosition = yTowardPosition(targetPos)
-            
-            updateYPosition()
 
             if (atPosition) {
                 break
@@ -234,11 +230,11 @@ class Depositor(private val hardware: RataTonyHardware, private val console: Tel
      * */
     fun runInLinearOpmode(opmode: LinearOpMode) {
         this.opmode = opmode
-//        Thread().run {
-//            while (opmode.opModeIsActive()) {
-//                updateYPosition()
-//            }
-//        }
+        Thread().run {
+            while (opmode.opModeIsActive()) {
+                updateYPosition()
+            }
+        }
     }
 
     private fun posOrNeg(num: Int): Int {
