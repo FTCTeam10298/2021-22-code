@@ -6,7 +6,7 @@ import us.brainstormz.hardwareClasses.MecanumDriveTrain
 import us.brainstormz.telemetryWizard.TelemetryConsole
 import us.brainstormz.rataTony.Depositor.LiftPos
 
-@TeleOp(name="Minibot TeleOp", group="A")
+@TeleOp(name="RataTony TeleOp", group="A")
 class RataTonyTeleOp: OpMode() {
 
     val console = TelemetryConsole(telemetry)
