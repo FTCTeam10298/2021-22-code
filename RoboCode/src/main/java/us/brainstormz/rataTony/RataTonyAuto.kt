@@ -19,7 +19,7 @@ class RataTonyAuto: LinearOpMode() {
     val hardware = RataTonyHardware()
     val movement = EncoderDriveMovement(hardware, console)
     val jovement = JamesEncoderMovement(hardware,console)
-    val depositor = OldDepositor(hardware)
+    val depositor = Depositor(hardware,console)
 
 
     val opencv = OpenCvAbstraction(this)
@@ -46,9 +46,10 @@ class RataTonyAuto: LinearOpMode() {
         val tsePosition = tseDetector.position
         opencv.stop()
 
-        val level = when (tsePosition) {
-            TSEPosition.One -> depositor.lowGoalHeight
-            else -> depositor.midGoalHeight
+        val level: Depositor.LiftPos = when (tsePosition) {
+            TSEPosition.One -> Depositor.LiftPos.LowGoal
+            TSEPosition.Two -> Depositor.LiftPos.MidGoal
+            TSEPosition.Three -> Depositor.LiftPos.HighGoal
         }
 
         when {
@@ -62,8 +63,8 @@ class RataTonyAuto: LinearOpMode() {
                         movement.driveRobotStrafe(1.0, 3.5, true)
                         if (tsePosition != TSEPosition.One)
                             movement.driveRobotStrafe(1.0, 0.7, true)
-                        depositor.yToPositionBlocking(level)
-                        deposit(level)
+                        depositor.yToPosition(level.counts)
+                        deposit(level.counts)
 
                         if (tsePosition != TSEPosition.Three)
                             movement.driveRobotPosition(1.0, -7.0, true)
@@ -88,7 +89,7 @@ class RataTonyAuto: LinearOpMode() {
 //        deliver
                         movement.driveRobotStrafe(1.0, 5.0, true)
                         movement.driveRobotTurn(1.0,40.0,true)
-                        depositor.yToPosition(level)
+                        depositor.yToPosition(level.counts)
 //                        if (tsePosition == TSEPosition.Two) {
                             movement.driveRobotStrafe(0.8, 34.0, true)
                             movement.driveRobotTurn(1.0, -5.0, true)
@@ -105,7 +106,7 @@ class RataTonyAuto: LinearOpMode() {
                         sleep(1000)
                         depositor.drop()
                         sleep(1000)
-                        depositor.yToPositionBlocking(level+60)
+                        depositor.yToPosition(level.counts + 60)
 //                        hardware.horiServo.power = -1.0
                         sleep(1000)
                         depositor.close()
@@ -137,8 +138,8 @@ class RataTonyAuto: LinearOpMode() {
                         movement.driveRobotStrafe(1.0, 5.5, true)
                         if (tsePosition != TSEPosition.One)
                             movement.driveRobotStrafe(1.0, 1.0, true)
-                        depositor.yToPosition(level)
-                        deposit(level)
+                        depositor.yToPosition(level.counts)
+                        deposit(level.counts)
 
                         if (tsePosition != TSEPosition.One)
                             movement.driveRobotPosition(1.0, 7.0, true)
@@ -162,7 +163,7 @@ class RataTonyAuto: LinearOpMode() {
         //          deliver
                         movement.driveRobotStrafe(1.0, 5.0, true)
                         movement.driveRobotTurn(1.0, -33.0, true)
-                        depositor.yToPosition(level)
+                        depositor.yToPosition(level.counts)
                         movement.driveRobotStrafe(1.0, 11.0, true)
                         movement.driveRobotPosition(1.0, -5.0, true)
                         movement.driveRobotStrafe(1.0, 15.0, true)
@@ -179,7 +180,7 @@ class RataTonyAuto: LinearOpMode() {
                         sleep(1000)
                         depositor.drop()
                         sleep(1000)
-                        depositor.yToPositionBlocking(level + 100)
+                        depositor.yToPosition(level.counts + 100)
 //                        hardware.horiServo.power = -1.0
                         sleep(1000)
                         depositor.close()
@@ -200,13 +201,13 @@ class RataTonyAuto: LinearOpMode() {
         }
 
 //        make sure lift is down
-        depositor.yToPositionBlocking(300)
+        depositor.yToPosition(300)
 //        hardware.horiServo.power = 1.0
         sleep(500)
 //        hardware.horiServo.power = -1.0
         sleep(1000)
 //        hardware.horiServo.power = 0.0
-        depositor.yToPositionBlocking(0)
+        depositor.yToPosition(0)
     }
 
 //    out, drop, home
@@ -219,7 +220,7 @@ class RataTonyAuto: LinearOpMode() {
         depositor.drop()
         sleep(1000)
 
-        depositor.yToPositionBlocking(yLevel+100)
+        depositor.yToPosition(yLevel+100)
 //        hardware.horiServo.power = -1.0
         sleep(800)
         depositor.close()
