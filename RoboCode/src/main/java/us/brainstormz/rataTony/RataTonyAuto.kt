@@ -9,7 +9,7 @@ import us.brainstormz.hardwareClasses.JamesEncoderMovement
 import us.brainstormz.telemetryWizard.TelemetryConsole
 import us.brainstormz.telemetryWizard.TelemetryWizard
 import us.brainstormz.rataTony.TeamScoringElementDetector.TSEPosition
-
+import us.brainstormz.rataTony.Depositor.LiftPos
 @Autonomous(name="Minibot Auto", group="A")
 class RataTonyAuto: LinearOpMode() {
 
@@ -42,14 +42,15 @@ class RataTonyAuto: LinearOpMode() {
         console.display(1, "Initialization Complete")
         waitForStart()
         /** AUTONOMOUS  PHASE */
+        depositor.initalizeYAxis(opmode = this)
 
         val tsePosition = tseDetector.position
         opencv.stop()
 
-        val level: Depositor.LiftPos = when (tsePosition) {
-            TSEPosition.One -> Depositor.LiftPos.LowGoal
-            TSEPosition.Two -> Depositor.LiftPos.MidGoal
-            TSEPosition.Three -> Depositor.LiftPos.HighGoal
+        val level: LiftPos = when (tsePosition) {
+            TSEPosition.One -> LiftPos.LowGoal
+            TSEPosition.Two -> LiftPos.MidGoal
+            TSEPosition.Three -> LiftPos.HighGoal
         }
 
         when {
