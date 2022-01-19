@@ -6,6 +6,13 @@ import us.brainstormz.hardwareClasses.MecanumDriveTrain
 import us.brainstormz.telemetryWizard.TelemetryConsole
 import us.brainstormz.rataTony.Depositor.LiftPos
 
+/*
+    lift wiring (hw)
+    lift not moving
+    ~~collector slower~~
+    freight slowers (hw)
+ */
+
 @TeleOp(name="RataTony TeleOp", group="A")
 class RataTonyTeleOp: OpMode() {
 
@@ -74,14 +81,17 @@ class RataTonyTeleOp: OpMode() {
         console.display(4, "dropper: ${hardware.dropperServo.position}")
 
         // Collector
+        val forwardPower = 0.9
+        val reversePower = 0.5
+
         when {
             gamepad1.right_bumper -> {
-                hardware.collector.power = 1.0
-                hardware.collector2.power = -0.5
+                hardware.collector.power = forwardPower
+                hardware.collector2.power = -reversePower
             }
             gamepad1.left_bumper -> {
-                hardware.collector.power = -0.5
-                hardware.collector2.power = 1.0
+                hardware.collector.power = -reversePower
+                hardware.collector2.power = forwardPower
             }
             else -> {
                 hardware.collector.power = 0.0
