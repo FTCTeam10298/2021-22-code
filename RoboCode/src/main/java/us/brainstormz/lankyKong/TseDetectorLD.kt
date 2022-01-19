@@ -1,10 +1,10 @@
-package us.brainstormz.miniMouse
+package us.brainstormz.lankyKong
 
 import org.opencv.core.*
 import org.opencv.imgproc.Imgproc
 import us.brainstormz.telemetryWizard.TelemetryConsole
 
-class TseDetectorMM(private val console: TelemetryConsole) {
+class TseDetectorLD(private val console: TelemetryConsole) {
     enum class TSEPosition {
         One, Two, Three
     }

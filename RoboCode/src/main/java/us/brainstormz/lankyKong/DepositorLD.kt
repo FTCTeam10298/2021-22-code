@@ -1,13 +1,14 @@
-package us.brainstormz.miniMouse
+package us.brainstormz.lankyKong
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.hardware.DcMotor
 import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
 import us.brainstormz.pid.PID
+import us.brainstormz.rataTony.RataTonyHardware
 import us.brainstormz.telemetryWizard.TelemetryConsole
 
-class DepositorMM(private val hardware: MiniMouseHardware, private val console: TelemetryConsole) {
+class DepositorLD(private val hardware: RataTonyHardware, private val console: TelemetryConsole) {
 
     enum class DropperPos(val posValue: Double) {
         Open(0.0),
