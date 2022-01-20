@@ -1,17 +1,24 @@
 package us.brainstormz.lankyKong
 
+import com.qualcomm.hardware.lynx.LynxModule
 import com.qualcomm.robotcore.hardware.*
+import us.brainstormz.hardwareClasses.SmartLynxModule
 import us.brainstormz.hardwareClasses.HardwareClass
 
 class LankyKongHardware: HardwareClass/*MecanumHardware*/ {
     override lateinit var hwMap: HardwareMap
+
+    lateinit var allHubs: List<LynxModule>
+    private lateinit var smartLynxModuleCtrl: SmartLynxModule
+    private lateinit var smartLynxModuleEx: SmartLynxModule
+
 
 //    Drivetrain
 //    override lateinit var lFDrive: DcMotor
 //    override lateinit var rFDrive: DcMotor
 //    override lateinit var lBDrive: DcMotor
 //    override lateinit var rBDrive: DcMotor
-
+    lateinit var lFDrive: DcMotor
 //    Depositor
 //    lateinit var liftMotor: DcMotorEx
 //    lateinit var horiMotor: DcMotorEx
@@ -32,7 +39,12 @@ class LankyKongHardware: HardwareClass/*MecanumHardware*/ {
     override fun init(ahwMap: HardwareMap) {
         hwMap = ahwMap
 
+        allHubs = hwMap.getAll(LynxModule::class.java)
+        smartLynxModuleCtrl = SmartLynxModule(allHubs[0])
+//        smartLynxModuleEx = SmartLynxModule(allHubs[1])
+
 //        Drivetrain
+        lFDrive = smartLynxModuleCtrl.getMotor(0) as DcMotorEx
 //        lFDrive = hwMap["lFDrive"] as DcMotorEx
 //        rFDrive = hwMap["rFDrive"] as DcMotorEx
 //        lBDrive = hwMap["lBDrive"] as DcMotorEx
@@ -79,11 +91,14 @@ class LankyKongHardware: HardwareClass/*MecanumHardware*/ {
 //        yLowerLimit = hwMap["lowerLimit"] as RevTouchSensor
 
 //        Collectors
-        collector = hwMap["collector"] as DcMotor
+
+        collector = smartLynxModuleCtrl.getMotor(2) as DcMotorEx
+//        collector = hwMap["collector"] as DcMotor
         collector.direction = DcMotorSimple.Direction.REVERSE
         collector.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.FLOAT
 
-        collector2 = hwMap["collector2"] as DcMotor
+        collector2 = smartLynxModuleCtrl.getMotor(1) as DcMotorEx
+//        collector2 = hwMap["collector2"] as DcMotor
         collector2.direction = DcMotorSimple.Direction.REVERSE
         collector2.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.FLOAT
 

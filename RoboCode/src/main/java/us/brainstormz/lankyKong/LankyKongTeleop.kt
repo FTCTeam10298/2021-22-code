@@ -2,6 +2,7 @@ package us.brainstormz.lankyKong
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
+import kotlin.math.abs
 
 @TeleOp(name= "Lanky Kong Teleop", group= "B")
 class LankyKongTeleop: OpMode() {
@@ -18,17 +19,20 @@ class LankyKongTeleop: OpMode() {
         /** TELE-OP PHASE */
 
 //        DRONE DRIVE
-//        val yInput = gamepad1.left_stick_y.toDouble()
-//        val xInput = gamepad1.left_stick_x.toDouble()
-//        val rInput = gamepad1.right_stick_x.toDouble()
-//
-//        val y = -yInput
-//        val x = xInput
-//        val r = -rInput * abs(rInput)
+        val yInput = gamepad1.left_stick_y.toDouble()
+        val xInput = gamepad1.left_stick_x.toDouble()
+        val rInput = gamepad1.right_stick_x.toDouble()
+
+        val y = -yInput
+        val x = xInput
+        val r = -rInput * abs(rInput)
 //        movement.driveSetPower((y + x - r),
 //            (y - x + r),
 //            (y - x - r),
 //            (y + x + r))
+        hardware.lFDrive.power = (y + x - r)
+
+
 
 //        COLLECTOR
         val forwardPower = 1.0
