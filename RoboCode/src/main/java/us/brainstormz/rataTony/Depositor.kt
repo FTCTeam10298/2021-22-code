@@ -92,6 +92,7 @@ class Depositor(private val hardware: RataTonyHardware, private val console: Tel
     }
 
     fun yAtPower(power: Double) {
+        console.display(12, "im here")
         val anticipatedStop = (40 * posOrNeg(power.toInt())) + hardware.liftMotor.currentPosition
 
         val target = when {
@@ -100,10 +101,14 @@ class Depositor(private val hardware: RataTonyHardware, private val console: Tel
             else -> hardware.liftMotor.currentPosition
         }
 
+
+        console.display(13,"${canYMove(anticipatedStop)}")
         liftPower = if (canYMove(anticipatedStop))
             yPID.calcPID(target.toDouble(), hardware.liftMotor.currentPosition.toDouble()).coerceAtLeast(-0.7)/*.coerceIn(-abs(power), abs(power))*/
         else
             0.0
+
+        console.display(14,"$liftPower")
     }
 
     fun xToPositionAsync(targetPos: Int): Unit = runBlocking { async {
@@ -221,8 +226,8 @@ class Depositor(private val hardware: RataTonyHardware, private val console: Tel
         } else if (liftPower == 0.0 && previousLiftPower != 0.0) {
             yTowardPosition(hardware.liftMotor.currentPosition)
             previousLiftPower = liftPower
-        } /*else
-            yTowardPosition(hardware.liftMotor.currentPosition)*/
+        } else
+            yTowardPosition(hardware.liftMotor.currentPosition)
     }
 
     /**

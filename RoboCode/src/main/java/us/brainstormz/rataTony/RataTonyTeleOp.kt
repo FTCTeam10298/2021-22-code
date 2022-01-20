@@ -8,9 +8,10 @@ import us.brainstormz.rataTony.Depositor.LiftPos
 
 /*
     lift wiring (hw)
-    lift not moving
+    ~~lift not moving~~
     ~~collector slower~~
     freight slowers (hw)
+    lift auto up
  */
 
 @TeleOp(name="RataTony TeleOp", group="A")
@@ -54,25 +55,35 @@ class RataTonyTeleOp: OpMode() {
         )
 
         // Depositor
+        when {
+            gamepad2.left_stick_y != 0.0f ->
+                depositor.yAtPower(-gamepad2.left_stick_y.toDouble())
+            gamepad2.a ->
+                depositor.home()
+            gamepad2.y ->
+                depositor.yTowardPosition(LiftPos.HighGoal.counts)
+            else ->
+                depositor.yAtPower(0.0)
+        }
 
         if (gamepad2.right_trigger != 0.0f || gamepad2.left_trigger != 0.0f)
             depositor.drop()
         else
             depositor.close()
 
-        if (gamepad2.right_stick_x != 0.0f)
+//        if (gamepad2.right_stick_x != 0.0f)
             depositor.xAtPower(gamepad2.right_stick_x.toDouble())
 
-        if (gamepad2.left_stick_y != 0.0f)
-            depositor.yAtPower(-gamepad2.left_stick_y.toDouble())
+//        if (gamepad2.left_stick_y != 0.0f)
+//            depositor.yAtPower(-gamepad2.left_stick_y.toDouble())
 
-        if (gamepad2.a)
-            depositor.home()
+//        if (gamepad2.a)
+//            depositor.home()
 
-        if (gamepad2.y)
-            depositor.yTowardPosition(LiftPos.HighGoal.counts)
-        else
-            depositor.yAtPower(0.0)
+//        if (gamepad2.y)
+//            depositor.yTowardPosition(LiftPos.HighGoal.counts)
+//        else
+//            depositor.yAtPower(0.0)
 
         depositor.updateYPosition()
 
