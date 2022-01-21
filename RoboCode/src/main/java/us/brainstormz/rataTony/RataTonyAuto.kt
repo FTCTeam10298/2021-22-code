@@ -79,9 +79,9 @@ class RataTonyAuto: LinearOpMode() {
                         else
                             movement.driveRobotStrafe(0.3, -32.0, true)
 
-                        hardware.carouselSpinner.power = 1.0
+                        hardware.duccSpinner.power = 1.0
                         sleep(4000)
-                        hardware.carouselSpinner.power = 0.0
+                        hardware.duccSpinner.power = 0.0
 
                         movement.driveRobotStrafe(1.0, 25.0, true)
                         movement.driveRobotPosition(1.0, 10.0, true)
@@ -153,9 +153,9 @@ class RataTonyAuto: LinearOpMode() {
                             movement.driveRobotPosition(0.4, 29.0, true)
                         movement.driveRobotPosition(0.2, 3.0, true)
 
-                        hardware.carouselSpinner.power = -1.0
+                        hardware.duccSpinner.power = -1.0
                         sleep(4000)
-                        hardware.carouselSpinner.power = 0.0
+                        hardware.duccSpinner.power = 0.0
 
                         movement.driveRobotPosition(1.0, -20.0, true)
                         movement.driveRobotStrafe(1.0, -5.0, true)
