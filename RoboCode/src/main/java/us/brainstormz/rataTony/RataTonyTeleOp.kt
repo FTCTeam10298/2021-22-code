@@ -72,19 +72,7 @@ class RataTonyTeleOp: OpMode() {
         else
             depositor.close()
 
-//        if (gamepad2.right_stick_x != 0.0f)
             depositor.xAtPower(gamepad2.right_stick_x.toDouble())
-
-//        if (gamepad2.left_stick_y != 0.0f)
-//            depositor.yAtPower(-gamepad2.left_stick_y.toDouble())
-
-//        if (gamepad2.a)
-//            depositor.home()
-
-//        if (gamepad2.y)
-//            depositor.yTowardPosition(LiftPos.HighGoal.counts)
-//        else
-//            depositor.yAtPower(0.0)
 
         depositor.updateYPosition()
 
