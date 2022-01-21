@@ -7,10 +7,10 @@ import us.brainstormz.telemetryWizard.TelemetryConsole
 import us.brainstormz.rataTony.Depositor.LiftPos
 
 /*
-    lift wiring (hw)
+    ~~lift wiring (hw)~~
     ~~lift not moving~~
     ~~collector slower~~
-    freight slowers (hw)
+    ~~freight slowers (hw)~~
     lift auto up
  */
 
@@ -71,7 +71,7 @@ class RataTonyTeleOp: OpMode() {
         else
             depositor.close()
 
-            depositor.xAtPower(gamepad2.right_stick_x.toDouble())
+            depositor.xAtPower(gamepad2.right_stick_x.toDouble() * .9)
 
         depositor.updateYPosition()
 
@@ -80,17 +80,17 @@ class RataTonyTeleOp: OpMode() {
         console.display(4, "dropper: ${hardware.dropperServo.position}")
 
         // Collector
-        val forwardPower = 0.9
+        val forwardPower = 0.7
         val reversePower = 0.5
 
         when {
             gamepad1.right_bumper -> {
-                hardware.collector.power = forwardPower
-                hardware.collector2.power = -reversePower
+                hardware.collector.power = forwardPower * driveReversed
+                hardware.collector2.power = -reversePower * driveReversed
             }
             gamepad1.left_bumper -> {
-                hardware.collector.power = -reversePower
-                hardware.collector2.power = forwardPower
+                hardware.collector.power = -reversePower * driveReversed
+                hardware.collector2.power = forwardPower * driveReversed
             }
             else -> {
                 hardware.collector.power = 0.0
