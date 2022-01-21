@@ -23,6 +23,7 @@ class Depositor(private val hardware: RataTonyHardware, private val console: Tel
     private val innerLimit = -35
 
     private val yPID = PID(kp = 0.0012, ki = 0.0)
+    private val yPIDDown = PID(kp = 0.0007, ki = 0.0)
     private var liftPower = 0.0
     private val yPrecision = -10..10
     private val upperLimit = 900
@@ -101,10 +102,12 @@ class Depositor(private val hardware: RataTonyHardware, private val console: Tel
             else -> hardware.liftMotor.currentPosition
         }
 
-
         console.display(13,"${canYMove(anticipatedStop)}")
         liftPower = if (canYMove(anticipatedStop))
-            yPID.calcPID(target.toDouble(), hardware.liftMotor.currentPosition.toDouble()).coerceAtLeast(-0.7)/*.coerceIn(-abs(power), abs(power))*/
+            if (target == lowerLimit)
+                yPIDDown.calcPID(target.toDouble(), hardware.liftMotor.currentPosition.toDouble()).coerceAtLeast(-0.6)
+            else
+                yPID.calcPID(target.toDouble(), hardware.liftMotor.currentPosition.toDouble()).coerceAtLeast(-0.6)/*.coerceIn(-abs(power), abs(power))*/
         else
             0.0
 
