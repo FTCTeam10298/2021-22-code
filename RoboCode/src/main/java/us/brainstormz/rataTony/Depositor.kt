@@ -154,10 +154,10 @@ class Depositor(private val hardware: RataTonyHardware, private val console: Tel
     private var yTarget: Int? = null
 
     private fun canXMove(target: Int): Boolean {
-//        if (hardware.xInnerLimit.isPressed) {
-//            hardware.horiMotor.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
-//            hardware.horiMotor.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
-//        }
+        if (hardware.xInnerLimit.isPressed) {
+            hardware.horiMotor.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
+            hardware.horiMotor.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
+        }
 
         val direction = posOrNeg(target - hardware.horiMotor.currentPosition)
 
@@ -181,10 +181,10 @@ class Depositor(private val hardware: RataTonyHardware, private val console: Tel
     }
 
     private fun canYMove(target: Int): Boolean {
-//        if (hardware.yLowerLimit.isPressed) {
-//            hardware.liftMotor.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
-//            hardware.liftMotor.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
-//        }
+        if (hardware.yLowerLimit.isPressed) {
+            hardware.liftMotor.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
+            hardware.liftMotor.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
+        }
 
         val direction = posOrNeg(target - hardware.liftMotor.currentPosition)
 
@@ -196,6 +196,7 @@ class Depositor(private val hardware: RataTonyHardware, private val console: Tel
         }
 
         console.display(8, "Y condition: $result")
+        console.display(9, "Y fully down: ${hardware.yLowerLimit.isPressed}")
 
         yTarget = if (result)
             target

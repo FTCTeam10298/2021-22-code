@@ -12,7 +12,6 @@ import us.brainstormz.rataTony.Depositor.LiftPos
     ~~collector slower~~
     freight slowers (hw)
     lift auto up
-    claws not working
  */
 
 @TeleOp(name="RataTony TeleOp", group="A")
@@ -102,13 +101,13 @@ class RataTonyTeleOp: OpMode() {
         // Ducc Spinner
         when {
             gamepad2.dpad_left -> {
-                hardware.duccSpinner.power = 1.0
+                hardware.carouselSpinner.power = 1.0
             }
             gamepad2.dpad_right -> {
-                hardware.duccSpinner.power = -1.0
+                hardware.carouselSpinner.power = -1.0
             }
             else -> {
-                hardware.duccSpinner.power = 0.0
+                hardware.carouselSpinner.power = 0.0
             }
         }
 
