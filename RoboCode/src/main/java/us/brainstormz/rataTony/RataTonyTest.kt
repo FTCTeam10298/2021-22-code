@@ -5,8 +5,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import us.brainstormz.telemetryWizard.TelemetryConsole
 import us.brainstormz.rataTony.Depositor.LiftPos
 
-@Autonomous(name="RataTony Motor Test", group="A")
-class RataTonyMotorTest: LinearOpMode() {
+@Autonomous(name="RataTony Test", group="A")
+class RataTonyTest: LinearOpMode() {
 
     val console = TelemetryConsole(telemetry)
 
@@ -18,12 +18,16 @@ class RataTonyMotorTest: LinearOpMode() {
         /** INIT PHASE */
         hardware.init(hardwareMap)
 
+
         console.display(1, "Initialization Complete")
         waitForStart()
         /** AUTONOMOUS  PHASE */
+        depositor.runInLinearOpmode(this)
 
-        depositor.yToPosition(LiftPos.LowGoal.counts)
+        depositor.yToPosition(LiftPos.HighGoal.counts)
+        console.display(3, "lift is up")
         depositor.xToPosition(500)
+        console.display(4, "extended")
 
 //        console.display(1, "left Front")
 //        hardware.lFDrive.power = 0.3
