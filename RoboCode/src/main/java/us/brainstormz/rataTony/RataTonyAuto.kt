@@ -55,133 +55,133 @@ class RataTonyAuto: LinearOpMode() {
             TSEPosition.Three -> LiftPos.HighGoal
         }
 
-//        when {
-//            wizard.wasItemChosen("Alliance", "Blue") -> {
-//                when {
-//                    wizard.wasItemChosen("StartPos", "Ducc") -> {
-////                        Deposit
-//                        movement.driveRobotStrafe(1.0, 10.0, true)
-//                        movement.driveRobotTurn(1.0, -35.0, true)
-//                        movement.driveRobotStrafe(1.0, 18.0, true)
-//                        if (level == LiftPos.HighGoal)
-//                            depositor.yToPosition(level.counts + 10)
-//                        else
-//                            depositor.yToPosition(level.counts)
-//                        sleep(100)
-//                        depositor.xToPosition(2400)
-//                        depositor.drop()
-//                        sleep(500)
-//                        depositor.close()
-//                        depositor.xToPosition(0)
-//                        depositor.xTowardPosition(depositor.innerLimit)
-//                        depositor.yToPosition(depositor.lowerLimit+10)
-//                        depositor.xAtPower(0.0)
-////                        Ducc
-//                        movement.driveRobotTurn(1.0, 34.0, true)
-//                        movement.driveRobotPosition(1.0, 38.0, true)
-//                        movement.driveRobotStrafe(0.5, -13.0,true)
-//                        movement.driveRobotStrafe(0.5, -1.0,true)
-//                        hardware.carouselSpinner.power = 1.0
-//                        movement.driveRobotStrafe(0.1, -1.0, true)
-//                        sleep(4000)
-//                        hardware.carouselSpinner.power = 0.0
-////                        park
-//                        movement.driveRobotStrafe(1.0, 25.0, true)
-//                        movement.driveRobotPosition(1.0, 10.0, true)
-//
-//                    }
-//                    wizard.wasItemChosen("StartPos", "Warehouse") -> {
+        when {
+            wizard.wasItemChosen("Alliance", "Blue") -> {
+                when {
+                    wizard.wasItemChosen("StartPos", "Ducc") -> {
 //                        Deposit
-//                        movement.driveRobotStrafe(1.0, 10.0, true)
-//                        movement.driveRobotTurn(1.0, 38.0, true)
-//                        movement.driveRobotStrafe(1.0, 22.0, true)
-//                        movement.driveRobotPosition(1.0, 2.0, true)
-//                        if (level == LiftPos.HighGoal)
-//                            depositor.yToPosition(level.counts + 10)
-//                        else
-//                            depositor.yToPosition(level.counts)
-//                        sleep(100)
-//                        depositor.xToPosition(2400)
-//                        depositor.drop()
-//                        sleep(500)
-//                        depositor.close()
-//                        depositor.xToPosition(0)
-//                        depositor.xTowardPosition(depositor.innerLimit)
-//                        sleep(2000)
-//                        depositor.yToPosition(depositor.lowerLimit+10)
-//                        depositor.xAtPower(0.0)
-////                        Warehouse park
-//                        movement.driveRobotStrafe(1.0, -18.0, true)
-//                        movement.driveRobotTurn(1.0, -38.0, true)
-//                        movement.driveRobotStrafe(1.0, -12.0, true)
-//                        movement.driveRobotPosition(1.0,-40.0,true)
-//                    }
-//                }
-//            }
-//            wizard.wasItemChosen("Alliance", "Red") -> {
-//                when {
-//                    wizard.wasItemChosen("StartPos", "Ducc") -> {
-////                        Deposit
-//                        movement.driveRobotStrafe(1.0, 10.0, true)
-//                        movement.driveRobotTurn(1.0, 35.0, true)
-//                        movement.driveRobotStrafe(1.0, 22.0, true)
-//                        movement.driveRobotPosition(1.0, 2.0, true)
-//                        if (level == LiftPos.HighGoal)
-//                            depositor.yToPosition(level.counts + 10)
-//                        else
-//                            depositor.yToPosition(level.counts)
-//                        sleep(100)
-//                        depositor.xToPosition(2400)
-//                        depositor.drop()
-//                        sleep(500)
-//                        depositor.close()
-//                        depositor.xToPosition(0)
-//                        depositor.xTowardPosition(depositor.innerLimit)
-//                        depositor.yToPosition(depositor.lowerLimit+10)
-//                        depositor.xAtPower(0.0)
-////                        Ducc
-//                        movement.driveRobotTurn(1.0, -34.0, true)
-//                        movement.driveRobotPosition(1.0, -38.0, true)
-//                        movement.driveRobotTurn(1.0,90.0,true)
-//                        movement.driveRobotPosition(0.5, 12.0,true)
-//                        movement.driveRobotStrafe(0.5,-2.0,true)
-//                        movement.driveRobotPosition(0.5, -1.0,true)
-//                        hardware.carouselSpinner.power = -1.0
-//                        movement.driveRobotPosition(0.1, -1.0, true)
-//                        sleep(4000)
-//                        hardware.carouselSpinner.power = 0.0
-////                        park
-//                        movement.driveRobotPosition(1.0, -22.0, true)
-//                        movement.driveRobotStrafe(1.0, -10.0, true)
-//                    }
-//                    wizard.wasItemChosen("StartPos", "Warehouse") -> {
-////                        Deposit
-//                        movement.driveRobotStrafe(1.0, 10.0, true)
-//                        movement.driveRobotTurn(1.0, -35.0, true)
-//                        movement.driveRobotStrafe(1.0, 18.0, true)
-////                        if (level == LiftPos.HighGoal)
-////                            depositor.yToPosition(level.counts + 10)
-////                        else
-////                            depositor.yToPosition(level.counts)
-////                        sleep(100)
-////                        depositor.xToPosition(2400)
-////                        depositor.drop()
-////                        sleep(500)
-////                        depositor.close()
-////                        depositor.xToPosition(0)
-////                        depositor.xTowardPosition(depositor.innerLimit)
-////                        depositor.yToPosition(depositor.lowerLimit+10)
-////                        depositor.xAtPower(0.0)
-////                        Warehouse park
-//                        movement.driveRobotStrafe(1.0,-18.0,true)
-//                        movement.driveRobotTurn(1.0, 35.0, true)
-//                        movement.driveRobotStrafe(1.0, -11.0, true)
-//                        movement.driveRobotPosition(1.0,30.0,true)
-//                    }
-//                }
-//            }
+                        movement.driveRobotStrafe(1.0, 10.0, true)
+                        movement.driveRobotTurn(1.0, -35.0, true)
+                        movement.driveRobotStrafe(1.0, 18.0, true)
+                        if (level == LiftPos.HighGoal)
+                            depositor.yToPosition(level.counts + 10)
+                        else
+                            depositor.yToPosition(level.counts)
+                        sleep(100)
+                        depositor.xToPosition(2400)
+                        depositor.drop()
+                        sleep(500)
+                        depositor.close()
+                        depositor.xToPosition(0)
+                        depositor.xTowardPosition(depositor.innerLimit)
+                        depositor.yToPosition(depositor.lowerLimit+10)
+                        depositor.xAtPower(0.0)
+//                        Ducc
+                        movement.driveRobotTurn(1.0, 34.0, true)
+                        movement.driveRobotPosition(1.0, 38.0, true)
+                        movement.driveRobotStrafe(0.5, -13.0,true)
+                        movement.driveRobotStrafe(0.5, -1.0,true)
+                        hardware.carouselSpinner.power = 1.0
+                        movement.driveRobotStrafe(0.1, -1.0, true)
+                        sleep(4000)
+                        hardware.carouselSpinner.power = 0.0
+//                        park
+                        movement.driveRobotStrafe(1.0, 25.0, true)
+                        movement.driveRobotPosition(1.0, 10.0, true)
 
-//        }
+                    }
+                    wizard.wasItemChosen("StartPos", "Warehouse") -> {
+//                        Deposit
+                        movement.driveRobotStrafe(1.0, 10.0, true)
+                        movement.driveRobotTurn(1.0, 38.0, true)
+                        movement.driveRobotStrafe(1.0, 22.0, true)
+                        movement.driveRobotPosition(1.0, 2.0, true)
+                        if (level == LiftPos.HighGoal)
+                            depositor.yToPosition(level.counts + 10)
+                        else
+                            depositor.yToPosition(level.counts)
+                        sleep(100)
+                        depositor.xToPosition(2400)
+                        depositor.drop()
+                        sleep(500)
+                        depositor.close()
+                        depositor.xToPosition(0)
+                        depositor.xTowardPosition(depositor.innerLimit)
+                        sleep(2000)
+                        depositor.yToPosition(depositor.lowerLimit+10)
+                        depositor.xAtPower(0.0)
+//                        Warehouse park
+                        movement.driveRobotStrafe(1.0, -18.0, true)
+                        movement.driveRobotTurn(1.0, -38.0, true)
+                        movement.driveRobotStrafe(1.0, -12.0, true)
+                        movement.driveRobotPosition(1.0,-40.0,true)
+                    }
+                }
+            }
+            wizard.wasItemChosen("Alliance", "Red") -> {
+                when {
+                    wizard.wasItemChosen("StartPos", "Ducc") -> {
+//                        Deposit
+                        movement.driveRobotStrafe(1.0, 10.0, true)
+                        movement.driveRobotTurn(1.0, 35.0, true)
+                        movement.driveRobotStrafe(1.0, 22.0, true)
+                        movement.driveRobotPosition(1.0, 2.0, true)
+                        if (level == LiftPos.HighGoal)
+                            depositor.yToPosition(level.counts + 10)
+                        else
+                            depositor.yToPosition(level.counts)
+                        sleep(100)
+                        depositor.xToPosition(2400)
+                        depositor.drop()
+                        sleep(500)
+                        depositor.close()
+                        depositor.xToPosition(0)
+                        depositor.xTowardPosition(depositor.innerLimit)
+                        depositor.yToPosition(depositor.lowerLimit+10)
+                        depositor.xAtPower(0.0)
+//                        Ducc
+                        movement.driveRobotTurn(1.0, -34.0, true)
+                        movement.driveRobotPosition(1.0, -38.0, true)
+                        movement.driveRobotTurn(1.0,90.0,true)
+                        movement.driveRobotPosition(0.5, 12.0,true)
+                        movement.driveRobotStrafe(0.5,-2.0,true)
+                        movement.driveRobotPosition(0.5, -1.0,true)
+                        hardware.carouselSpinner.power = -1.0
+                        movement.driveRobotPosition(0.1, -1.0, true)
+                        sleep(4000)
+                        hardware.carouselSpinner.power = 0.0
+//                        park
+                        movement.driveRobotPosition(1.0, -22.0, true)
+                        movement.driveRobotStrafe(1.0, -10.0, true)
+                    }
+                    wizard.wasItemChosen("StartPos", "Warehouse") -> {
+//                        Deposit
+                        movement.driveRobotStrafe(1.0, 10.0, true)
+                        movement.driveRobotTurn(1.0, -35.0, true)
+                        movement.driveRobotStrafe(1.0, 20.0, true)
+                        if (level == LiftPos.HighGoal)
+                            depositor.yToPosition(level.counts + 10)
+                        else
+                            depositor.yToPosition(level.counts)
+                        sleep(100)
+                        depositor.xToPosition(2400)
+                        depositor.drop()
+                        sleep(500)
+                        depositor.close()
+                        depositor.xToPosition(0)
+                        depositor.xTowardPosition(depositor.innerLimit)
+                        depositor.yToPosition(depositor.lowerLimit+10)
+                        depositor.xAtPower(0.0)
+//                        Warehouse park
+                        movement.driveRobotStrafe(1.0,-18.0,true)
+                        movement.driveRobotTurn(1.0, 35.0, true)
+                        movement.driveRobotStrafe(1.0, -11.0, true)
+                        movement.driveRobotPosition(1.0,30.0,true)
+                    }
+                }
+            }
+        }
+
     }
 
 //    out, drop, home
