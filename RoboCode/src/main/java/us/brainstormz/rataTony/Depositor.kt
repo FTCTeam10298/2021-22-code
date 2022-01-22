@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.DcMotor
 import us.brainstormz.pid.PID
 import kotlinx.coroutines.*
 import us.brainstormz.telemetryWizard.TelemetryConsole
+import kotlin.math.abs
 
 
 class Depositor(private val hardware: RataTonyHardware, private val console: TelemetryConsole) {
