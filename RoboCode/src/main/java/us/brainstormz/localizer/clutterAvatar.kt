@@ -91,8 +91,7 @@ class clutterAvatar(private val console: TelemetryConsole){
             L_V = NamedVar("Low Vanity/Variance/VolumentricVibacity", 70.0),
             U_H = NamedVar("Uppper Hue", 105.0),
             U_S = NamedVar("Upper Saturation", 255.0),
-
-        U_V = NamedVar("Upper Vanity/Variance/VolumentricVibracity", 255.0))
+            U_V = NamedVar("Upper Vanity/Variance/VolumentricVibracity", 255.0))
 
     public val goalColor = when(targetHue){
         TargetHue.RED -> redColor
