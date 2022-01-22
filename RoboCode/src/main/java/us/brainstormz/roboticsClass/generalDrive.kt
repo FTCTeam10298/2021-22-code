@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.HardwareMap
 import us.brainstormz.hardwareClasses.HardwareClass
 
-@TeleOp
+@TeleOp(name= "General Drive", group= "Tests")
 class GeneralDrive: OpMode() {
 
     val hardware = GeneralHardware()
