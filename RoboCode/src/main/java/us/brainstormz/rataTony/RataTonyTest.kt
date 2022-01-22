@@ -28,6 +28,9 @@ class RataTonyTest: LinearOpMode() {
         console.display(3, "lift is up")
         depositor.xToPosition(500)
         console.display(4, "extended")
+        depositor.xToPosition(depositor.innerLimit)
+
+        sleep(10000)
 
 //        console.display(1, "left Front")
 //        hardware.lFDrive.power = 0.3

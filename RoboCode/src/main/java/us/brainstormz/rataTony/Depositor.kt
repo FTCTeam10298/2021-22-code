@@ -16,7 +16,7 @@ class Depositor(private val hardware: RataTonyHardware, private val console: Tel
 
     private val xPID = PID(kp = 0.0018, ki = 0.0)
     private val xPIDOther = PID(kp = 0.002, ki = 0.00001)
-    private val xPrecision = -50..50
+    private val xPrecision = -30..30
     val outerLimit = 2500
     val innerLimit = -35
 
