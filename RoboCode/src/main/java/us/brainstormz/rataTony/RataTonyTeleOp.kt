@@ -80,17 +80,27 @@ class RataTonyTeleOp: OpMode() {
         console.display(4, "dropper: ${hardware.dropperServo.position}")
 
         // Collector
-        val forwardPower = 0.7
+        val forwardPower = 1.0
         val reversePower = 0.5
 
         when {
             gamepad1.right_bumper -> {
-                hardware.collector.power = forwardPower * driveReversed
-                hardware.collector2.power = -reversePower * driveReversed
+                if (driveReversed > 0) {
+                    hardware.collector.power = forwardPower
+                    hardware.collector2.power = -reversePower
+                } else {
+                    hardware.collector.power = -reversePower
+                    hardware.collector2.power = forwardPower
+                }
             }
             gamepad1.left_bumper -> {
-                hardware.collector.power = -reversePower * driveReversed
-                hardware.collector2.power = forwardPower * driveReversed
+                if (driveReversed < 0) {
+                    hardware.collector.power = forwardPower
+                    hardware.collector2.power = -reversePower
+                } else {
+                    hardware.collector.power = -reversePower
+                    hardware.collector2.power = forwardPower
+                }
             }
             else -> {
                 hardware.collector.power = 0.0
