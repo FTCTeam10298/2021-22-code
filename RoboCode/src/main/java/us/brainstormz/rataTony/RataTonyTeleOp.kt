@@ -39,12 +39,19 @@ class RataTonyTeleOp: OpMode() {
         }
 
         // DRONE DRIVE
+        fun isPressed(v:Float):Boolean = v > 0
+
         val yInput = gamepad1.left_stick_y.toDouble()
         val xInput = gamepad1.left_stick_x.toDouble()
         val rInput = gamepad1.right_stick_x.toDouble()
 
+
+        fun isNotCentered(v:Float) = v != 0.0f
+        fun isNotCentered(v:Double) = v != 0.0
+        val wallRiding = if (isPressed(gamepad1.right_trigger)) 0.3 else 0.0
+
         val y = -yInput * driveReversed
-        val x = xInput * driveReversed
+        val x = xInput * driveReversed + wallRiding
         val r = -rInput * .8
 
         robot.driveSetPower(
