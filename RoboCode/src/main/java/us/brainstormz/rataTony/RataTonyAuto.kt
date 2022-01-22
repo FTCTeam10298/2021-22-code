@@ -57,6 +57,7 @@ class RataTonyAuto: LinearOpMode() {
 
         when {
             wizard.wasItemChosen("Alliance", "Blue") -> {
+                AutoTeleopTransition.alliance = AutoTeleopTransition.Alliance.Blue
                 when {
                     wizard.wasItemChosen("StartPos", "Ducc") -> {
 //                        Deposit
@@ -119,6 +120,7 @@ class RataTonyAuto: LinearOpMode() {
                 }
             }
             wizard.wasItemChosen("Alliance", "Red") -> {
+                AutoTeleopTransition.alliance = AutoTeleopTransition.Alliance.Red
                 when {
                     wizard.wasItemChosen("StartPos", "Ducc") -> {
 //                        Deposit

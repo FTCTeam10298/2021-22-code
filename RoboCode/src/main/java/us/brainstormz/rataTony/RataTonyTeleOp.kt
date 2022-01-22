@@ -23,7 +23,7 @@ class RataTonyTeleOp: OpMode() {
     val robot = MecanumDriveTrain(hardware)
     val depositor = Depositor(hardware, console)
     var isStickButtonDown = false
-    var driveReversed = 1
+    var driveReversed = if (AutoTeleopTransition.alliance == AutoTeleopTransition.Alliance.Red) 1 else -1
 
     override fun init() {
         hardware.init(hardwareMap)
