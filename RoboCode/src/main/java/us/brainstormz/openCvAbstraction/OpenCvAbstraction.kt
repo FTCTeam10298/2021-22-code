@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import com.qualcomm.robotcore.hardware.HardwareMap
+import org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName
 import org.opencv.core.Mat
 import org.openftc.easyopencv.*
@@ -17,20 +18,20 @@ import org.openftc.easyopencv.OpenCvCamera
 import org.openftc.easyopencv.OpenCvCamera.AsyncCameraOpenListener
 
 
-//class CameraMaker {
-//
-//    lateinit var camera: OpenCvInternalCamera
-//    private val cameraMonitorViewId: Int = hardwareMap.appContext.resources.getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.packageName)
-//
-//    fun create(direction: OpenCvInternalCamera.CameraDirection) {
-//        camera = OpenCvCameraFactory.getInstance().createInternalCamera(direction, cameraMonitorViewId)
-//        camera.openCameraDevice()
-//    }
-//
-//    fun setPipeline(pipeline: OpenCvPipeline) {
-//        camera.setPipeline(pipeline)
-//    }
-//}
+class CameraMaker {
+
+    lateinit var camera: OpenCvInternalCamera
+    private val cameraMonitorViewId: Int = hardwareMap.appContext.resources.getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.packageName)
+
+    fun create(direction: OpenCvInternalCamera.CameraDirection) {
+        camera = OpenCvCameraFactory.getInstance().createInternalCamera(direction, cameraMonitorViewId)
+        camera.openCameraDevice()
+    }
+
+    fun setPipeline(pipeline: OpenCvPipeline) {
+        camera.setPipeline(pipeline)
+    }
+}
 
 class PipelineAbstraction: OpenCvPipeline() {
     var isFirstFrame = true
@@ -69,7 +70,7 @@ class OpenCvAbstraction(private val opmode: OpMode) {
     var optimizeView = false
     var openCameraDeviceAsync = false
     var cameraOrientation = OpenCvCameraRotation.UPRIGHT
-    var internalCamera = false
+    var internalCamera = true //this is a tempfix.
     var cameraName: String = "Webcam 1"
 
 
