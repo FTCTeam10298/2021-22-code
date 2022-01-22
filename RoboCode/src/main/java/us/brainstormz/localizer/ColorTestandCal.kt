@@ -66,6 +66,7 @@ class LocalizerAutoAimTestAndCal : OpMode() {
             clutterAvatar.goalColor.L_H.value = 0.0
             clutterAvatar.goalColor.L_S.value = 0.0
             clutterAvatar.goalColor.L_V.value = 0.0
+
             clutterAvatar.goalColor.U_H.value = 0.0
             clutterAvatar.goalColor.U_S.value = 0.0
             clutterAvatar.goalColor.U_V.value = 0.0
