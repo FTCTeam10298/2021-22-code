@@ -147,7 +147,7 @@ class RataTonyAuto: LinearOpMode() {
                         movement.driveRobotTurn(1.0,90.0,true)
                         movement.driveRobotPosition(0.5, 12.0,true)
                         movement.driveRobotStrafe(0.5,-2.0,true)
-                        movement.driveRobotPosition(0.5, -1.0,true)
+                        movement.driveRobotPosition(0.5, 2.0,false)
                         hardware.carouselSpinner.power = -1.0
                         movement.driveRobotPosition(0.1, -1.0, true)
                         sleep(4000)
