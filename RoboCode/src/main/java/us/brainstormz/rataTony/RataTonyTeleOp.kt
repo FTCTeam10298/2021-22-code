@@ -82,6 +82,21 @@ class RataTonyTeleOp: OpMode() {
 
         depositor.updateYPosition()
 
+        when {
+            gamepad2.y -> {
+                hardware.liftMotor.power = 0.1
+            }
+            gamepad2.a -> {
+                hardware.liftMotor.power = -0.1
+            }
+            gamepad2.b -> {
+                hardware.horiMotor.power = -0.2
+            }
+            gamepad2.x -> {
+                hardware.horiMotor.power = 0.2
+            }
+        }
+
         console.display(2, "y pos: ${hardware.liftMotor.currentPosition}")
         console.display(3, "x pos: ${hardware.horiMotor.currentPosition}")
         console.display(4, "dropper: ${hardware.dropperServo.position}")
