@@ -18,15 +18,15 @@ class Depositor(private val hardware: RataTonyHardware, private val console: Tel
     private val xPID = PID(kp = 0.0018, ki = 0.0)
     private val xPIDOther = PID(kp = 0.002, ki = 0.00001)
     private val xPrecision = -30..30
-    val outerLimit = 2500
-    val innerLimit = -35
+    val outerLimit = 1800
+    val innerLimit = -20
 
     private val yPID = PID(kp = 0.0012, ki = 0.0)
     private val yPIDLinear = PID(kp = 0.0015, ki = 0.0000001)
     private val yPIDDown = PID(kp = 0.0007, ki = 0.0)
     private var liftPower = 0.0
     private val yPrecision = -1..1
-    private val upperLimit = 900
+    private val upperLimit = 1400
     val lowerLimit = -1
     enum class LiftPos(val counts: Int) {
         LowGoal(190),
@@ -154,7 +154,7 @@ class Depositor(private val hardware: RataTonyHardware, private val console: Tel
      */
 
 //    Bucket stay closed conditions
-    private val closedCauseX = 100..795
+    private val closedCauseX = 100..650
 
     //    x/y collisions
     private val collideCauseX = 100..795

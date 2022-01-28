@@ -131,12 +131,17 @@ class RataTonyTeleOp: OpMode() {
         }
 
         // Ducc Spinner
+
+        val duccSide = when (AutoTeleopTransition.alliance) {
+            AutoTeleopTransition.Alliance.Red -> -1.0
+            AutoTeleopTransition.Alliance.Blue -> 1.0
+        }
         when {
             gamepad2.dpad_left -> {
-                hardware.carouselSpinner.power = 1.0
+                hardware.carouselSpinner.power = -duccSide
             }
             gamepad2.dpad_right -> {
-                hardware.carouselSpinner.power = -1.0
+                hardware.carouselSpinner.power = duccSide
             }
             else -> {
                 hardware.carouselSpinner.power = 0.0
