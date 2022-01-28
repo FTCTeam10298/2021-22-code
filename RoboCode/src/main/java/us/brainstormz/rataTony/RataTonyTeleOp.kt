@@ -80,7 +80,8 @@ class RataTonyTeleOp: OpMode() {
 
         depositor.xAtPower(gamepad2.right_stick_x.toDouble() * .9)
 
-        depositor.updateYPosition()
+//        depositor.updateYPosition()
+        depositor.updateY()
 
         when {
             gamepad2.y -> {
