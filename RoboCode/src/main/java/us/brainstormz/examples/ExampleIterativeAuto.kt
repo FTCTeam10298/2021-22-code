@@ -44,6 +44,6 @@ class ExampleIterativeAuto: OpMode() {
         }
 
 
-        depositor.updateYPosition()
+//        depositor.updateYPosition()
     }
 }

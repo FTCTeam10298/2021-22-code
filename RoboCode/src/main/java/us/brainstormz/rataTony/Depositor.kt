@@ -228,17 +228,27 @@ class Depositor(private val hardware: RataTonyHardware, private val console: Tel
 
     }
 
-    private var previousLiftPower = 0.0
-    fun updateYPosition() {
-        if (liftPower != 0.0) {
+    private var prevLiftPos = 0
+    fun updateY() {
+        if (liftPower == 0.0) {
+            yTowardPosition(hardware.liftMotor.currentPosition)
+        } else {
             hardware.liftMotor.power = liftPower
-            previousLiftPower = liftPower
-        } else if (liftPower == 0.0 && previousLiftPower != 0.0) {
-            yTowardPosition(hardware.liftMotor.currentPosition)
-            previousLiftPower = liftPower
-        } else
-            yTowardPosition(hardware.liftMotor.currentPosition)
+            prevLiftPos = hardware.liftMotor.currentPosition
+        }
     }
+
+//    private var previousLiftPower = 0.0
+//    fun updateYPosition() {
+//        if (liftPower != 0.0) {
+//            hardware.liftMotor.power = liftPower
+//            previousLiftPower = liftPower
+//        } else if (liftPower == 0.0 && previousLiftPower != 0.0) {
+//            yTowardPosition(hardware.liftMotor.currentPosition)
+//            previousLiftPower = liftPower
+//        } else
+//            yTowardPosition(hardware.liftMotor.currentPosition)
+//    }
 
     /**
      * run at the beginning of the program
@@ -248,7 +258,8 @@ class Depositor(private val hardware: RataTonyHardware, private val console: Tel
 
         Thread {
             while (this.opmode.opModeIsActive()) {
-                updateYPosition()
+//                updateYPosition()
+                updateY()
             }
         }.start()
     }
