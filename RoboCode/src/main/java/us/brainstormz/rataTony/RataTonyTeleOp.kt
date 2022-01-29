@@ -48,7 +48,7 @@ class RataTonyTeleOp: OpMode() {
 
         fun isNotCentered(v:Float) = v != 0.0f
         fun isNotCentered(v:Double) = v != 0.0
-        val wallRiding = if (isPressed(gamepad1.right_trigger)) 0.3 else 0.0
+        val wallRiding = if (isPressed(gamepad1.right_trigger)) 0.5 else 0.0
 
         val y = -yInput * driveReversed
         val x = xInput * driveReversed + wallRiding

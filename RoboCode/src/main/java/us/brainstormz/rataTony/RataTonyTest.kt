@@ -24,13 +24,8 @@ class RataTonyTest: LinearOpMode() {
         /** AUTONOMOUS  PHASE */
         depositor.runInLinearOpmode(this)
 
-        depositor.yToPosition(LiftPos.HighGoal.counts)
-        console.display(3, "lift is up")
-        depositor.xToPosition(500)
-        console.display(4, "extended")
-        depositor.xToPosition(depositor.innerLimit)
-
-        sleep(10000)
+        depositor.yToPosition(LiftPos.MidGoal.counts)
+        sleep(5000)
 
 //        console.display(1, "left Front")
 //        hardware.lFDrive.power = 0.3

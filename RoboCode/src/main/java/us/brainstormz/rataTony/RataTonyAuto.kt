@@ -64,19 +64,7 @@ class RataTonyAuto: LinearOpMode() {
                         movement.driveRobotStrafe(1.0, 10.0, true)
                         movement.driveRobotTurn(1.0, -35.0, true)
                         movement.driveRobotStrafe(1.0, 18.0, true)
-                        if (level == LiftPos.HighGoal)
-                            depositor.yToPosition(level.counts + 10)
-                        else
-                            depositor.yToPosition(level.counts)
-                        sleep(100)
-                        depositor.xToPosition(2400)
-                        depositor.drop()
-                        sleep(500)
-                        depositor.close()
-                        depositor.xToPosition(0)
-                        depositor.xTowardPosition(depositor.innerLimit)
-                        depositor.yToPosition(depositor.lowerLimit+10)
-                        depositor.xAtPower(0.0)
+                        deposit(1700, level)
 //                        Ducc
                         movement.driveRobotTurn(1.0, 34.0, true)
                         movement.driveRobotPosition(1.0, 38.0, true)
@@ -97,20 +85,7 @@ class RataTonyAuto: LinearOpMode() {
                         movement.driveRobotTurn(1.0, 38.0, true)
                         movement.driveRobotStrafe(1.0, 22.0, true)
                         movement.driveRobotPosition(1.0, 2.0, true)
-                        if (level == LiftPos.HighGoal)
-                            depositor.yToPosition(level.counts + 10)
-                        else
-                            depositor.yToPosition(level.counts)
-                        sleep(100)
-                        depositor.xToPosition(2400)
-                        depositor.drop()
-                        sleep(500)
-                        depositor.close()
-                        depositor.xToPosition(0)
-                        depositor.xTowardPosition(depositor.innerLimit)
-                        sleep(2000)
-                        depositor.yToPosition(depositor.lowerLimit+10)
-                        depositor.xAtPower(0.0)
+                        deposit(1700, level)
 //                        Warehouse park
                         movement.driveRobotStrafe(1.0, -18.0, true)
                         movement.driveRobotTurn(1.0, -38.0, true)
@@ -128,19 +103,7 @@ class RataTonyAuto: LinearOpMode() {
                         movement.driveRobotTurn(1.0, 35.0, true)
                         movement.driveRobotStrafe(1.0, 22.0, true)
                         movement.driveRobotPosition(1.0, 2.0, true)
-                        if (level == LiftPos.HighGoal)
-                            depositor.yToPosition(level.counts + 10)
-                        else
-                            depositor.yToPosition(level.counts)
-                        sleep(100)
-                        depositor.xToPosition(2400)
-                        depositor.drop()
-                        sleep(500)
-                        depositor.close()
-                        depositor.xToPosition(0)
-                        depositor.xTowardPosition(depositor.innerLimit)
-                        depositor.yToPosition(depositor.lowerLimit+10)
-                        depositor.xAtPower(0.0)
+                        deposit(1700, level)
 //                        Ducc
                         movement.driveRobotTurn(1.0, -34.0, true)
                         movement.driveRobotPosition(1.0, -38.0, true)
@@ -161,19 +124,7 @@ class RataTonyAuto: LinearOpMode() {
                         movement.driveRobotStrafe(1.0, 10.0, true)
                         movement.driveRobotTurn(1.0, -35.0, true)
                         movement.driveRobotStrafe(1.0, 20.0, true)
-                        if (level == LiftPos.HighGoal)
-                            depositor.yToPosition(level.counts + 10)
-                        else
-                            depositor.yToPosition(level.counts)
-                        sleep(100)
-                        depositor.xToPosition(2400)
-                        depositor.drop()
-                        sleep(500)
-                        depositor.close()
-                        depositor.xToPosition(0)
-                        depositor.xTowardPosition(depositor.innerLimit)
-                        depositor.yToPosition(depositor.lowerLimit+10)
-                        depositor.xAtPower(0.0)
+                        deposit(1700, level)
 //                        Warehouse park
                         movement.driveRobotStrafe(1.0,-18.0,true)
                         movement.driveRobotTurn(1.0, 35.0, true)
@@ -186,18 +137,20 @@ class RataTonyAuto: LinearOpMode() {
 
     }
 
-//    out, drop, home
-    fun deposit(yLevel: Int) {
-        depositor.xToPosition(1000)
-
+//    out, drop, in
+    fun deposit(xCounts: Int, yLevel: LiftPos) {
+        if (yLevel == LiftPos.HighGoal)
+            depositor.yToPosition(yLevel.counts + 10)
+        else
+            depositor.yToPosition(yLevel.counts)
+            sleep(100)
+        depositor.xToPosition(xCounts)
         depositor.drop()
-        sleep(1000)
-
-        depositor.yToPosition(yLevel+100)
-        depositor.xToPosition(500)
-        depositor.close()
         sleep(500)
+        depositor.close()
         depositor.xToPosition(0)
-        depositor.yToPosition(0)
+        depositor.xTowardPosition(depositor.innerLimit)
+        depositor.yToPosition(depositor.lowerLimit)
+        depositor.xAtPower(0.0)
     }
 }
