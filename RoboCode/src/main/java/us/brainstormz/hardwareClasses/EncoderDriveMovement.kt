@@ -79,14 +79,14 @@ class EncoderDriveMovement(private val hardware: MecanumHardware, private val co
                 val frDrive: Int = hardware.rFDrive.currentPosition
                 val blDrive: Int = hardware.lBDrive.currentPosition
                 val brDrive: Int = hardware.rBDrive.currentPosition
-                console.display(3, "Front left encoder: $flDrive")
-                console.display(4, "Front right encoder: $frDrive")
-                console.display(5, "Back left encoder: $blDrive")
-                console.display(6, "Back right encoder $brDrive")
-                console.display(7, "Front left target: ${hardware.lFDrive.targetPosition}")
-                console.display(8, "Front right target: ${hardware.rFDrive.targetPosition}")
-                console.display(9, "Back left target: ${hardware.lBDrive.targetPosition}")
-                console.display(10, "Back right target ${hardware.rBDrive.targetPosition}")
+//                console.display(3, "Front left encoder: $flDrive")
+//                console.display(4, "Front right encoder: $frDrive")
+//                console.display(5, "Back left encoder: $blDrive")
+//                console.display(6, "Back right encoder $brDrive")
+//                console.display(7, "Front left target: ${hardware.lFDrive.targetPosition}")
+//                console.display(8, "Front right target: ${hardware.rFDrive.targetPosition}")
+//                console.display(9, "Back left target: ${hardware.lBDrive.targetPosition}")
+//                console.display(10, "Back right target ${hardware.rBDrive.targetPosition}")
 
                 // State magic
                 if (state == 1 &&
@@ -100,17 +100,17 @@ class EncoderDriveMovement(private val hardware: MecanumHardware, private val co
                     drivePowerAll(abs(power) / 2) // Use abs() to make sure power is positive
                     state = 3 // We are DECELing now
                 }
-                console.display(7, "State: $state (0=NONE,1=ACCEL,2=DRIVING,3=DECEL")
+//                console.display(7, "State: $state (0=NONE,1=ACCEL,2=DRIVING,3=DECEL")
             }
             Thread.sleep(10)
         }
         drivePowerAll(0.0)
         // Clear used section of dashboard
-        console.display(3, "")
-        console.display(4, "")
-        console.display(5, "")
-        console.display(6, "")
-        console.display(7, "")
+//        console.display(3, "")
+//        console.display(4, "")
+//        console.display(5, "")
+//        console.display(6, "")
+//        console.display(7, "")
     }
 
 
@@ -140,10 +140,10 @@ class EncoderDriveMovement(private val hardware: MecanumHardware, private val co
                 val frDrive: Int = hardware.rFDrive.currentPosition
                 val blDrive: Int = hardware.lBDrive.currentPosition
                 val brDrive: Int = hardware.rBDrive.currentPosition
-                console.display(3, "Front left encoder: $flDrive")
-                console.display(4, "Front right encoder: $frDrive")
-                console.display(5, "Back left encoder: $blDrive")
-                console.display(6, "Back right encoder: $brDrive")
+//                console.display(3, "Front left encoder: $flDrive")
+//                console.display(4, "Front right encoder: $frDrive")
+//                console.display(5, "Back left encoder: $blDrive")
+//                console.display(6, "Back right encoder: $brDrive")
 
                 // State magic
                 if (state == 1 &&
@@ -157,17 +157,17 @@ class EncoderDriveMovement(private val hardware: MecanumHardware, private val co
                     drivePowerAll(abs(power) / 2) // Use abs() to make sure power is positive
                     state = 3 // We are DECELing now
                 }
-                console.display(7, "State: $state (0=NONE,1=ACCEL,2=DRIVING,3=DECEL")
+//                console.display(7, "State: $state (0=NONE,1=ACCEL,2=DRIVING,3=DECEL")
             }
             Thread.sleep(10)
         }
         drivePowerAll(0.0)
         // Clear used section of dashboard
-        console.display(3, "")
-        console.display(4, "")
-        console.display(5, "")
-        console.display(6, "")
-        console.display(7, "")
+//        console.display(3, "")
+//        console.display(4, "")
+//        console.display(5, "")
+//        console.display(6, "")
+//        console.display(7, "")
     }
 
     /**
@@ -200,14 +200,14 @@ class EncoderDriveMovement(private val hardware: MecanumHardware, private val co
                 val frDrive: Int = hardware.rFDrive.currentPosition
                 val blDrive: Int = hardware.lBDrive.currentPosition
                 val brDrive: Int = hardware.rBDrive.currentPosition
-                console.display(3, "Front left encoder: $flDrive")
-                console.display(4, "Front right encoder: $frDrive")
-                console.display(5, "Back left encoder: $blDrive")
-                console.display(6, "Back right encoder $brDrive")
-                console.display(7, "Front left target: ${hardware.lFDrive.targetPosition}")
-                console.display(8, "Front right target: ${hardware.rFDrive.targetPosition}")
-                console.display(9, "Back left target: ${hardware.lBDrive.targetPosition}")
-                console.display(10, "Back right target ${hardware.rBDrive.targetPosition}")
+//                console.display(3, "Front left encoder: $flDrive")
+//                console.display(4, "Front right encoder: $frDrive")
+//                console.display(5, "Back left encoder: $blDrive")
+//                console.display(6, "Back right encoder $brDrive")
+//                console.display(7, "Front left target: ${hardware.lFDrive.targetPosition}")
+//                console.display(8, "Front right target: ${hardware.rFDrive.targetPosition}")
+//                console.display(9, "Back left target: ${hardware.lBDrive.targetPosition}")
+//                console.display(10, "Back right target ${hardware.rBDrive.targetPosition}")
 
                 // State magic
                 if (state == 1 &&
@@ -221,17 +221,17 @@ class EncoderDriveMovement(private val hardware: MecanumHardware, private val co
                     drivePowerAll(abs(power) / 2) // Use abs() to make sure power is positive
                     state = 3 // We are DECELing now
                 }
-                console.display(7, "State: $state (0=NONE,1=ACCEL,2=DRIVING,3=DECEL")
+//                console.display(7, "State: $state (0=NONE,1=ACCEL,2=DRIVING,3=DECEL")
             }
             Thread.sleep(10)
         }
         drivePowerAll(0.0)
         // Clear used section of dashboard
-        console.display(3, "")
-        console.display(4, "")
-        console.display(5, "")
-        console.display(6, "")
-        console.display(7, "")
+//        console.display(3, "")
+//        console.display(4, "")
+//        console.display(5, "")
+//        console.display(6, "")
+//        console.display(7, "")
     }
 
     /**
@@ -276,10 +276,10 @@ class EncoderDriveMovement(private val hardware: MecanumHardware, private val co
         for (i in 0..4) {    // Repeat check 5 times, sleeping 10ms between,
             // as isBusy can be a bit unreliable
             while (driveAllAreBusy()) {
-                console.display(3, "Left front encoder: ${hardware.lFDrive.currentPosition}")
-                console.display(4, "Right front encoder: ${hardware.rFDrive.currentPosition}")
-                console.display(5, "Left back encoder: ${hardware.lBDrive.currentPosition}")
-                console.display(6, "Right back encoder: ${hardware.rBDrive.currentPosition}")
+//                console.display(3, "Left front encoder: ${hardware.lFDrive.currentPosition}")
+//                console.display(4, "Right front encoder: ${hardware.rFDrive.currentPosition}")
+//                console.display(5, "Left back encoder: ${hardware.lBDrive.currentPosition}")
+//                console.display(6, "Right back encoder: ${hardware.rBDrive.currentPosition}")
             }
             Thread.sleep(10)
         }
@@ -328,15 +328,15 @@ class EncoderDriveMovement(private val hardware: MecanumHardware, private val co
                 while (hardware.lFDrive.isBusy && hardware.lBDrive.isBusy) {
                     val flDrive: Int = hardware.lFDrive.currentPosition
                     val blDrive: Int = hardware.lBDrive.currentPosition
-                    console.display(3, "Front left encoder: $flDrive")
-                    console.display(4, "Back left encoder: $blDrive")
+//                    console.display(3, "Front left encoder: $flDrive")
+//                    console.display(4, "Back left encoder: $blDrive")
                 }
             } else {
                 while (hardware.rFDrive.isBusy && hardware.rBDrive.isBusy) {
                     val frDrive: Int = hardware.rFDrive.currentPosition
                     val brDrive: Int = hardware.rBDrive.currentPosition
-                    console.display(3, "Front left encoder: $frDrive")
-                    console.display(4, "Back left encoder: $brDrive")
+//                    console.display(3, "Front left encoder: $frDrive")
+//                    console.display(4, "Back left encoder: $brDrive")
                 }
             }
             Thread.sleep(10)
@@ -387,15 +387,15 @@ class EncoderDriveMovement(private val hardware: MecanumHardware, private val co
                 while (hardware.lFDrive.isBusy && hardware.lBDrive.isBusy) {
                     val flDrive: Int = hardware.lFDrive.currentPosition
                     val blDrive: Int = hardware.lBDrive.currentPosition
-                    console.display(3, "Front left encoder: $flDrive")
-                    console.display(4, "Back left encoder: $blDrive")
+//                    console.display(3, "Front left encoder: $flDrive")
+//                    console.display(4, "Back left encoder: $blDrive")
                 }
             } else {
                 while (hardware.rFDrive.isBusy && hardware.rBDrive.isBusy) {
                     val frDrive: Int = hardware.rFDrive.currentPosition
                     val brDrive: Int = hardware.rBDrive.currentPosition
-                    console.display(3, "Front left encoder: $frDrive")
-                    console.display(4, "Back left encoder: $brDrive")
+//                    console.display(3, "Front left encoder: $frDrive")
+//                    console.display(4, "Back left encoder: $brDrive")
                 }
             }
             Thread.sleep(10)
