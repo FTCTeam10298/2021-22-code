@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.DcMotor
 import us.brainstormz.pid.PID
 import kotlinx.coroutines.*
 import us.brainstormz.telemetryWizard.TelemetryConsole
+import java.lang.Thread.sleep
 import kotlin.math.abs
 
 
@@ -22,16 +23,16 @@ class Depositor(private val hardware: RataTonyHardware, private val console: Tel
     val innerLimit = -20
 
     private val yPID = PID(kp = 0.0012, ki = 0.0)
-    private val yPIDLinear = PID(kp = 0.0015, ki = 0.0000001)
+    private val yPIDLinear = PID(kp = 0.0012, ki = 0.00000005)
     private val yPIDDown = PID(kp = 0.0007, ki = 0.0)
     private var liftPower = 0.0
     private val yPrecision = -1..1
-    private val upperLimit = 1400
+    private val upperLimit = 1650
     val lowerLimit = -1
     enum class LiftPos(val counts: Int) {
-        LowGoal(190),
-        MidGoal(510),
-        HighGoal(850)
+        LowGoal(320),
+        MidGoal(870),
+        HighGoal(1600)
     }
 
     fun xTowardPosition(targetPos: Int): Boolean {
@@ -53,9 +54,12 @@ class Depositor(private val hardware: RataTonyHardware, private val console: Tel
     fun yTowardPosition(targetPos: Int): Boolean {
         val error = targetPos - hardware.liftMotor.currentPosition
 
-        liftPower = if (canYMove(targetPos))
-            yPID.calcPID(error.toDouble())
-        else
+        liftPower = if (canYMove(targetPos)) {
+            if (error > 0)
+                yPIDLinear.calcPID(error.toDouble())
+            else
+                yPID.calcPID(error.toDouble())
+        } else
             0.0
 
         return if (error in yPrecision) {
@@ -79,15 +83,37 @@ class Depositor(private val hardware: RataTonyHardware, private val console: Tel
     }
 
     fun yToPosition(targetPos: Int) {
-        while (opmode.opModeIsActive()) {
-            val atPosition = yTowardPosition(targetPos)
-            console.display(5, "At target: $atPosition")
-            if (atPosition) {
-                break
+        console.display(3, "on")
+        if (canYMove(targetPos)) {
+//            hardware.liftMotor.setPositionPIDFCoefficients(0.0012)
+            if (targetPos - hardware.liftMotor.currentPosition > 0)
+                hardware.liftMotor.power = 1.0
+            else
+                hardware.liftMotor.power = 0.5
+
+            hardware.liftMotor.targetPosition = targetPos
+            hardware.liftMotor.mode = DcMotor.RunMode.RUN_TO_POSITION
+//            hardware.liftMotor.targetPosition = targetPos
+
+            while (opmode.opModeIsActive() && hardware.liftMotor.isBusy) {
+                console.display(3, "in the loop")
+                console.display(4, "current ${hardware.liftMotor.currentPosition}")
+                sleep(10)
             }
         }
-        liftPower = 0.0
+        console.display(3, "at the end")
     }
+
+//    fun yToPosition(targetPos: Int) {
+//        while (opmode.opModeIsActive()) {
+//            val atPosition = yTowardPosition(targetPos)
+//            console.display(5, "At target: $atPosition")
+//            if (atPosition) {
+//                break
+//            }
+//        }
+//        liftPower = 0.0
+//    }
 
     fun xAtPower(power: Double) {
         val anticipatedStop = (10 * posOrNeg(power.toInt())) + hardware.horiMotor.currentPosition
@@ -231,24 +257,26 @@ class Depositor(private val hardware: RataTonyHardware, private val console: Tel
     private var prevLiftPos = 0
     fun updateY() {
         if (liftPower == 0.0) {
-            yTowardPosition(hardware.liftMotor.currentPosition)
+            console.display(5, "prev Pos: $prevLiftPos")
+            console.display(6, "current Pos: ${hardware.liftMotor.currentPosition}")
+            yTowardPosition(prevLiftPos)
         } else {
             hardware.liftMotor.power = liftPower
             prevLiftPos = hardware.liftMotor.currentPosition
         }
     }
 
-//    private var previousLiftPower = 0.0
-//    fun updateYPosition() {
-//        if (liftPower != 0.0) {
-//            hardware.liftMotor.power = liftPower
-//            previousLiftPower = liftPower
-//        } else if (liftPower == 0.0 && previousLiftPower != 0.0) {
-//            yTowardPosition(hardware.liftMotor.currentPosition)
-//            previousLiftPower = liftPower
-//        } else
-//            yTowardPosition(hardware.liftMotor.currentPosition)
-//    }
+    private var previousLiftPower = 0.0
+    fun updateYPosition() {
+        if (liftPower != 0.0) {
+            hardware.liftMotor.power = liftPower
+            previousLiftPower = liftPower
+        } else if (liftPower == 0.0 && previousLiftPower != 0.0) {
+            yTowardPosition(hardware.liftMotor.currentPosition)
+            previousLiftPower = liftPower
+        } else
+            yTowardPosition(hardware.liftMotor.currentPosition)
+    }
 
     /**
      * run at the beginning of the program
@@ -256,12 +284,12 @@ class Depositor(private val hardware: RataTonyHardware, private val console: Tel
     fun runInLinearOpmode(opmode: LinearOpMode) {
         this.opmode = opmode
 
-        Thread {
-            while (this.opmode.opModeIsActive()) {
+//        Thread {
+//            while (this.opmode.opModeIsActive()) {
 //                updateYPosition()
-                updateY()
-            }
-        }.start()
+//                updateY()
+//            }
+//        }.start()
     }
 
     private fun posOrNeg(num: Int): Int {
