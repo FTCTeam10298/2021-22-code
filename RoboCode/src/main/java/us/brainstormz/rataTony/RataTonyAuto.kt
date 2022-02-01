@@ -64,7 +64,11 @@ class RataTonyAuto: LinearOpMode() {
                         movement.driveRobotStrafe(1.0, 10.0, true)
                         movement.driveRobotTurn(1.0, -35.0, true)
                         movement.driveRobotStrafe(1.0, 18.0, true)
-                        deposit(1700, level)
+                        if (level == LiftPos.LowGoal) {
+                            deposit(1500, level)
+                        } else {
+                            deposit(1700, level)
+                        }
 //                        Ducc
                         movement.driveRobotTurn(1.0, 34.0, true)
                         movement.driveRobotPosition(1.0, 38.0, true)
