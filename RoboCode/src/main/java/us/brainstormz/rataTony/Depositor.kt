@@ -27,12 +27,12 @@ class Depositor(private val hardware: RataTonyHardware, private val console: Tel
     private val yPIDDown = PID(kp = 0.0007, ki = 0.0)
     private var liftPower = 0.0
     private val yPrecision = -1..1
-    private val upperLimit = 1650
+    private val upperLimit = 1760
     val lowerLimit = -1
     enum class LiftPos(val counts: Int) {
-        LowGoal(320),
-        MidGoal(870),
-        HighGoal(1600)
+        LowGoal(400),
+        MidGoal(900),
+        HighGoal(1750)
     }
 
     fun xTowardPosition(targetPos: Int): Boolean {
