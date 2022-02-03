@@ -1,5 +1,9 @@
 package us.brainstormz.roboticsClass
 
+import android.view.MotionEvent
+import android.view.View
+import android.widget.LinearLayout
+import com.example.robocode.R
 import com.qualcomm.hardware.lynx.LynxModule
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
@@ -25,7 +29,6 @@ class GeneralDrive: OpMode() {
     }
 
     override fun loop() {
-
 //        Direction switcher
         if (gamepad1.x && !prevButton) {
             prevButton = true

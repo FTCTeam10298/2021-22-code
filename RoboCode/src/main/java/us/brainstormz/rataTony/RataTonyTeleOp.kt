@@ -67,8 +67,8 @@ class RataTonyTeleOp: OpMode() {
                 depositor.yAtPower(-gamepad2.left_stick_y.toDouble())
             gamepad2.a ->
                 depositor.home()
-            gamepad2.y ->
-                depositor.yTowardPosition(LiftPos.HighGoal.counts)
+//            gamepad2.y ->
+//                depositor.yTowardPosition(LiftPos.HighGoal.counts)
             else ->
                 depositor.yAtPower(0.0)
         }
@@ -80,7 +80,6 @@ class RataTonyTeleOp: OpMode() {
 
         depositor.xAtPower(gamepad2.right_stick_x.toDouble() * .9)
 
-//        depositor.updateYPosition()
         depositor.updateY()
 
         when {
