@@ -139,13 +139,15 @@ class Depositor(private val hardware: RataTonyHardware, private val console: Tel
             else -> hardware.liftMotor.currentPosition
         }
 
-        liftPower = if (canYMove(anticipatedStop))
+
+        hardware.liftMotor.power = if (canYMove(anticipatedStop))
             if (target == lowerLimit)
                 yPIDDown.calcPID(target.toDouble(), hardware.liftMotor.currentPosition.toDouble()).coerceAtLeast(-0.6)
             else
                 yPID.calcPID(target.toDouble(), hardware.liftMotor.currentPosition.toDouble()).coerceAtLeast(-0.6)/*.coerceIn(-abs(power), abs(power))*/
         else
             0.0
+
     }
 
     fun xToPositionAsync(targetPos: Int): Unit = runBlocking { async {
@@ -256,40 +258,21 @@ class Depositor(private val hardware: RataTonyHardware, private val console: Tel
 
     private var prevLiftPos = 0
     fun updateY() {
-        if (liftPower == 0.0) {
-            console.display(5, "prev Pos: $prevLiftPos")
-            console.display(6, "current Pos: ${hardware.liftMotor.currentPosition}")
-            yTowardPosition(prevLiftPos)
+        if (hardware.liftMotor.power == 0.0) {
+            hardware.liftMotor.targetPosition = prevLiftPos
+            hardware.liftMotor.mode = DcMotor.RunMode.RUN_TO_POSITION
         } else {
-            hardware.liftMotor.power = liftPower
             prevLiftPos = hardware.liftMotor.currentPosition
+            hardware.liftMotor.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
         }
     }
 
-    private var previousLiftPower = 0.0
-    fun updateYPosition() {
-        if (liftPower != 0.0) {
-            hardware.liftMotor.power = liftPower
-            previousLiftPower = liftPower
-        } else if (liftPower == 0.0 && previousLiftPower != 0.0) {
-            yTowardPosition(hardware.liftMotor.currentPosition)
-            previousLiftPower = liftPower
-        } else
-            yTowardPosition(hardware.liftMotor.currentPosition)
-    }
 
     /**
      * run at the beginning of the program
      * */
     fun runInLinearOpmode(opmode: LinearOpMode) {
         this.opmode = opmode
-
-//        Thread {
-//            while (this.opmode.opModeIsActive()) {
-//                updateYPosition()
-//                updateY()
-//            }
-//        }.start()
     }
 
     private fun posOrNeg(num: Int): Int {
