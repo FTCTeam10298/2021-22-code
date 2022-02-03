@@ -16,7 +16,7 @@ class Depositor(private val hardware: RataTonyHardware, private val console: Tel
         Closed(0.7)
     }
 
-    private val xPID = PID(kp = 0.0018, ki = 0.0)
+    private val xPID = PID(kp = 0.0019, ki = 0.0)
     private val xPIDOther = PID(kp = 0.002, ki = 0.00001)
     private val xPrecision = -30..30
     val outerLimit = 1800
@@ -83,9 +83,7 @@ class Depositor(private val hardware: RataTonyHardware, private val console: Tel
     }
 
     fun yToPosition(targetPos: Int) {
-        console.display(3, "on")
         if (canYMove(targetPos)) {
-//            hardware.liftMotor.setPositionPIDFCoefficients(0.0012)
             if (targetPos - hardware.liftMotor.currentPosition > 0)
                 hardware.liftMotor.power = 1.0
             else
@@ -93,34 +91,20 @@ class Depositor(private val hardware: RataTonyHardware, private val console: Tel
 
             hardware.liftMotor.targetPosition = targetPos
             hardware.liftMotor.mode = DcMotor.RunMode.RUN_TO_POSITION
-//            hardware.liftMotor.targetPosition = targetPos
 
             while (opmode.opModeIsActive() && hardware.liftMotor.isBusy) {
-                console.display(3, "in the loop")
-                console.display(4, "current ${hardware.liftMotor.currentPosition}")
                 sleep(10)
             }
         }
-        console.display(3, "at the end")
     }
 
-//    fun yToPosition(targetPos: Int) {
-//        while (opmode.opModeIsActive()) {
-//            val atPosition = yTowardPosition(targetPos)
-//            console.display(5, "At target: $atPosition")
-//            if (atPosition) {
-//                break
-//            }
-//        }
-//        liftPower = 0.0
-//    }
-
     fun xAtPower(power: Double) {
-        val anticipatedStop = (10 * posOrNeg(power.toInt())) + hardware.horiMotor.currentPosition
+        val anticipatedStop = (10 * power.toInt()) + hardware.horiMotor.currentPosition
+        console.display(5, "anticipated x: $anticipatedStop")
 
         val target = when {
             power > 0 -> outerLimit
-            power < 0 -> 0
+            power < 0 -> innerLimit
             else -> hardware.horiMotor.currentPosition
         }
 
@@ -138,7 +122,6 @@ class Depositor(private val hardware: RataTonyHardware, private val console: Tel
             power < 0 -> lowerLimit
             else -> hardware.liftMotor.currentPosition
         }
-
 
         hardware.liftMotor.power = if (canYMove(anticipatedStop))
             if (target == lowerLimit)
