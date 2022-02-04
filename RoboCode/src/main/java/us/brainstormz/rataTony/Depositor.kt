@@ -16,7 +16,7 @@ class Depositor(private val hardware: RataTonyHardware, private val console: Tel
         Closed(0.7)
     }
 
-    private val xPID = PID(kp = 0.0019, ki = 0.0)
+    private val xPID = PID(kp = 0.0019, ki = 0.000001)
     private val xPIDOther = PID(kp = 0.002, ki = 0.00001)
     private val xPrecision = -30..30
     val outerLimit = 1800
@@ -27,7 +27,7 @@ class Depositor(private val hardware: RataTonyHardware, private val console: Tel
     private val yPIDDown = PID(kp = 0.0007, ki = 0.0)
     private var liftPower = 0.0
     private val yPrecision = -1..1
-    private val upperLimit = 1760
+    private val upperLimit = 1800
     val lowerLimit = -1
     enum class LiftPos(val counts: Int) {
         LowGoal(400),
@@ -99,7 +99,7 @@ class Depositor(private val hardware: RataTonyHardware, private val console: Tel
     }
 
     fun xAtPower(power: Double) {
-        val anticipatedStop = (10 * power.toInt()) + hardware.horiMotor.currentPosition
+        val anticipatedStop = (10 * posOrNeg(power)) + hardware.horiMotor.currentPosition
         console.display(5, "anticipated x: $anticipatedStop")
 
         val target = when {
@@ -115,7 +115,7 @@ class Depositor(private val hardware: RataTonyHardware, private val console: Tel
     }
 
     fun yAtPower(power: Double) {
-        val anticipatedStop = (40 * posOrNeg(power.toInt())) + hardware.liftMotor.currentPosition
+        val anticipatedStop = (40 * posOrNeg(power)) + hardware.liftMotor.currentPosition
 
         val target = when {
             power > 0 -> upperLimit
@@ -181,7 +181,7 @@ class Depositor(private val hardware: RataTonyHardware, private val console: Tel
             hardware.horiMotor.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
         }
 
-        val direction = posOrNeg(target - hardware.horiMotor.currentPosition)
+        val direction = posOrNeg(target - hardware.horiMotor.currentPosition.toDouble())
 
         val result = when {
             target < innerLimit && direction == -1 -> false
@@ -208,7 +208,7 @@ class Depositor(private val hardware: RataTonyHardware, private val console: Tel
             hardware.liftMotor.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
         }
 
-        val direction = posOrNeg(target - hardware.liftMotor.currentPosition)
+        val direction = posOrNeg(target - hardware.liftMotor.currentPosition.toDouble())
 
         val result = when {
             target < lowerLimit && direction == -1 -> false
@@ -258,7 +258,7 @@ class Depositor(private val hardware: RataTonyHardware, private val console: Tel
         this.opmode = opmode
     }
 
-    private fun posOrNeg(num: Int): Int {
+    private fun posOrNeg(num: Double): Int {
         return when {
             num > 0 -> 1
             num < 0 -> -1
