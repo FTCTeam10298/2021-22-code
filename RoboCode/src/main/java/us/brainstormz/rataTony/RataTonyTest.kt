@@ -2,7 +2,6 @@ package us.brainstormz.rataTony
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
-import us.brainstormz.hardwareClasses.EncoderDriveMovement
 import us.brainstormz.telemetryWizard.TelemetryConsole
 import us.brainstormz.rataTony.Depositor.LiftPos
 
@@ -12,7 +11,6 @@ class RataTonyTest: LinearOpMode() {
     val console = TelemetryConsole(telemetry)
 
     val hardware = RataTonyHardware()
-    val movement = EncoderDriveMovement(hardware, console)
 
     val depositor = Depositor(hardware, console)
 
@@ -24,28 +22,54 @@ class RataTonyTest: LinearOpMode() {
         console.display(1, "Initialization Complete")
         waitForStart()
         /** AUTONOMOUS  PHASE */
-        hardware.carouselSpinner.power = 1.0
-        movement.driveRobotStrafe(0.1, -1.0, true)
-        sleep(2200)
-        hardware.carouselSpinner.power = 0.08
-        sleep(3500)
-        hardware.carouselSpinner.power = 0.0
-//                        collect
-        hardware.collector.power = 1.0
-        movement.driveRobotStrafe(1.0, 7.0, true)
-        movement.driveRobotTurn(1.0, 90.0, true)
-        movement.driveRobotPosition(1.0, 3.0, false)
-        movement.driveRobotStrafe(1.0, 2.0, false)
-        movement.driveRobotPosition(1.0, 3.0, false)
-        movement.driveRobotStrafe(1.0, -5.0, true)
-        movement.driveRobotPosition(1.0, 2.0, false)
-        movement.driveRobotTurn(1.0, 16.0, true)
-        movement.driveRobotPosition(1.0, 1.0, false)
-        movement.driveRobotStrafe(1.0, -15.0, true)
-        movement.driveRobotPosition(1.0, 1.0, false)
-        sleep(200)
-        hardware.collector.power = 0.0
-        movement.driveRobotPosition(1.0, 5.0, false)
+        depositor.runInLinearOpmode(this)
+
+        depositor.yToPosition(LiftPos.MidGoal.counts)
+        sleep(5000)
+
+//        console.display(1, "left Front")
+//        hardware.lFDrive.power = 0.3
+//        for (i in 0 until 500) {
+//            console.display(5, "lFDrive: ${hardware.lFDrive.currentPosition}")
+//            console.display(6, "rFDrive: ${hardware.rFDrive.currentPosition}")
+//            console.display(7, "lBDrive: ${hardware.lBDrive.currentPosition}")
+//            console.display(8, "rBDrive: ${hardware.rBDrive.currentPosition}")
+//            sleep(10)
+//        }
+//        sleep(1000)
+//
+//        console.display(2, "right Front")
+//        hardware.rFDrive.power = 0.3
+//        for (i in 0 until 500) {
+//            console.display(5, "lFDrive: ${hardware.lFDrive.currentPosition}")
+//            console.display(6, "rFDrive: ${hardware.rFDrive.currentPosition}")
+//            console.display(7, "lBDrive: ${hardware.lBDrive.currentPosition}")
+//            console.display(8, "rBDrive: ${hardware.rBDrive.currentPosition}")
+//            sleep(10)
+//        }
+//        sleep(1000)
+//
+//        console.display(3, "left back")
+//        hardware.lBDrive.power = 0.3
+//        for (i in 0 until 500) {
+//            console.display(5, "lFDrive: ${hardware.lFDrive.currentPosition}")
+//            console.display(6, "rFDrive: ${hardware.rFDrive.currentPosition}")
+//            console.display(7, "lBDrive: ${hardware.lBDrive.currentPosition}")
+//            console.display(8, "rBDrive: ${hardware.rBDrive.currentPosition}")
+//            sleep(10)
+//        }
+//        sleep(1000)
+//
+//        console.display(4, "right Back")
+//        hardware.rBDrive.power = 0.3
+//        for (i in 0 until 500) {
+//            console.display(5, "lFDrive: ${hardware.lFDrive.currentPosition}")
+//            console.display(6, "rFDrive: ${hardware.rFDrive.currentPosition}")
+//            console.display(7, "lBDrive: ${hardware.lBDrive.currentPosition}")
+//            console.display(8, "rBDrive: ${hardware.rBDrive.currentPosition}")
+//            sleep(10)
+//        }
+//        sleep(1000)
 
     }
 }

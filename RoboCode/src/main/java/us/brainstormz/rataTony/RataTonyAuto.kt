@@ -56,15 +56,14 @@ class RataTonyAuto: LinearOpMode() {
         }
 
         when {
-            true /*wizard.wasItemChosen("Alliance", "Blue")*/ -> {
+            wizard.wasItemChosen("Alliance", "Blue") -> {
                 AutoTeleopTransition.alliance = AutoTeleopTransition.Alliance.Blue
                 when {
-                    true /*wizard.wasItemChosen("StartPos", "Ducc")*/ -> {
+                    wizard.wasItemChosen("StartPos", "Ducc") -> {
 //                        Deposit
                         movement.driveRobotStrafe(1.0, 10.0, true)
                         movement.driveRobotTurn(1.0, -35.0, true)
                         movement.driveRobotStrafe(1.0, 18.0, true)
-                        movement.driveRobotPosition(1.0, 5.0, true)
                         if (level == LiftPos.LowGoal) {
                             deposit(1500, level)
                         } else {
@@ -73,38 +72,15 @@ class RataTonyAuto: LinearOpMode() {
 //                        Ducc
                         movement.driveRobotTurn(1.0, 34.0, true)
                         movement.driveRobotPosition(1.0, 38.0, true)
-                        movement.driveRobotStrafe(0.7, -20.0,true)
+                        movement.driveRobotStrafe(0.5, -13.0,true)
                         movement.driveRobotStrafe(0.5, -1.0,true)
                         hardware.carouselSpinner.power = 1.0
                         movement.driveRobotStrafe(0.1, -1.0, true)
-                        sleep(2200)
-                        hardware.carouselSpinner.power = 0.08
-                        sleep(3500)
+                        sleep(4000)
                         hardware.carouselSpinner.power = 0.0
-//                        collect
-                        hardware.collector.power = 1.0
-                        movement.driveRobotStrafe(1.0, 7.0, true)
-                        movement.driveRobotTurn(1.0, 90.0, true)
-                        movement.driveRobotPosition(1.0, 3.0, false)
-                        movement.driveRobotStrafe(1.0, 2.0, false)
-                        movement.driveRobotPosition(1.0, 3.0, false)
-                        movement.driveRobotStrafe(1.0, -5.0, true)
-                        movement.driveRobotPosition(1.0, 2.0, false)
-                        movement.driveRobotTurn(1.0, 16.0, true)
-                        movement.driveRobotPosition(1.0, 1.0, false)
-                        movement.driveRobotStrafe(1.0, -15.0, true)
-                        movement.driveRobotPosition(1.0, 1.0, false)
-                        sleep(200)
-                        hardware.collector.power = 0.0
-                        movement.driveRobotPosition(1.0, 5.0, false)
-//                        deposit
-                        movement.driveRobotTurn(1.0, -20.0, true)
-                        movement.driveRobotPosition(1.0, -30.0, true)
-                        movement.driveRobotTurn(1.0, -110.0, true)
-                        deposit(1400, LiftPos.HighGoal)
 //                        park
-                        movement.driveRobotTurn(1.0, 45.0, true)
-                        movement.driveRobotPosition(1.0, 35.0, true)
+                        movement.driveRobotStrafe(1.0, 25.0, true)
+                        movement.driveRobotPosition(1.0, 10.0, true)
 
                     }
                     wizard.wasItemChosen("StartPos", "Warehouse") -> {
