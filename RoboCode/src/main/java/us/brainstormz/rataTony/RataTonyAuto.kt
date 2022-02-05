@@ -91,9 +91,9 @@ class RataTonyAuto: LinearOpMode() {
                                 movement.driveRobotTurn(1.0, 13.0, true)
                                 movement.driveRobotStrafe(1.0, -10.0, false)
                                 movement.driveRobotPosition(1.0, -50.0, true)
+                                hardware.collector2.power = 0.0
                                 movement.driveRobotStrafe(1.0, -5.0, false)
                                 movement.driveRobotPosition(1.0, -60.0, true)
-                                hardware.collector2.power = 0.0
                             }
                         }
 
@@ -108,8 +108,8 @@ class RataTonyAuto: LinearOpMode() {
 //                        Warehouse park
                         movement.driveRobotStrafe(1.0, -18.0, true)
                         movement.driveRobotTurn(1.0, -38.0, true)
-                        movement.driveRobotStrafe(1.0, -12.0, true)
-                        movement.driveRobotPosition(1.0,-40.0,true)
+                        movement.driveRobotStrafe(1.0, -15.0, false)
+                        movement.driveRobotPosition(1.0,-38.0,true)
                     }
                 }
             }
