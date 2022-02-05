@@ -61,7 +61,7 @@ class TeamScoringElementDetector(private val console: TelemetryConsole) {
             } else
                 addedColor += color
         }
-        console.display(6, "combined color: $addedColor")
+//        console.display(6, "combined color: $addedColor")
 
 
         position = result
