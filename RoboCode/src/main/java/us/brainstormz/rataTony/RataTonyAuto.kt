@@ -45,6 +45,8 @@ class RataTonyAuto: LinearOpMode() {
         console.display(1, "Initialization Complete")
         waitForStart()
         /** AUTONOMOUS  PHASE */
+
+
         depositor.runInLinearOpmode(this)
 
         val tsePosition = tseDetector.position

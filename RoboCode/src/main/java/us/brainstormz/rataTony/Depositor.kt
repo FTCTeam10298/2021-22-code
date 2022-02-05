@@ -101,7 +101,6 @@ class Depositor(private val hardware: RataTonyHardware, private val console: Tel
 
     fun xAtPower(power: Double) {
         val anticipatedStop = (10 * posOrNeg(power)) + hardware.horiMotor.currentPosition
-        console.display(5, "anticipated x: $anticipatedStop")
 
         val target = when {
             power > 0 -> outerLimit
