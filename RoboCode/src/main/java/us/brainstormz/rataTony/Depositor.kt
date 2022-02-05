@@ -30,8 +30,8 @@ class Depositor(private val hardware: RataTonyHardware, private val console: Tel
     private val upperLimit = 1800
     val lowerLimit = -1
     enum class LiftPos(val counts: Int) {
-        LowGoal(400),
-        MidGoal(900),
+        LowGoal(410),
+        MidGoal(950),
         HighGoal(1750)
     }
 
