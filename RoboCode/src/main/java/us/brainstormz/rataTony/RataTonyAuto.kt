@@ -68,7 +68,7 @@ class RataTonyAuto: LinearOpMode() {
                         movement.driveRobotPosition(1.0,5.0, true)
                         deposit(1500, level)
 //                        Ducc
-                        movement.driveRobotTurn(1.0, 34.0, true)
+                        movement.driveRobotTurn(1.0, 35.0, true)
                         movement.driveRobotPosition(1.0, 38.0, true)
                         movement.driveRobotStrafe(0.5, -20.0,true)
                         movement.driveRobotStrafe(0.5, -1.0,true)
@@ -120,7 +120,7 @@ class RataTonyAuto: LinearOpMode() {
                         movement.driveRobotTurn(1.0, 35.0, true)
                         movement.driveRobotStrafe(1.0, 22.0, true)
                         movement.driveRobotPosition(1.0, 2.0, true)
-                        deposit(1700, level)
+                        deposit(1600, level)
 //                        Ducc
                         movement.driveRobotTurn(1.0, -34.0, true)
                         movement.driveRobotPosition(1.0, -38.0, true)
@@ -133,8 +133,23 @@ class RataTonyAuto: LinearOpMode() {
                         sleep(4000)
                         hardware.carouselSpinner.power = 0.0
 //                        park
-                        movement.driveRobotPosition(1.0, -22.0, true)
-                        movement.driveRobotStrafe(1.0, -10.0, true)
+                        when {
+                            wizard.wasItemChosen("ParkLocation", "Storage Unit") -> {
+                                movement.driveRobotPosition(1.0, -22.0, true)
+                                movement.driveRobotStrafe(1.0, -10.0, true)
+                            }
+                            wizard.wasItemChosen("ParkLocation", "Warehouse") -> {
+                                hardware.collector2.power = 1.0
+                                movement.driveRobotStrafe(1.0, -2.0, true)
+                                movement.driveRobotPosition(1.0, -15.0, true)
+                                movement.driveRobotTurn(1.0, -13.0, true)
+                                movement.driveRobotStrafe(1.0, 10.0, false)
+                                movement.driveRobotPosition(1.0, -50.0, true)
+                                movement.driveRobotStrafe(1.0, 5.0, false)
+                                movement.driveRobotPosition(1.0, -60.0, true)
+                                hardware.collector2.power = 0.0
+                            }
+                        }
                     }
                     wizard.wasItemChosen("StartPos", "Warehouse") -> {
 //                        Deposit
