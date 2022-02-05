@@ -44,13 +44,25 @@ class TeamScoringElementDetector(private val console: TelemetryConsole) {
 
         var result = TSEPosition.Three
         var prevColor = 0
+
+        var addedColor = 0.0
+        val combinedThreshold = 140
         submats.forEach {
             val color = colorInRect(it.second)
             if (color > prevColor) {
                 prevColor = color
                 result = it.first
             }
+
+            if (it.first == TSEPosition.Three) {
+                if (addedColor < combinedThreshold) {
+                    result = TSEPosition.Three
+                }
+            } else
+                addedColor += color
         }
+        console.display(6, "combined color: $addedColor")
+
 
         position = result
 
