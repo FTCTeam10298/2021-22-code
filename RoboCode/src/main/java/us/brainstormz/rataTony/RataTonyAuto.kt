@@ -121,8 +121,12 @@ class RataTonyAuto: LinearOpMode() {
                         movement.driveRobotStrafe(1.0, 10.0, true)
                         movement.driveRobotTurn(1.0, 35.0, true)
                         movement.driveRobotStrafe(1.0, 22.0, true)
-                        movement.driveRobotPosition(1.0, -4.0, true)
-                        deposit(1600, level)
+                        movement.driveRobotPosition(1.0, -1.5, true)
+                        if (level == Depositor.LiftPos.MidGoal)
+                            deposit(1500, level)
+                        else
+                            deposit(1600, level)
+
 //                        Ducc
                         movement.driveRobotTurn(1.0, -34.0, true)
                         movement.driveRobotStrafe(1.0,-12.0,true)
@@ -132,9 +136,9 @@ class RataTonyAuto: LinearOpMode() {
                         movement.driveRobotStrafe(1.0,-7.0,false)
                         movement.driveRobotPosition(1.0, 12.0,true)
                         movement.driveRobotStrafe(0.5,-2.0,false)
-                        movement.driveRobotPosition(0.4, 2.0,true)
+                        movement.driveRobotPosition(0.4, 5.0,false)
                         hardware.carouselSpinner.power = -1.0
-                        movement.driveRobotPosition(0.1, -1.0, true)
+                        movement.driveRobotPosition(0.1, 2.0, true)
                         sleep(4000)
                         hardware.carouselSpinner.power = 0.0
 //                        park
@@ -151,6 +155,7 @@ class RataTonyAuto: LinearOpMode() {
                                 movement.driveRobotTurn(1.0,-90.0,true)
                                 movement.driveRobotPosition(1.0,10.0,true)
                                 movement.driveRobotStrafe(1.0,-30.0,true)
+                                sleep(2000)
                                 movement.driveRobotPosition(1.0,45.0,true)
                                 hardware.collector.power = 0.0
                                 movement.driveRobotStrafe(1.0,-10.0,false)

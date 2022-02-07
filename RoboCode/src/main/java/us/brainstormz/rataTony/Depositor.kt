@@ -20,7 +20,7 @@ class Depositor(private val hardware: RataTonyHardware, private val console: Tel
     private val xPIDOut = PID(kp = 0.0019)
     private val xPIDOther = PID(kp = 0.002, ki = 0.00001)
     private val xPrecision = -30..30
-    val outerLimit = 1800
+    val outerLimit = 1900
     val innerLimit = -20
 
     private val yPID = PID(kp = 0.0012, ki = 0.0)
@@ -108,9 +108,17 @@ class Depositor(private val hardware: RataTonyHardware, private val console: Tel
             else -> hardware.horiMotor.currentPosition
         }
 
-        hardware.horiMotor.power = if (canXMove(anticipatedStop))
-            xPID.calcPID(target.toDouble(), hardware.horiMotor.currentPosition.toDouble())
-        else
+        hardware.horiMotor.power = if (canXMove(anticipatedStop)) {
+            when {
+                power > 0 -> {
+                    xPIDOut.calcPID(target.toDouble(), hardware.horiMotor.currentPosition.toDouble())
+                }
+                power < 0 -> {
+                    xPID.calcPID(target.toDouble(), hardware.horiMotor.currentPosition.toDouble())
+                }
+                else -> 0.0
+            }
+        } else
             0.0
     }
 
