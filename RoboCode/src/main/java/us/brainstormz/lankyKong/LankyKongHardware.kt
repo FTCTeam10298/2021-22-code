@@ -2,6 +2,7 @@ package us.brainstormz.lankyKong
 
 import com.qualcomm.hardware.lynx.LynxModule
 import com.qualcomm.robotcore.hardware.*
+import com.qualcomm.robotcore.hardware.configuration.LynxConstants
 import us.brainstormz.hardwareClasses.SmartLynxModule
 import us.brainstormz.hardwareClasses.HardwareClass
 import us.brainstormz.hardwareClasses.MecanumHardware
@@ -10,8 +11,8 @@ class LankyKongHardware: HardwareClass, MecanumHardware {
     override lateinit var hwMap: HardwareMap
 
     lateinit var allHubs: List<LynxModule>
-    private lateinit var smartLynxModuleCtrl: SmartLynxModule
-    private lateinit var smartLynxModuleEx: SmartLynxModule
+    private lateinit var ctrlHub: SmartLynxModule
+    private lateinit var exHub: SmartLynxModule
 
 
 //    Drivetrain
@@ -38,20 +39,22 @@ class LankyKongHardware: HardwareClass, MecanumHardware {
 
     override fun init(ahwMap: HardwareMap) {
         hwMap = ahwMap
-
         allHubs = hwMap.getAll(LynxModule::class.java)
-        smartLynxModuleCtrl = SmartLynxModule(allHubs[0])
-//        smartLynxModuleEx = SmartLynxModule(allHubs[1])
+        allHubs.forEach { hub ->    hub.bulkCachingMode = LynxModule.BulkCachingMode.MANUAL
+            if (hub.isParent && LynxConstants.isEmbeddedSerialNumber(hub.serialNumber))
+                ctrlHub = SmartLynxModule(hub)
+            else
+                exHub = SmartLynxModule(hub) }
 
 //        Drivetrain
-        lFDrive = smartLynxModuleCtrl.getMotor(1) as DcMotorEx
-        rFDrive = smartLynxModuleCtrl.getMotor(0) as DcMotorEx
-        lBDrive = smartLynxModuleCtrl.getMotor(3) as DcMotorEx
-        rBDrive = smartLynxModuleCtrl.getMotor(2) as DcMotorEx
+        lFDrive = ctrlHub.getMotor(1) as DcMotor
+        rFDrive = ctrlHub.getMotor(0) as DcMotor
+        lBDrive = ctrlHub.getMotor(2) as DcMotor
+        rBDrive = ctrlHub.getMotor(3) as DcMotor
 
         rFDrive.direction = DcMotorSimple.Direction.FORWARD
         lFDrive.direction = DcMotorSimple.Direction.REVERSE
-        rBDrive.direction = DcMotorSimple.Direction.FORWARD
+        rBDrive.direction = DcMotorSimple.Direction.REVERSE
         lBDrive.direction = DcMotorSimple.Direction.REVERSE
 
         rFDrive.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
@@ -91,13 +94,11 @@ class LankyKongHardware: HardwareClass, MecanumHardware {
 
 //        Collectors
 
-        collector = smartLynxModuleCtrl.getMotor(2) as DcMotorEx
-//        collector = hwMap["collector"] as DcMotor
+        collector = exHub.getMotor(0) as DcMotor
         collector.direction = DcMotorSimple.Direction.REVERSE
         collector.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.FLOAT
 
-        collector2 = smartLynxModuleCtrl.getMotor(1) as DcMotorEx
-//        collector2 = hwMap["collector2"] as DcMotor
+        collector2 = exHub.getMotor(1) as DcMotor
         collector2.direction = DcMotorSimple.Direction.REVERSE
         collector2.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.FLOAT
 
