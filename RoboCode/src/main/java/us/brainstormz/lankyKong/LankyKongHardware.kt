@@ -4,8 +4,9 @@ import com.qualcomm.hardware.lynx.LynxModule
 import com.qualcomm.robotcore.hardware.*
 import us.brainstormz.hardwareClasses.SmartLynxModule
 import us.brainstormz.hardwareClasses.HardwareClass
+import us.brainstormz.hardwareClasses.MecanumHardware
 
-class LankyKongHardware: HardwareClass/*MecanumHardware*/ {
+class LankyKongHardware: HardwareClass, MecanumHardware {
     override lateinit var hwMap: HardwareMap
 
     lateinit var allHubs: List<LynxModule>
@@ -14,11 +15,10 @@ class LankyKongHardware: HardwareClass/*MecanumHardware*/ {
 
 
 //    Drivetrain
-//    override lateinit var lFDrive: DcMotor
-//    override lateinit var rFDrive: DcMotor
-//    override lateinit var lBDrive: DcMotor
-//    override lateinit var rBDrive: DcMotor
-    lateinit var lFDrive: DcMotor
+    override lateinit var lFDrive: DcMotor
+    override lateinit var rFDrive: DcMotor
+    override lateinit var lBDrive: DcMotor
+    override lateinit var rBDrive: DcMotor
 //    Depositor
 //    lateinit var liftMotor: DcMotorEx
 //    lateinit var horiMotor: DcMotorEx
@@ -44,31 +44,30 @@ class LankyKongHardware: HardwareClass/*MecanumHardware*/ {
 //        smartLynxModuleEx = SmartLynxModule(allHubs[1])
 
 //        Drivetrain
-        lFDrive = smartLynxModuleCtrl.getMotor(0) as DcMotorEx
-//        lFDrive = hwMap["lFDrive"] as DcMotorEx
-//        rFDrive = hwMap["rFDrive"] as DcMotorEx
-//        lBDrive = hwMap["lBDrive"] as DcMotorEx
-//        rBDrive = hwMap["rBDrive"] as DcMotorEx
+        lFDrive = smartLynxModuleCtrl.getMotor(1) as DcMotorEx
+        rFDrive = smartLynxModuleCtrl.getMotor(0) as DcMotorEx
+        lBDrive = smartLynxModuleCtrl.getMotor(3) as DcMotorEx
+        rBDrive = smartLynxModuleCtrl.getMotor(2) as DcMotorEx
 
-//        rFDrive.direction = DcMotorSimple.Direction.FORWARD
-//        lFDrive.direction = DcMotorSimple.Direction.REVERSE
-//        rBDrive.direction = DcMotorSimple.Direction.FORWARD
-//        lBDrive.direction = DcMotorSimple.Direction.REVERSE
-//
-//        rFDrive.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
-//        lFDrive.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
-//        rBDrive.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
-//        lBDrive.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
-//
-//        rFDrive.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
-//        lFDrive.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
-//        rBDrive.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
-//        lBDrive.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
-//
-//        rFDrive.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
-//        lFDrive.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
-//        rBDrive.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
-//        lBDrive.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
+        rFDrive.direction = DcMotorSimple.Direction.FORWARD
+        lFDrive.direction = DcMotorSimple.Direction.REVERSE
+        rBDrive.direction = DcMotorSimple.Direction.FORWARD
+        lBDrive.direction = DcMotorSimple.Direction.REVERSE
+
+        rFDrive.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
+        lFDrive.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
+        rBDrive.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
+        lBDrive.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
+
+        rFDrive.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
+        lFDrive.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
+        rBDrive.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
+        lBDrive.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
+
+        rFDrive.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
+        lFDrive.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
+        rBDrive.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
+        lBDrive.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
 
 //        Depositor
 //        liftMotor = hwMap["liftMotor"] as DcMotorEx

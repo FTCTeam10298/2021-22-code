@@ -2,13 +2,14 @@ package us.brainstormz.lankyKong
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
+import us.brainstormz.hardwareClasses.MecanumDriveTrain
 import kotlin.math.abs
 
 @TeleOp(name= "Lanky Kong Teleop", group= "B")
 class LankyKongTeleop: OpMode() {
 
     val hardware = LankyKongHardware() /** Change Depending on robot */
-//    val movement = MecanumDriveTrain(hardware)
+    val movement = MecanumDriveTrain(hardware)
 
     override fun init() {
         /** INIT PHASE */
@@ -26,11 +27,10 @@ class LankyKongTeleop: OpMode() {
         val y = -yInput
         val x = xInput
         val r = -rInput * abs(rInput)
-//        movement.driveSetPower((y + x - r),
-//            (y - x + r),
-//            (y - x - r),
-//            (y + x + r))
-        hardware.lFDrive.power = (y + x - r)
+        movement.driveSetPower((y + x - r),
+            (y - x + r),
+            (y - x - r),
+            (y + x + r))
 
 
 
