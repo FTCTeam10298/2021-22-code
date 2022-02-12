@@ -74,15 +74,16 @@ class OpenCvAbstraction(private val opmode: OpMode) {
 
 //TODO: Add blur support from this init according to blurType:String, blurRadius:Float
     fun init(hardwareMap: HardwareMap) {
+        val cameraMonitorViewId: Int = opmode.hardwareMap.appContext.resources.getIdentifier(
+            "cameraMonitorViewId",
+            "id",
+            opmode.hardwareMap.appContext.packageName
+        )
        camera = if (internalCamera)
             //println("Gabe broke this!")
-           OpenCvCameraFactory.getInstance().createInternalCamera(OpenCvInternalCamera.CameraDirection.FRONT)
+           OpenCvCameraFactory.getInstance().createInternalCamera(OpenCvInternalCamera.CameraDirection.FRONT, cameraMonitorViewId)
        else {
-           val cameraMonitorViewId: Int = opmode.hardwareMap.appContext.resources.getIdentifier(
-               "cameraMonitorViewId",
-               "id",
-               opmode.hardwareMap.appContext.packageName
-           )
+
            val webcamName = hardwareMap.get(WebcamName::class.java, cameraName)
            OpenCvCameraFactory.getInstance().createWebcam(webcamName, cameraMonitorViewId)
        }
