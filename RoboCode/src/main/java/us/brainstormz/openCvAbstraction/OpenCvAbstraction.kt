@@ -69,18 +69,23 @@ class OpenCvAbstraction(private val opmode: OpMode) {
     var optimizeView = false
     var openCameraDeviceAsync = false
     var cameraOrientation = OpenCvCameraRotation.UPRIGHT
-    var internalCamera = false
+    var internalCamera = true
     var cameraName: String = "Webcam 1"
 
-
+//TODO: Add blur support from this init according to blurType:String, blurRadius:Float
     fun init(hardwareMap: HardwareMap) {
-        val cameraMonitorViewId: Int = opmode.hardwareMap.appContext.resources.getIdentifier("cameraMonitorViewId", "id", opmode.hardwareMap.appContext.packageName)
-        val webcamName = hardwareMap.get(WebcamName::class.java, cameraName)
-
-        camera = if (!internalCamera)
-            OpenCvCameraFactory.getInstance().createWebcam(webcamName, cameraMonitorViewId)
-        else
-            OpenCvCameraFactory.getInstance().createInternalCamera(OpenCvInternalCamera.CameraDirection.FRONT)
+       camera = if (internalCamera)
+            //println("Gabe broke this!")
+           OpenCvCameraFactory.getInstance().createInternalCamera(OpenCvInternalCamera.CameraDirection.FRONT)
+       else {
+           val cameraMonitorViewId: Int = opmode.hardwareMap.appContext.resources.getIdentifier(
+               "cameraMonitorViewId",
+               "id",
+               opmode.hardwareMap.appContext.packageName
+           )
+           val webcamName = hardwareMap.get(WebcamName::class.java, cameraName)
+           OpenCvCameraFactory.getInstance().createWebcam(webcamName, cameraMonitorViewId)
+       }
 
         camera.setPipeline(pipeline)
 
