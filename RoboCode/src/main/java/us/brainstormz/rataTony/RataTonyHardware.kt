@@ -2,6 +2,7 @@ package us.brainstormz.rataTony
 
 import com.qualcomm.hardware.rev.RevTouchSensor
 import com.qualcomm.robotcore.hardware.*
+import org.outoftheboxrobotics.neutrinoi2c.MB1242.AsyncMB1242
 import us.brainstormz.hardwareClasses.MecanumHardware
 import us.brainstormz.rataTony.Depositor.DropperPos
 
@@ -21,6 +22,8 @@ class RataTonyHardware: MecanumHardware {
     lateinit var dropperServo: Servo
     lateinit var yLowerLimit: RevTouchSensor
     lateinit var xInnerLimit: RevTouchSensor
+
+    lateinit var rangeSensor: AsyncMB1242
 
     val cameraName = "Webcam 1"
 
@@ -87,5 +90,8 @@ class RataTonyHardware: MecanumHardware {
 //        Ducc
         carouselSpinner = hwMap["duccSpinner"] as CRServo
         carouselSpinner.direction = DcMotorSimple.Direction.FORWARD
+
+        rangeSensor = hwMap["ultrasonic"] as AsyncMB1242
+        rangeSensor.enable()
     }
 }

@@ -2,6 +2,7 @@ package us.brainstormz.rataTony
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit
 import us.brainstormz.hardwareClasses.MecanumDriveTrain
 import us.brainstormz.telemetryWizard.TelemetryConsole
 import us.brainstormz.rataTony.Depositor.LiftPos
@@ -105,6 +106,8 @@ class RataTonyTeleOp: OpMode() {
         console.display(2, "y pos: ${hardware.liftMotor.currentPosition}")
         console.display(3, "x pos: ${hardware.horiMotor.currentPosition}")
         console.display(4, "dropper: ${hardware.dropperServo.position}")
+
+        console.display(5, "range: ${hardware.rangeSensor.getDistance(DistanceUnit.INCH)}")
 
         // Collector
         val forwardPower = 1.0
