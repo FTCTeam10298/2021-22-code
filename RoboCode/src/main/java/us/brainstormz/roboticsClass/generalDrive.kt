@@ -43,7 +43,9 @@ class GeneralDrive: OpMode() {
         movement.movePower(leftPower * direction, rightPower * direction)
 
 //        aux ctrl
-        hardware.aux.power = gamepad1.right_trigger.toDouble() + -gamepad1.left_trigger.toDouble()
+        fun pressValue(v:Boolean): Double = if (v) 1.0 else 0.0
+        hardware.aux.power = pressValue(gamepad1.right_bumper) + -pressValue(gamepad1.left_bumper)
+        pressValue(gamepad1.left_bumper)
     }
 }
 
@@ -82,10 +84,10 @@ class GeneralHardware: HardwareClass {
     override fun init(ahwMap: HardwareMap) {
         hwMap = ahwMap
 
-        leftDrive = hwMap["0"] as DcMotor
-        rightDrive = hwMap["1"] as DcMotor
+        leftDrive = hwMap["left"] as DcMotor
+        rightDrive = hwMap["right"] as DcMotor
 
-        aux = hwMap["3"] as DcMotor
+        aux = hwMap["aux"] as DcMotor
 //        allHubs = hwMap.getAll(LynxModule::class.java)
 //        smartLynxModuleCtrl = SmartLynxModule(allHubs[0])
 //
