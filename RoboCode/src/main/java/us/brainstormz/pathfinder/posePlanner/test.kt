@@ -28,16 +28,16 @@
 //////    test.runStuff()
 ////    test.post()
 //
-//    val ultimateTest = UltimateTest()
-//    ultimateTest.init(ultimateTest)
-//    ultimateTest.runStuff()
-//    ultimateTest.findPath()
-//    ultimateTest.post()
+////    val ultimateTest = UltimateTest()
+////    ultimateTest.init(ultimateTest)
+////    ultimateTest.runStuff()
+////    ultimateTest.findPath()
+////    ultimateTest.post()
 //
-////    val bezierTest = BezierTest()
-////    bezierTest.init(bezierTest)
-////    bezierTest.runstuff()
-////    bezierTest.post()
+//    val bezierTest = BezierTest()
+//    bezierTest.init(bezierTest)
+//    bezierTest.runstuff()
+//    bezierTest.post()
 //}
 //
 //
@@ -380,13 +380,13 @@
 //    val obsGen = ObstructionGen(listOf())
 ////        BezierCurve(listOf(Point3D(20.0, 20.0, 0.0), Point3D(25.0, 30.0, 0.0), Point3D(30.0, 30.0, 0.0), Point3D(35.0, 20.0, 0.0), Point3D(40.0, 20.0, 0.0)))
 //
-//    val scaling = 30
+//    val scaling = 70
 //
 //    fun generateCurve(curve: BezierCurve): List<Point3D> {
 //        var curvePoints = mutableListOf<Point3D>()
 //
-//        for (i in (0..100000)) {
-//            val adjustedI = i * 0.00001
+//        for (i in (0..10000)) {
+//            val adjustedI = i * 0.0001
 //            curvePoints.add(curve.calculatePoint(adjustedI))
 //        }
 //        return curvePoints
@@ -409,7 +409,7 @@
 //
 //    override fun draw(g: Graphics) {
 //        val ctrls = mutableListOf<Point3D>()
-//        for (i in (1..4)) {
+//        for (i in (1..1)) {
 //            ctrls.addAll(obsGen.randomObstruction().poly.points.map{ Point3D(it.x, it.y, it.r) })
 //        }
 //
@@ -418,7 +418,7 @@
 //        val curvePoints = generateCurve(curve)
 //
 //        val g2 = g as Graphics2D
-//        g2.stroke = BasicStroke(5f)
+//        g2.stroke = BasicStroke(3f)
 //
 //        g.color = Color.GREEN
 //        curvePoints.forEach { i ->
