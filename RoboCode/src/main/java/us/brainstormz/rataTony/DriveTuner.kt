@@ -1,6 +1,7 @@
 package us.brainstormz.rataTony
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import org.opencv.core.Mat
 import org.opencv.core.Point
 import org.opencv.core.Rect
@@ -11,6 +12,7 @@ import posePlanner.BezierCurve
 import posePlanner.Point2D
 import posePlanner.Point3D
 import us.brainstormz.hardwareClasses.MecanumDriveTrain
+import us.brainstormz.lankyKong.LankyKongHardware
 import us.brainstormz.openCvAbstraction.OpenCvAbstraction
 
 object DriveCurves {
@@ -18,6 +20,7 @@ object DriveCurves {
     val curve = BezierCurve(listOf(Point2D(1.0, 1.0), ctrlPoint, Point2D(0.0, 0.0)))
 }
 
+@TeleOp
 class DriveTuner: OpMode() {
 
     val hardware = RataTonyHardware()
@@ -91,7 +94,7 @@ class DriveTuner: OpMode() {
 
         for (i in (0..precision)) {
             val adjustedI = i * precision / (precision.toDouble() * precision.toDouble())
-            curvePoints.add(curve.calculatePoint(adjustedI) as Point2D)
+            curvePoints.add(curve.calculatePoint(adjustedI).toPoint2D())
         }
         return curvePoints
     }
