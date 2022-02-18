@@ -52,10 +52,10 @@ class LankyKongHardware: HardwareClass, MecanumHardware {
         lBDrive = ctrlHub.getMotor(2) as DcMotor
         rBDrive = ctrlHub.getMotor(3) as DcMotor
 
-        rFDrive.direction = DcMotorSimple.Direction.FORWARD
+        rFDrive.direction = DcMotorSimple.Direction.REVERSE
         lFDrive.direction = DcMotorSimple.Direction.REVERSE
         rBDrive.direction = DcMotorSimple.Direction.REVERSE
-        lBDrive.direction = DcMotorSimple.Direction.REVERSE
+        lBDrive.direction = DcMotorSimple.Direction.FORWARD
 
         rFDrive.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
         lFDrive.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
