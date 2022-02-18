@@ -7,17 +7,34 @@ import us.brainstormz.rataTony.RataTonyHardware
 import us.brainstormz.telemetryWizard.TelemetryConsole
 
 class DepositorLK(private val hardware: RataTonyHardware, private val console: TelemetryConsole) {
+    enum class Axis { X, Y }
     data class MovementConstraints(val allowedYHeights: MutableList<ClosedFloatingPointRange<Double>> = mutableListOf(),
                                    val allowedXLengths: MutableList<ClosedFloatingPointRange<Double>> = mutableListOf(),
                                    val allowedDropperPositions: MutableList<DropperPos> = mutableListOf()) {
-        fun inLimit() {
-
+        fun inConstraints(hardware: RataTonyHardware, exclude: Axis): Boolean {
+            val inDropper = allowedDropperPositions.fold(false) { acc, it -> hardware.dropperServo.position == it.posValue || acc }
+            var otherAxisMotor = hardware.liftMotor
+            val otherAxisConstraints = when (exclude) {
+                Axis.X -> {
+                    otherAxisMotor = hardware.liftMotor
+                    allowedYHeights
+                }
+                Axis.Y -> {
+                    otherAxisMotor = hardware.horiMotor
+                    allowedXLengths
+                }
+            }
+            val inOther = otherAxisConstraints.fold(false) { acc, it -> otherAxisMotor.currentPosition.toDouble() in it || acc }
+            return inDropper && inOther
         }
     }
     data class SlideConversions(private val countsPerMotorRev: Double = 28.0,
                                 private val gearReduction: Int = 1 / 1,
                                 private val spoolCircumferenceMM: Double = 112.0,
-                                val countsPerInch: Double = countsPerMotorRev * gearReduction / (spoolCircumferenceMM / 25.4))
+                                val countsPerInch: Double = countsPerMotorRev * gearReduction / (spoolCircumferenceMM / 25.4)) {
+        fun countsToIn(counts: Int) = counts * countsPerInch
+        fun inToCounts(In: Double) = In / countsPerInch
+    }
 
 //    Dropper Variables
     enum class DropperPos(val posValue: Double) {
@@ -38,19 +55,36 @@ class DepositorLK(private val hardware: RataTonyHardware, private val console: T
                                            allowedDropperPositions = mutableListOf(DropperPos.Closed, DropperPos.Open))
 
     fun moveToPosition(yIn: Double, xIn: Double) {
-        var yAtTarget = false
-        var xAtTarget = false
+        var atPosition = false
 
-        while (!(yAtTarget && xAtTarget) || opmode.opModeIsActive()) {
-
-            if ()
-            yAtTarget = yTowardPosition(yIn)
-
-            xAtTarget = xTowardPosition(xIn)
+        while (!atPosition && opmode.opModeIsActive()) {
+            atPosition = moveTowardPosition(yIn, xIn)
         }
     }
 
-    fun xTowardPosition(inches: Double): Boolean {
+    var yAtTarget = false
+    var xAtTarget = false
+    fun moveTowardPosition(yIn: Double, xIn: Double): Boolean {
+        if (yConstraints.inConstraints(hardware, Axis.Y))
+            yAtTarget = yTowardPosition(yIn)
+
+        if (xConstraints.inConstraints(hardware, Axis.X))
+            xAtTarget = xTowardPosition(xIn)
+
+        return yAtTarget && xAtTarget
+    }
+
+    fun moveToPositionRelative(yIn: Double, xIn: Double) {
+        moveToPosition(yConversion.countsToIn(hardware.liftMotor.currentPosition) + yIn,
+                       xConversion.countsToIn(hardware.horiMotor.currentPosition) + xIn)
+    }
+
+    fun moveTowardPositionRelative(yIn: Double, xIn: Double): Boolean {
+        return moveTowardPosition(yConversion.countsToIn(hardware.liftMotor.currentPosition) + yIn,
+                                  xConversion.countsToIn(hardware.horiMotor.currentPosition) + xIn)
+    }
+
+    private fun xTowardPosition(inches: Double): Boolean {
         val targetCounts = (inches * xConversion.countsPerInch).toInt()
 
         val error = targetCounts - hardware.horiMotor.currentPosition
@@ -64,7 +98,7 @@ class DepositorLK(private val hardware: RataTonyHardware, private val console: T
         }
     }
 
-    fun yTowardPosition(inches: Double): Boolean {
+    private fun yTowardPosition(inches: Double): Boolean {
         val targetCounts = (inches * yConversion.countsPerInch).toInt()
 
         hardware.liftMotor.power = if (targetCounts - hardware.liftMotor.currentPosition > 0)
@@ -84,111 +118,5 @@ class DepositorLK(private val hardware: RataTonyHardware, private val console: T
     private lateinit var opmode: LinearOpMode
     fun runInLinearOpmode(opmode: LinearOpMode) {
         this.opmode = opmode
-    }
-}
-
-class OldDepositorLK(private val hardware: RataTonyHardware, private val console: TelemetryConsole) {
-
-
-    private val xPID = PID(kp = 0.0018, ki = 0.0)
-    private val xPrecision = -10..10
-    private val outerLimit = 2500
-    private val innerLimit = -35
-
-    private val yPID = PID(kp = 0.0012, ki = 0.0)
-    private var liftPower = 0.0
-    private val yPrecision = -10..10
-    private val upperLimit = 900
-    private val lowerLimit = -1
-    enum class LiftPos(val counts: Int) {
-        LowGoal(190),
-        MidGoal(510),
-        HighGoal(850)
-    }
-
-
-
-    /**
-     * Synchronizes movements to avoid internal collisions
-     */
-
-//    Bucket stay closed conditions
-    private val closedCauseX = 100..795
-
-    //    x/y collisions
-    private val collideCauseX = 100..795
-    private val collideCauseY = 100.0..133.0
-
-    //    target trackers
-    private var xTarget: Int? = null
-    private var yTarget: Int? = null
-
-    private fun canXMove(target: Int): Boolean {
-        if (hardware.xInnerLimit.isPressed) {
-            hardware.horiMotor.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
-            hardware.horiMotor.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
-        }
-
-        val direction = posOrNeg(target - hardware.horiMotor.currentPosition)
-
-        val result = when {
-            target < innerLimit && direction == -1 -> false
-//            hardware.xInnerLimit.isPressed && direction == -1 -> false
-            target > outerLimit && direction == 1 -> false
-            (yTarget ?: hardware.liftMotor.currentPosition) <= collideCauseY -> false
-            target in collideCauseX && DropperPos.Open.posValue == hardware.dropperServo.position -> false
-            else -> true
-        }
-
-        console.display(6, "X condition: $result")
-
-        xTarget = if (result)
-            target
-        else
-            null
-
-        return result
-    }
-
-    private fun canYMove(target: Int): Boolean {
-        if (hardware.yLowerLimit.isPressed) {
-            hardware.liftMotor.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
-            hardware.liftMotor.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
-        }
-
-        val direction = posOrNeg(target - hardware.liftMotor.currentPosition)
-
-        val result = when {
-            target < lowerLimit && direction == -1 -> false
-            target > upperLimit && direction == 1 -> false
-            (target <= collideCauseY && xTarget in collideCauseX) && direction == -1 -> false
-            else -> true
-        }
-
-        console.display(8, "Y condition: $result")
-        console.display(9, "Y fully down: ${hardware.yLowerLimit.isPressed}")
-
-        yTarget = if (result)
-            target
-        else
-            null
-
-        return result
-    }
-
-    fun canDropperDrop(target: DropperPos): Boolean {
-        return when {
-            xTarget in closedCauseX && DropperPos.Open == target -> false
-            (yTarget ?: hardware.liftMotor.currentPosition) <= collideCauseY && DropperPos.Open == target -> false
-            else -> true
-        }
-    }
-
-    private fun posOrNeg(num: Int): Int {
-        return when {
-            num > 0 -> 1
-            num < 0 -> -1
-            else -> 0
-        }
     }
 }
