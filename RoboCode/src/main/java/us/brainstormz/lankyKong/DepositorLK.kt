@@ -54,26 +54,24 @@ class DepositorLK(private val hardware: RataTonyHardware, private val console: T
         Closed(0.7)
     }
     private val dropperConstraints = MovementConstraints(allowedYHeights = mutableListOf(),
-                                                         allowedXLengths = mutableListOf(),
-                                                         allowedDropperPositions = mutableListOf(DropperPos.Closed),
+                                                         allowedXLengths = mutableListOf(0.0..3.0),
+                                                         allowedDropperPositions = DropperPos.values().toMutableList(),
                                                          this)
-
 //    X Variables
     private val xMotor = hardware.horiMotor
     private val currentXIn: Double get() = xConversion.countsToIn(xMotor.currentPosition)
     private val xPrecision = 1
     private val xConversion = SlideConversions(countsPerMotorRev = 28.0)
-    private val xConstraints = MovementConstraints(allowedYHeights = mutableListOf(),
-                                                   allowedDropperPositions = mutableListOf(DropperPos.Closed),
-                                                   depo = this)
     private val xPID = PID()
-
+    private val xConstraints = MovementConstraints(allowedYHeights = mutableListOf(0.0..0.1),
+                                                   allowedDropperPositions = DropperPos.values().toMutableList(),
+                                                   depo = this)
 //    Y Variables
     private val yMotor = hardware.liftMotor
     private val currentYIn: Double get() = yConversion.countsToIn(yMotor.currentPosition)
     private val yConversion = SlideConversions(countsPerMotorRev = 28.0)
     private val yConstraints = MovementConstraints(allowedXLengths = mutableListOf(),
-                                                   allowedDropperPositions = mutableListOf(DropperPos.Closed, DropperPos.Open),
+                                                   allowedDropperPositions = DropperPos.values().toMutableList(),
                                                    depo = this)
 
     fun moveToPosition(yIn: Double = currentYIn, xIn: Double = currentXIn) {
