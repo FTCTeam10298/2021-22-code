@@ -7,6 +7,7 @@ import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.hardware.lynx.LynxServoController;
 import com.qualcomm.robotcore.exception.RobotCoreException;
 import com.qualcomm.robotcore.hardware.AnalogInput;
+import com.qualcomm.robotcore.hardware.CRServoImplEx;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorImplEx;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
@@ -28,6 +29,7 @@ public class SmartLynxModule {
 
     private HashMap<Integer, DcMotorEx> cachedMotors;
     private HashMap<Integer, ServoImplEx> cachedServos;
+    private HashMap<Integer, CRServoImplEx> cachedCRServos;
     private HashMap<Integer, AnalogInput> cachedAI;
     private HashMap<Integer, DigitalChannel> cachedDC;
 
@@ -43,6 +45,7 @@ public class SmartLynxModule {
 
         cachedMotors = new HashMap<>();
         cachedServos = new HashMap<>();
+        cachedCRServos = new HashMap<>();
         cachedAI = new HashMap<>();
         cachedDC = new HashMap<>();
     }
@@ -59,6 +62,13 @@ public class SmartLynxModule {
             cachedServos.put(port, new ServoImplEx(servoController, port, ServoConfigurationType.getStandardServoType()));
         }
         return cachedServos.get(port);
+    }
+
+    public CRServoImplEx getCRServo(int port){
+        if(!cachedCRServos.containsKey(port)){
+            cachedCRServos.put(port, new CRServoImplEx(servoController, port, ServoConfigurationType.getStandardServoType()));
+        }
+        return cachedCRServos.get(port);
     }
 
     public AnalogInput getAnalogInput(int port){
