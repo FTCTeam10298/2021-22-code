@@ -20,12 +20,11 @@ class LankyKongHardware: HardwareClass, MecanumHardware {
     override lateinit var rFDrive: DcMotor
     override lateinit var lBDrive: DcMotor
     override lateinit var rBDrive: DcMotor
+
 //    Depositor
 //    lateinit var liftMotor: DcMotorEx
 //    lateinit var horiMotor: DcMotorEx
 //    lateinit var dropperServo: Servo
-//    lateinit var yLowerLimit: RevTouchSensor
-//    lateinit var xInnerLimit: RevTouchSensor
 
 //    Collectors
     lateinit var collector: DcMotor
