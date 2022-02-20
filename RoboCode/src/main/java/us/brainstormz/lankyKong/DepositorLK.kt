@@ -15,36 +15,17 @@ class DepositorLK(private val hardware: RataTonyHardware, private val console: T
         fun countsToIn(counts: Int) = counts * countsPerInch
         fun inToCounts(In: Double) = In / countsPerInch
     }
-    data class MovementConstraints(val allowedYHeights: MutableList<ClosedFloatingPointRange<Double>>? = null,
-                                   val allowedXLengths: MutableList<ClosedFloatingPointRange<Double>>? = null,
-                                   val allowedDropperPositions: MutableList<DropperPos> = mutableListOf(),
-                                   private val depo: DepositorLK) {
+    data class MovementConstraints(val limits: ClosedFloatingPointRange<Double>, val conditions: List<(target: Double)->Boolean>, private val depo: DepositorLK) {
         private val hardware = depo.hardware
         var problem: Axis? = null
-        fun withinConstraints(): Boolean {
-            val inDropper = allowedDropperPositions.fold(false) { acc, it -> hardware.dropperServo.position == it.posValue || acc }
-
-            val inYConstraints = if (allowedYHeights != null) {
-                val isWithin =
-                    allowedYHeights.fold(false) { acc, it -> depo.currentYIn in it || acc }
-
-                if (!isWithin)
-                    problem = Axis.Y
-
-                isWithin
-            } else false
-
-            val inXConstraints = if (allowedXLengths != null) {
-                val isWithin =
-                    allowedXLengths.fold(false) { acc, it -> depo.currentXIn in it || acc }
-
-                if (!isWithin)
-                    problem = Axis.X
-
-                isWithin
-            } else false
-
-            return inDropper && inYConstraints && inXConstraints
+        fun withinConstraints(target: Double): Boolean {
+            return conditions.fold(true) { acc, it ->
+                val condition = it(target)
+                if (!condition)
+                    false
+                else 
+                    acc
+            }
         }
     }
 
@@ -53,26 +34,19 @@ class DepositorLK(private val hardware: RataTonyHardware, private val console: T
         Open(0.0),
         Closed(0.7)
     }
-    private val dropperConstraints = MovementConstraints(allowedYHeights = mutableListOf(),
-                                                         allowedXLengths = mutableListOf(0.0..3.0),
-                                                         allowedDropperPositions = DropperPos.values().toMutableList(),
-                                                         this)
+    private val dropperConstraints = MovementConstraints(0.0..0.7, listOf(),this)
 //    X Variables
     private val xMotor = hardware.horiMotor
     private val currentXIn: Double get() = xConversion.countsToIn(xMotor.currentPosition)
     private val xPrecision = 1
     private val xConversion = SlideConversions(countsPerMotorRev = 28.0)
     private val xPID = PID()
-    private val xConstraints = MovementConstraints(allowedYHeights = mutableListOf(0.0..0.1),
-                                                   allowedDropperPositions = DropperPos.values().toMutableList(),
-                                                   depo = this)
+    private val xConstraints = MovementConstraints(0.0..300.0, listOf(), this)
 //    Y Variables
     private val yMotor = hardware.liftMotor
     private val currentYIn: Double get() = yConversion.countsToIn(yMotor.currentPosition)
     private val yConversion = SlideConversions(countsPerMotorRev = 28.0)
-    private val yConstraints = MovementConstraints(allowedXLengths = mutableListOf(),
-                                                   allowedDropperPositions = DropperPos.values().toMutableList(),
-                                                   depo = this)
+    private val yConstraints = MovementConstraints(0.0..400.0, listOf(), depo = this)
 
     fun moveToPosition(yIn: Double = currentYIn, xIn: Double = currentXIn) {
         var atPosition = false
@@ -84,12 +58,12 @@ class DepositorLK(private val hardware: RataTonyHardware, private val console: T
 
 
     fun moveTowardPosition(yIn: Double = currentYIn, xIn: Double = currentXIn): Boolean {
-        val yAtTarget = if (yConstraints.withinConstraints())
+        val yAtTarget = if (yConstraints.withinConstraints(yIn))
                             yTowardPosition(yIn)
                         else
                             false
 
-        val xAtTarget = if (xConstraints.withinConstraints())
+        val xAtTarget = if (xConstraints.withinConstraints(xIn))
                             xTowardPosition(xIn)
                         else
                             false
@@ -136,31 +110,31 @@ class DepositorLK(private val hardware: RataTonyHardware, private val console: T
 
     fun dropper(position: DropperPos, autoResolve: Boolean): Boolean =
         when {
-            dropperConstraints.withinConstraints() -> {
+            dropperConstraints.withinConstraints(position.posValue) -> {
                 hardware.dropperServo.position = position.posValue
                 true
             }
-            autoResolve -> {
-                when (dropperConstraints.problem) {
-                    Axis.Y -> {
-                        moveTowardPosition(yIn = dropperConstraints.allowedYHeights!!.minOf { it.start })
-                        if (dropperConstraints.withinConstraints()) {
-                            hardware.dropperServo.position = position.posValue
-                            true
-                        } else
-                            false
-                    }
-                    Axis.X -> {
-                        moveTowardPosition(xIn = dropperConstraints.allowedXLengths!!.minOf { it.start })
-                        if (dropperConstraints.withinConstraints()) {
-                            hardware.dropperServo.position = position.posValue
-                            true
-                        } else
-                            false
-                    }
-                    else -> false
-                }
-            }
+//            autoResolve -> {
+//                when (dropperConstraints.problem) {
+//                    Axis.Y -> {
+//                        moveTowardPosition(yIn = dropperConstraints.allowedYHeights!!.minOf { it.start })
+//                        if (dropperConstraints.withinConstraints()) {
+//                            hardware.dropperServo.position = position.posValue
+//                            true
+//                        } else
+//                            false
+//                    }
+//                    Axis.X -> {
+//                        moveTowardPosition(xIn = dropperConstraints.allowedXLengths!!.minOf { it.start })
+//                        if (dropperConstraints.withinConstraints()) {
+//                            hardware.dropperServo.position = position.posValue
+//                            true
+//                        } else
+//                            false
+//                    }
+//                    else -> false
+//                }
+//            }
             else -> false
         }
 
