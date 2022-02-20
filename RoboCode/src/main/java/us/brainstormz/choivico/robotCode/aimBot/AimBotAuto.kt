@@ -62,7 +62,7 @@ class AimBotAuto: LinearOpMode() {
 
                 robot.driveRobotTurn(1.0,90.0,true)
                 robot.driveRobotStrafe(1.0, 6.0, true)
-                robot.driveRobotHug(1.0, -45, false)
+                robot.driveRobotHug(1.0, -45.0, false)
 
                 robot.driveRobotStrafe(0.6, -3.0, true)
                 sleep(100)
@@ -105,7 +105,7 @@ class AimBotAuto: LinearOpMode() {
                 robot.driveRobotPosition(1.0, -90.0, true)
                 robot.driveRobotTurn(1.0,-90.0,true)
                 robot.driveRobotStrafe(0.4, 6.0, true)
-                robot.driveRobotHug(0.4, -42, false)
+                robot.driveRobotHug(0.4, -42.0, false)
 
                 robot.driveRobotStrafe(0.5, -3.0, true)
                 robot.driveRobotPosition(0.5, 5.0, true)
@@ -140,7 +140,7 @@ class AimBotAuto: LinearOpMode() {
                 robot.driveRobotPosition(1.0, 66.0, true)
                 robot.driveRobotTurn(1.0,90.0,true)
                 robot.driveRobotStrafe(0.4, 6.0, true)
-                robot.driveRobotHug(0.4, -40, false)
+                robot.driveRobotHug(0.4, -40.0, false)
 
                 robot.driveRobotStrafe(0.5, -3.0, true)
                 robot.driveRobotPosition(0.5, 5.0, true)

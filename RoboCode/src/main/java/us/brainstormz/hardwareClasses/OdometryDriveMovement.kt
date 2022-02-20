@@ -211,7 +211,7 @@ class OdometryDriveMovement(private val console: TelemetryConsole, private val h
         TODO("Not yet implemented")
     }
 
-    override fun driveRobotHug(power: Double, inches: Int, hugLeft: Boolean) {
+    override fun driveRobotHug(power: Double, inches: Double, hugLeft: Boolean) {
         TODO("Not yet implemented")
     }
 
