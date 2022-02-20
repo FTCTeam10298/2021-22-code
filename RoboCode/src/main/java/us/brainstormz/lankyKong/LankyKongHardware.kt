@@ -13,6 +13,7 @@ class LankyKongHardware: HardwareClass, MecanumHardware {
     lateinit var allHubs: List<LynxModule>
     private lateinit var ctrlHub: SmartLynxModule
     private lateinit var exHub: SmartLynxModule
+    var cachingMode = LynxModule.BulkCachingMode.MANUAL
 
 
 //    Drivetrain
@@ -39,20 +40,20 @@ class LankyKongHardware: HardwareClass, MecanumHardware {
     override fun init(ahwMap: HardwareMap) {
         hwMap = ahwMap
         allHubs = hwMap.getAll(LynxModule::class.java)
-        allHubs.forEach { hub ->    hub.bulkCachingMode = LynxModule.BulkCachingMode.MANUAL
+        allHubs.forEach { hub -> hub.bulkCachingMode = cachingMode
             if (hub.isParent && LynxConstants.isEmbeddedSerialNumber(hub.serialNumber))
                 ctrlHub = SmartLynxModule(hub)
             else
                 exHub = SmartLynxModule(hub) }
 
 //        Drivetrain
-        lFDrive = ctrlHub.getMotor(1) as DcMotor
-        rFDrive = ctrlHub.getMotor(0) as DcMotor
-        lBDrive = ctrlHub.getMotor(2) as DcMotor
-        rBDrive = ctrlHub.getMotor(3) as DcMotor
+        lFDrive = ctrlHub.getMotor(1) as DcMotorEx // black
+        rFDrive = ctrlHub.getMotor(0) as DcMotorEx // pink
+        lBDrive = ctrlHub.getMotor(2) as DcMotorEx // blue
+        rBDrive = ctrlHub.getMotor(3) as DcMotorEx // green
 
         rFDrive.direction = DcMotorSimple.Direction.REVERSE
-        lFDrive.direction = DcMotorSimple.Direction.REVERSE
+        lFDrive.direction = DcMotorSimple.Direction.FORWARD
         rBDrive.direction = DcMotorSimple.Direction.REVERSE
         lBDrive.direction = DcMotorSimple.Direction.FORWARD
 
@@ -107,5 +108,11 @@ class LankyKongHardware: HardwareClass, MecanumHardware {
 //
 //        duccSpinner2 = hwMap["duccSpinner2"] as CRServo
 //        duccSpinner2.direction = DcMotorSimple.Direction.FORWARD
+    }
+
+    fun clearHubCache() {
+        allHubs.forEach {
+            it.clearBulkCache()
+        }
     }
 }
