@@ -4,11 +4,12 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import us.brainstormz.hardwareClasses.MecanumDriveTrain
 import us.brainstormz.rataTony.AutoTeleopTransition
-import java.lang.Thread.sleep
-import kotlin.math.abs
+import us.brainstormz.telemetryWizard.TelemetryConsole
 
 @TeleOp(name= "Lanky Kong Teleop", group= "B")
 class LankyKongTeleop: OpMode() {
+
+    val console = TelemetryConsole(telemetry)
 
     val hardware = LankyKongHardware() /** Change Depending on robot */
     val movement = MecanumDriveTrain(hardware)
@@ -34,6 +35,7 @@ class LankyKongTeleop: OpMode() {
 
     override fun loop() {
         /** TELE-OP PHASE */
+        hardware.clearHubCache()
 
 //        DRONE DRIVE
 
@@ -60,7 +62,7 @@ class LankyKongTeleop: OpMode() {
                                (y - x - r),
                                (y + x + r))
 
-
+        console.display(1, "Drive Encoders: \n ${hardware.lFDrive.currentPosition} \n ${hardware.rFDrive.currentPosition} \n ${hardware.lBDrive.currentPosition} \n ${hardware.rBDrive.currentPosition}")
 
 //        COLLECTOR
         val forwardPower = 1.0
