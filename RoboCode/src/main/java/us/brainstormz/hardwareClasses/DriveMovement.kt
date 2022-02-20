@@ -53,7 +53,7 @@ interface DriveMovement {
      * @param inches How many inches to drive
      * @param hugLeft Whether to hug left or right
      */
-    fun driveRobotHug(power: Double, inches: Int, hugLeft: Boolean)
+    fun driveRobotHug(power: Double, inches: Double, hugLeft: Boolean)
 
     fun driveRobotArc(power: Double, inches: Double, difference: Double)
 

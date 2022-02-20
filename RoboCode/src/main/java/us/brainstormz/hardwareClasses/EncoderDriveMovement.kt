@@ -260,7 +260,8 @@ class EncoderDriveMovement(private val hardware: MecanumHardware, private val co
      * @param inches How many inches to drive
      * @param hugLeft Whether to hug left or right
      */
-    override fun driveRobotHug(power: Double, inches: Int, hugLeft: Boolean) {
+//    Distance is approx halfed. Use __*2 for readable and accurate movement
+    override fun driveRobotHug(power: Double, inches: Double, hugLeft: Boolean) {
 
         val position: Double = inches * COUNTS_PER_INCH
 
