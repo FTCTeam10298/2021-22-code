@@ -81,9 +81,8 @@ class OpenCvAbstraction(private val opmode: OpMode) {
         )
        camera = if (internalCamera)
             //println("Gabe broke this!")
-           OpenCvCameraFactory.getInstance().createInternalCamera(OpenCvInternalCamera.CameraDirection.FRONT, cameraMonitorViewId)
+           OpenCvCameraFactory.getInstance().createInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId)
        else {
-
            val webcamName = hardwareMap.get(WebcamName::class.java, cameraName)
            OpenCvCameraFactory.getInstance().createWebcam(webcamName, cameraMonitorViewId)
        }
