@@ -69,7 +69,10 @@ class LankyKongTeleop: OpMode() {
 
         console.display(1, "Drive Encoders: \n ${hardware.lFDrive.currentPosition} \n ${hardware.rFDrive.currentPosition} \n ${hardware.lBDrive.currentPosition} \n ${hardware.rBDrive.currentPosition}")
         console.display(2, "Range: ${hardware.frontDistance.getDistance(DistanceUnit.INCH)}")
-        console.display(3, "Hori Motor: ${hardware.horiMotor.currentPosition}")
+        console.display(3, "Horizontal Motor currPos: ${hardware.horiMotor.currentPosition}")
+        console.display(4, "Lift Motor currPos: ${hardware.liftMotor.currentPosition}")
+        console.display(5, "Lift Motor targetPos: ${hardware.liftMotor.targetPosition}")
+
 
 //        COLLECTOR
         val forwardPower = 1.0
