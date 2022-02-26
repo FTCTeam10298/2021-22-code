@@ -23,7 +23,7 @@ android {
     }
     packagingOptions {
         jniLibs {
-            pickFirsts += ['**/*.so', '**/*.so', '**/*.so', '**/*.so']
+            pickFirsts += ['**/*.so', '**/*.so', '**/*.so']
         }
     }
     namespace = 'org.firstinspires.ftc.teamcode'
