@@ -71,7 +71,7 @@ class DepositorLK(private val hardware: LankyKongHardware, private val console: 
 
     fun moveTowardPosition(yIn: Double = currentYIn, xIn: Double = currentXIn): Boolean {
         val yAtTarget = if (yConstraints.withinConstraints(yIn))
-                            yTowardPosition(yIn)
+                            yTowardPositionInches(yIn)
                         else
                             false
 
@@ -83,23 +83,35 @@ class DepositorLK(private val hardware: LankyKongHardware, private val console: 
         return yAtTarget && xAtTarget
     }
 
-    private var lastYPos = 0.0
-    private var lastXPos = 0.0
+    private var lastYPos = 0
+    private var lastXPos = 0
     fun moveWithJoystick(yStick: Double, xStick: Double) {
         if (yStick == 0.0)
-            yTowardPosition(lastYPos)
+            yTowardPositionCounts(lastYPos)
         else {
-            hardware.liftMotor.mode = DcMotor.RunMode.RUN_USING_ENCODER
-            hardware.liftMotor.power = yStick.coerceAtLeast(-0.5)
-            lastYPos = hardware.liftMotor.currentPosition.toDouble()
+            // Ensure proper motor run mode
+            if (hardware.liftMotor.mode != DcMotor.RunMode.RUN_USING_ENCODER)
+                hardware.liftMotor.mode = DcMotor.RunMode.RUN_USING_ENCODER
+
+            // Set motor power, using reduced speed when going down
+            hardware.liftMotor.power = yStick.coerceAtLeast(-0.3)
+
+            // Update last used position
+            lastYPos = hardware.liftMotor.currentPosition
         }
 
-        if (xStick == 0.0)
-            xTowardPosition(lastXPos)
+        if (false)//(xStick == 0.0)
+            //xTowardPosition(lastXPos)
         else {
-            hardware.horiMotor.mode = DcMotor.RunMode.RUN_USING_ENCODER
+            // Ensure proper motor run mode
+            if (hardware.horiMotor.mode != DcMotor.RunMode.RUN_USING_ENCODER)
+                hardware.horiMotor.mode = DcMotor.RunMode.RUN_USING_ENCODER
+
+            // Set motor power
             hardware.horiMotor.power = xStick
-            lastXPos = hardware.horiMotor.currentPosition.toDouble()
+
+            // Update last used position
+            lastXPos = hardware.horiMotor.currentPosition
         }
 //        val yIn = if (yStick > 0)
 //            MathHelps().scaleBetween(yStick, 0.0..1.0, currentYIn..yConstraints.limits.endInclusive)
@@ -127,7 +139,7 @@ class DepositorLK(private val hardware: LankyKongHardware, private val console: 
         }
     }
 
-    private fun yTowardPosition(inches: Double): Boolean {
+    private fun yTowardPositionInches(inches: Double): Boolean {
         val targetCounts = (inches * yConversion.countsPerInch).toInt()
 
         hardware.liftMotor.power = 1.0/*if (targetCounts - hardware.liftMotor.currentPosition > 0)
@@ -136,7 +148,23 @@ class DepositorLK(private val hardware: LankyKongHardware, private val console: 
             0.5*/
 
         hardware.liftMotor.targetPosition = targetCounts
-        hardware.liftMotor.mode = DcMotor.RunMode.RUN_TO_POSITION
+        if (hardware.liftMotor.mode != DcMotor.RunMode.RUN_TO_POSITION)
+            hardware.liftMotor.mode = DcMotor.RunMode.RUN_TO_POSITION
+
+        return hardware.liftMotor.isBusy
+    }
+
+    private fun yTowardPositionCounts(counts: Int): Boolean {
+
+        hardware.liftMotor.power = 0.1 //FIXME: power should be function parameter
+        /*if (targetCounts - hardware.liftMotor.currentPosition > 0)
+            1.0
+        else
+            0.5*/
+
+        hardware.liftMotor.targetPosition = counts
+        if (hardware.liftMotor.mode != DcMotor.RunMode.RUN_TO_POSITION)
+            hardware.liftMotor.mode = DcMotor.RunMode.RUN_TO_POSITION
 
         return hardware.liftMotor.isBusy
     }
