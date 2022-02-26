@@ -17,13 +17,12 @@ apply from: '../build.dependencies.gradle'
 
 android {
 
-
     androidResources {
         noCompress 'tflite'
     }
     packagingOptions {
         jniLibs {
-            pickFirsts += ['**/*.so', '**/*.so']
+            pickFirsts += ['**/*.so']
         }
     }
     namespace = 'org.firstinspires.ftc.teamcode'
