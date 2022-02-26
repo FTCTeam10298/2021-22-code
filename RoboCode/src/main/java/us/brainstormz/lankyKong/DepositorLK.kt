@@ -5,48 +5,60 @@ import com.qualcomm.robotcore.hardware.DcMotor
 import us.brainstormz.pid.PID
 import us.brainstormz.rataTony.RataTonyHardware
 import us.brainstormz.telemetryWizard.TelemetryConsole
+import us.brainstormz.utils.MathHelps
 
-class DepositorLK(private val hardware: RataTonyHardware, private val console: TelemetryConsole) {
+class DepositorLK(private val hardware: LankyKongHardware, private val console: TelemetryConsole) {
     enum class Axis { X, Y }
     data class SlideConversions(private val countsPerMotorRev: Double = 28.0,
                                 private val gearReduction: Int = 1 / 1,
                                 private val spoolCircumferenceMM: Double = 112.0) {
         val countsPerInch: Double = countsPerMotorRev * gearReduction / (spoolCircumferenceMM / 25.4)
-        fun countsToIn(counts: Int) = counts * countsPerInch
-        fun inToCounts(In: Double) = In / countsPerInch
+        fun countsToIn(counts: Int): Double = counts.toDouble() /** countsPerInch*/
+//        fun inToCounts(In: Double) = In / countsPerInch
     }
-    data class MovementConstraints(val limits: ClosedFloatingPointRange<Double>, val conditions: List<(target: Double)->Boolean>, private val depo: DepositorLK) {
-        private val hardware = depo.hardware
-        var problem: Axis? = null
+
+    data class Constraint(val constraint: (target: Double)->Boolean, val name: String)
+    data class MovementConstraints(val limits: ClosedRange<Double>, val conditions: List<Constraint>) {
+        var problem: Constraint? = null
+        private val completeConditions = conditions + Constraint({ target-> target in limits }, "limits")
         fun withinConstraints(target: Double): Boolean {
-            return conditions.fold(true) { acc, it ->
-                val condition = it(target)
-                if (!condition)
+            return completeConditions.fold(true) { acc, it ->
+                val condition = it.constraint(target)
+                if (!condition) {
+                    problem = it
                     false
-                else 
+                } else
                     acc
+                true
             }
         }
     }
+//    General
+    private val inRobot = 3.0
 
 //    Dropper Variables
     enum class DropperPos(val posValue: Double) {
         Open(0.0),
         Closed(0.7)
     }
-    private val dropperConstraints = MovementConstraints(0.0..0.7, listOf(),this)
+    private val dropperConstraints = MovementConstraints(DropperPos.Open.posValue..DropperPos.Closed.posValue,
+                                                               listOf(Constraint({target-> target > inRobot}, ""),
+                                                                      Constraint({currentXIn > inRobot}, "")))
+
 //    X Variables
     private val xMotor = hardware.horiMotor
     private val currentXIn: Double get() = xConversion.countsToIn(xMotor.currentPosition)
     private val xPrecision = 1
-    private val xConversion = SlideConversions(countsPerMotorRev = 28.0)
     private val xPID = PID()
-    private val xConstraints = MovementConstraints(0.0..300.0, listOf(), this)
+    private val xConversion = SlideConversions(countsPerMotorRev = 28.0)
+    private val xConstraints = MovementConstraints(0.0..300.0, listOf(Constraint({target-> !(target < inRobot && currentXIn > inRobot)}, ""),
+                                                                            /*Constraint({}, "")*/))
+
 //    Y Variables
     private val yMotor = hardware.liftMotor
     private val currentYIn: Double get() = yConversion.countsToIn(yMotor.currentPosition)
     private val yConversion = SlideConversions(countsPerMotorRev = 28.0)
-    private val yConstraints = MovementConstraints(0.0..400.0, listOf(), depo = this)
+    private val yConstraints = MovementConstraints(0.0..400.0, listOf())
 
     fun moveToPosition(yIn: Double = currentYIn, xIn: Double = currentXIn) {
         var atPosition = false
@@ -71,14 +83,33 @@ class DepositorLK(private val hardware: RataTonyHardware, private val console: T
         return yAtTarget && xAtTarget
     }
 
-    fun moveToPositionRelative(yIn: Double = 0.0, xIn: Double = 0.0) {
-        moveToPosition(currentYIn + yIn,
-                       currentXIn + xIn)
-    }
+    private var lastYPos = 0.0
+    private var lastXPos = 0.0
+    fun moveWithJoystick(yStick: Double, xStick: Double) {
+        if (yStick == 0.0)
+            yTowardPosition(lastYPos)
+        else {
+            hardware.liftMotor.power = yStick
+            lastYPos = hardware.liftMotor.currentPosition.toDouble()
+        }
 
-    fun moveTowardPositionRelative(yIn: Double, xIn: Double): Boolean =
-        moveTowardPosition(currentYIn + yIn,
-                           currentXIn + xIn)
+        if (xStick == 0.0)
+            xTowardPosition(lastXPos)
+        else {
+            hardware.horiMotor.power = xStick
+            lastXPos = hardware.horiMotor.currentPosition.toDouble()
+        }
+//        val yIn = if (yStick > 0)
+//            MathHelps().scaleBetween(yStick, 0.0..1.0, currentYIn..yConstraints.limits.endInclusive)
+//        else
+//            MathHelps().scaleBetween(yStick, -1.0..0.0, yConstraints.limits.start..currentYIn)
+//
+//        val xIn = if (xStick > 0)
+//            MathHelps().scaleBetween(xStick, 0.0..1.0, currentXIn..xConstraints.limits.endInclusive)
+//        else
+//            MathHelps().scaleBetween(xStick, -1.0..0.0, xConstraints.limits.start..currentXIn)
+//        moveTowardPosition(yIn, xIn)
+    }
 
     private fun xTowardPosition(inches: Double): Boolean {
         val targetCounts = (inches * xConversion.countsPerInch).toInt()
@@ -97,16 +128,25 @@ class DepositorLK(private val hardware: RataTonyHardware, private val console: T
     private fun yTowardPosition(inches: Double): Boolean {
         val targetCounts = (inches * yConversion.countsPerInch).toInt()
 
-        hardware.liftMotor.power = if (targetCounts - hardware.liftMotor.currentPosition > 0)
+        hardware.liftMotor.power = 1.0/*if (targetCounts - hardware.liftMotor.currentPosition > 0)
             1.0
         else
-            0.5
+            0.5*/
 
         hardware.liftMotor.targetPosition = targetCounts
         hardware.liftMotor.mode = DcMotor.RunMode.RUN_TO_POSITION
 
         return hardware.liftMotor.isBusy
     }
+
+    fun moveToPositionRelative(yIn: Double = 0.0, xIn: Double = 0.0) {
+        moveToPosition(currentYIn + yIn,
+            currentXIn + xIn)
+    }
+
+    fun moveTowardPositionRelative(yIn: Double, xIn: Double): Boolean =
+        moveTowardPosition(currentYIn + yIn,
+            currentXIn + xIn)
 
     fun dropper(position: DropperPos, autoResolve: Boolean): Boolean =
         when {

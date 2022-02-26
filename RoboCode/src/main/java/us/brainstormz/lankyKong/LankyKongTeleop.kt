@@ -2,9 +2,11 @@ package us.brainstormz.lankyKong
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit
 import us.brainstormz.hardwareClasses.MecanumDriveTrain
 import us.brainstormz.rataTony.AutoTeleopTransition
 import us.brainstormz.telemetryWizard.TelemetryConsole
+import java.lang.Thread.sleep
 
 @TeleOp(name= "Lanky Kong Teleop", group= "B")
 class LankyKongTeleop: OpMode() {
@@ -17,9 +19,12 @@ class LankyKongTeleop: OpMode() {
     var isStickButtonDown = false
     var driveReversed = if (AutoTeleopTransition.alliance == AutoTeleopTransition.Alliance.Red) 1 else -1
 
+    lateinit var depo: DepositorLK
+
     override fun init() {
         /** INIT PHASE */
         hardware.init(hardwareMap)
+        depo = DepositorLK(hardware, console)
     }
 
     override fun start() {
@@ -63,6 +68,8 @@ class LankyKongTeleop: OpMode() {
                                (y + x + r))
 
         console.display(1, "Drive Encoders: \n ${hardware.lFDrive.currentPosition} \n ${hardware.rFDrive.currentPosition} \n ${hardware.lBDrive.currentPosition} \n ${hardware.rBDrive.currentPosition}")
+        console.display(2, "Range: ${hardware.frontDistance.getDistance(DistanceUnit.INCH)}")
+        console.display(3, "Hori Motor: ${hardware.horiMotor.currentPosition}")
 
 //        COLLECTOR
         val forwardPower = 1.0
@@ -83,6 +90,13 @@ class LankyKongTeleop: OpMode() {
             }
         }
 
+//        DEPOSITOR
+        depo.moveWithJoystick(gamepad2.left_stick_y.toDouble(), gamepad2.right_stick_x.toDouble())
+
+        if (gamepad2.right_bumper)
+            hardware.dropperServo.position = 1.0
+        else
+            hardware.dropperServo.position = 0.0
 
     }
 
