@@ -76,7 +76,7 @@ class LankyKongTeleop: OpMode() {
 
 //        COLLECTOR
         val forwardPower = 1.0
-        val reversePower = 0.5
+        val reversePower = 0.7
 
         when {
             gamepad1.right_bumper -> {
