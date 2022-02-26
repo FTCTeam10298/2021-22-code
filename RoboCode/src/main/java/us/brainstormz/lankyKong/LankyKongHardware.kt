@@ -3,9 +3,11 @@ package us.brainstormz.lankyKong
 import com.qualcomm.hardware.lynx.LynxModule
 import com.qualcomm.robotcore.hardware.*
 import com.qualcomm.robotcore.hardware.configuration.LynxConstants
+import org.outoftheboxrobotics.neutrinoi2c.MB1242.AsyncMB1242
 import us.brainstormz.hardwareClasses.SmartLynxModule
 import us.brainstormz.hardwareClasses.HardwareClass
 import us.brainstormz.hardwareClasses.MecanumHardware
+import java.lang.Thread.sleep
 
 class LankyKongHardware: HardwareClass, MecanumHardware {
     override lateinit var hwMap: HardwareMap
@@ -22,10 +24,12 @@ class LankyKongHardware: HardwareClass, MecanumHardware {
     override lateinit var lBDrive: DcMotor
     override lateinit var rBDrive: DcMotor
 
+    lateinit var frontDistance: AsyncMB1242
+
 //    Depositor
-//    lateinit var liftMotor: DcMotorEx
-//    lateinit var horiMotor: DcMotorEx
-//    lateinit var dropperServo: Servo
+    lateinit var liftMotor: DcMotorEx
+    lateinit var horiMotor: DcMotorEx
+    lateinit var dropperServo: Servo
 
 //    Collectors
     lateinit var collector: DcMotor
@@ -40,7 +44,7 @@ class LankyKongHardware: HardwareClass, MecanumHardware {
     override fun init(ahwMap: HardwareMap) {
         hwMap = ahwMap
         allHubs = hwMap.getAll(LynxModule::class.java)
-        allHubs.forEach { hub -> hub.bulkCachingMode = cachingMode
+        allHubs.forEach { hub ->    hub.bulkCachingMode = cachingMode
             if (hub.isParent && LynxConstants.isEmbeddedSerialNumber(hub.serialNumber))
                 ctrlHub = SmartLynxModule(hub)
             else
@@ -72,25 +76,26 @@ class LankyKongHardware: HardwareClass, MecanumHardware {
         rBDrive.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
         lBDrive.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
 
-//        Depositor
-//        liftMotor = hwMap["liftMotor"] as DcMotorEx
-//        liftMotor.direction = DcMotorSimple.Direction.REVERSE
-//        liftMotor.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
-//        liftMotor.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
-//        liftMotor.mode = DcMotor.RunMode.RUN_USING_ENCODER
-//
-//        horiMotor = hwMap["horiMotor"] as DcMotorEx
-//        horiMotor.direction = DcMotorSimple.Direction.FORWARD
-//        horiMotor.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
-//        horiMotor.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
-//        horiMotor.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
-//
-//        dropperServo = hwMap["dropper"] as Servo
-//        dropperServo.direction = Servo.Direction.REVERSE
-//        dropperServo.position = Depositor.DropperPos.Closed.posValue
+        frontDistance = hwMap["frontDistance"] as AsyncMB1242
+        frontDistance.enable()
 
-//        xInnerLimit = hwMap["innerLimit"] as RevTouchSensor
-//        yLowerLimit = hwMap["lowerLimit"] as RevTouchSensor
+//        Depositor
+        liftMotor = exHub.getMotor(2) as DcMotorEx
+        liftMotor.direction = DcMotorSimple.Direction.REVERSE
+        liftMotor.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
+        liftMotor.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
+        liftMotor.mode = DcMotor.RunMode.RUN_USING_ENCODER
+
+        horiMotor = exHub.getMotor(3) as DcMotorEx
+        horiMotor.direction = DcMotorSimple.Direction.FORWARD
+        horiMotor.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
+        horiMotor.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
+        horiMotor.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
+
+        dropperServo = exHub.getServo(0) as Servo
+        dropperServo.direction = Servo.Direction.REVERSE
+        dropperServo.position = DepositorLK.DropperPos.Closed.posValue
+
 
 //        Collectors
 
