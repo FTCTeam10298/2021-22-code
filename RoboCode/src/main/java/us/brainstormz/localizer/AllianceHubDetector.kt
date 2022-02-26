@@ -3,6 +3,7 @@ package us.brainstormz.localizer
 import org.opencv.core.*
 import org.opencv.imgproc.Imgproc
 import us.brainstormz.telemetryWizard.TelemetryConsole
+import kotlin.random.Random
 
 class AllianceHubDetector(private val console: TelemetryConsole){
 
@@ -33,7 +34,7 @@ class AllianceHubDetector(private val console: TelemetryConsole){
     private val edges = Mat()
     fun processFrame(frame: Mat): Mat {
         Imgproc.Canny(frame, edges, 100.0, 200.0)
-        val contours = mutableListOf<MatOfPoint>()
+        val contours:MutableList<MatOfPoint> = mutableListOf<MatOfPoint>()
         Imgproc.findContours(edges, contours, Mat(), Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE)
 
 //        fun convert(matOfPoint2f: MatOfPoint2f): MatOfPoint {
@@ -42,8 +43,12 @@ class AllianceHubDetector(private val console: TelemetryConsole){
 //            return foo
 //        }
         frame.setTo(Scalar(255.0, 255.0, 255.0))
-//Stu's Questions: How many contours detected --> hub? Of contours, how differ from everything & how? Random colors? 
-        Imgproc.drawContours(frame, contours, -1, Scalar(0.0, 0.0, 0.0), 3)
+//Stu's Questions: How many contours detected --> hub? Of contours, how differ from everything & how? Random colors?
+        var cntIndex = 0
+        contours.forEach { cnt ->
+            Imgproc.drawContours(frame, contours, cntIndex, Scalar(Random.nextDouble(0.0, 255.0), Random.nextDouble(0.0, 255.0), Random.nextDouble(0.0, 255.0)), 3)
+            cntIndex++
+        }
 //        Imgproc.cvtColor(frame, hsv, Imgproc.COLOR_BGR2HSV)
 //
 //        val lower = Scalar(goalColor.L_H.value, goalColor.L_S.value, goalColor.L_V.value)
