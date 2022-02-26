@@ -89,13 +89,15 @@ class DepositorLK(private val hardware: LankyKongHardware, private val console: 
         if (yStick == 0.0)
             yTowardPosition(lastYPos)
         else {
-            hardware.liftMotor.power = yStick
+            hardware.liftMotor.mode = DcMotor.RunMode.RUN_USING_ENCODER
+            hardware.liftMotor.power = yStick.coerceAtLeast(-0.5)
             lastYPos = hardware.liftMotor.currentPosition.toDouble()
         }
 
         if (xStick == 0.0)
             xTowardPosition(lastXPos)
         else {
+            hardware.horiMotor.mode = DcMotor.RunMode.RUN_USING_ENCODER
             hardware.horiMotor.power = xStick
             lastXPos = hardware.horiMotor.currentPosition.toDouble()
         }
