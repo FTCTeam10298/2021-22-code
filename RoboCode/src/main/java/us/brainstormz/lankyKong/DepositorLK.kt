@@ -94,7 +94,7 @@ class DepositorLK(private val hardware: LankyKongHardware, private val console: 
                 hardware.liftMotor.mode = DcMotor.RunMode.RUN_USING_ENCODER
 
             // Set motor power, using reduced speed when going down
-            hardware.liftMotor.power = yStick.coerceAtLeast(-0.3)
+            hardware.liftMotor.power = yStick
 
             // Update last used position
             lastYPos = hardware.liftMotor.currentPosition
