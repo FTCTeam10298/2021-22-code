@@ -61,85 +61,85 @@ class AllianceHubDetector(private val console: TelemetryConsole){
 //        Imgproc.findContours(maskB, contours, Mat(), Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE)
 //
 //        //  for cnt in contours:
-//        contours.forEach { cnt ->
-//
-//            val area = Imgproc.contourArea(cnt)
-//
-//            val points = MatOfPoint2f()
-//
-//
-//            fun convert(src: MatOfPoint): MatOfPoint2f {
-//                val dst = MatOfPoint2f()
-//                src.convertTo(dst, CvType.CV_32F)
-//                return dst
-//            }
-//
-//            val cnt2f = convert(cnt)
-//            Imgproc.approxPolyDP(cnt2f, points, 0.02 * Imgproc.arcLength(cnt2f, true), true)
-//
-//            val point = points.toList()[0]
-//
-//            if (area > 400) {
-//
-//                fun convert(matOfPoint2f: MatOfPoint2f): MatOfPoint {
-//                    val foo = MatOfPoint()
-//                    matOfPoint2f.convertTo(foo, CvType.CV_32S)
-//                    return foo
-//                }
-//
-//                Imgproc.drawContours(frame, mutableListOf(convert(points)), 0, Scalar(0.0, 0.0, 0.0), 5)
-//                if (points.toArray().size > 2){
-//                    console.display(14, "${points.toArray().size}")
-//                }
-//                when (points.toArray().size) {
-//                    3 -> {
-//                        Imgproc.putText(frame, "triangle", Point(point.x, point.y), font, 1.0, Scalar(22.0, 100.0, 100.0))
-//                    }
-//                    4 -> {
-//                        Imgproc.putText(frame, "rectangle", Point(point.x, point.y), font, 1.0, Scalar(22.0, 100.0, 100.0))
-//                    }
-//                    in 11..19 -> {
-//                        Imgproc.putText(frame, "circle", Point(point.x, point.y), font, 1.0, Scalar(22.0, 100.0, 100.0))
-//                    }
-//                    6-> {
-//                        Imgproc.putText(frame, "goalCandidate", Point(point.x, point.y), font, 0.05, Scalar(22.0, 100.0, 100.0))
-//
-//                        val pointsArray = points.toArray()
-//
-//                        val xValues = pointsArray.map{it.x}
-//                        val yValues = pointsArray.map{it.y}
-//
-//                        val minX = xValues.minOrNull()!!
-//                        val minY = yValues.minOrNull()!!
-//
-//                        val maxX = xValues.maxOrNull()!!
-//                        val maxY = yValues.maxOrNull()!!
-//
-//                        val width = maxX - minX
-//                        val height = maxY - minY
-//                        val area = width * height
-//                        val aspect = width / height
-//
-//                        if (aspect > 1.3) {
-//                            x = point.x
-//                            y = point.y
-//                            Imgproc.putText(frame, "goal", Point(point.x, point.y), font, 1.5, Scalar(22.0, 100.0, 100.0))
-//                        }
-//
-//
-//
-//
-//                        console.display(5, "width $width")
-//                        console.display(6, "Last known goal position: $x, $y")
-//                        console.display(7, "My God, THE FALSE POSITIVES are filled with stars!: $height")
-//                        console.display(8, "there can only be one: $area")
-//                        console.display(9, "Aspects are bright: $aspect")
-//
-//
-//                    }
-//                }
-//            }
-//        }
+        contours.forEach { cnt ->
+
+            val area = Imgproc.contourArea(cnt)
+
+            val points = MatOfPoint2f()
+
+
+            fun convert(src: MatOfPoint): MatOfPoint2f {
+                val dst = MatOfPoint2f()
+                src.convertTo(dst, CvType.CV_32F)
+                return dst
+            }
+
+            val cnt2f = convert(cnt)
+            Imgproc.approxPolyDP(cnt2f, points, 0.02 * Imgproc.arcLength(cnt2f, true), true)
+
+            val point = points.toList()[0]
+
+            if (area > 400) {
+
+                fun convert(matOfPoint2f: MatOfPoint2f): MatOfPoint {
+                    val foo = MatOfPoint()
+                    matOfPoint2f.convertTo(foo, CvType.CV_32S)
+                    return foo
+                }
+
+                Imgproc.drawContours(frame, mutableListOf(convert(points)), 0, Scalar(0.0, 0.0, 0.0), 5)
+                if (points.toArray().size > 2){
+                    console.display(14, "${points.toArray().size}")
+                }
+                when (points.toArray().size) {
+                    3 -> {
+                        Imgproc.putText(frame, "triangle", Point(point.x, point.y), font, 1.0, Scalar(22.0, 100.0, 100.0))
+                    }
+                    4 -> {
+                        Imgproc.putText(frame, "rectangle", Point(point.x, point.y), font, 1.0, Scalar(22.0, 100.0, 100.0))
+                    }
+                    in 11..19 -> {
+                        Imgproc.putText(frame, "circle", Point(point.x, point.y), font, 1.0, Scalar(22.0, 100.0, 100.0))
+                    }
+                    6-> {
+                        Imgproc.putText(frame, "goalCandidate", Point(point.x, point.y), font, 0.05, Scalar(22.0, 100.0, 100.0))
+
+                        val pointsArray = points.toArray()
+
+                        val xValues = pointsArray.map{it.x}
+                        val yValues = pointsArray.map{it.y}
+
+                        val minX = xValues.minOrNull()!!
+                        val minY = yValues.minOrNull()!!
+
+                        val maxX = xValues.maxOrNull()!!
+                        val maxY = yValues.maxOrNull()!!
+
+                        val width = maxX - minX
+                        val height = maxY - minY
+                        val area = width * height
+                        val aspect = width / height
+
+                        if (aspect > 1.3) {
+                            x = point.x
+                            y = point.y
+                            Imgproc.putText(frame, "goal", Point(point.x, point.y), font, 1.5, Scalar(22.0, 100.0, 100.0))
+                        }
+
+
+
+
+                        console.display(5, "width $width")
+                        console.display(6, "Last known goal position: $x, $y")
+                        console.display(7, "My God, THE FALSE POSITIVES are filled with stars!: $height")
+                        console.display(8, "there can only be one: $area")
+                        console.display(9, "Aspects are bright: $aspect")
+
+
+                    }
+                }
+            }
+        }
 //        console.display(1,"Still alive")
 //        return when (displayMode) {
 //            "frame" -> frame
