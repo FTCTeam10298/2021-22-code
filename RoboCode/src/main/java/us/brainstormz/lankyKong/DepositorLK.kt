@@ -38,8 +38,8 @@ class DepositorLK(private val hardware: LankyKongHardware, private val console: 
 
 //    Dropper Variables
     enum class DropperPos(val posValue: Double) {
-        Open(0.0),
-        Closed(0.7)
+        Open(0.7),
+        Closed(0.0)
     }
     private val dropperConstraints = MovementConstraints(DropperPos.Open.posValue..DropperPos.Closed.posValue,
                                                                listOf(Constraint({target-> target > inRobot}, ""),

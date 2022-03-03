@@ -97,9 +97,9 @@ class LankyKongTeleop: OpMode() {
         depo.moveWithJoystick(gamepad2.left_stick_y.toDouble(), gamepad2.right_stick_x.toDouble())
 
         if (gamepad2.right_bumper)
-            hardware.dropperServo.position = 1.0
+            hardware.dropperServo.position = DepositorLK.DropperPos.Open.posValue
         else
-            hardware.dropperServo.position = 0.0
+            hardware.dropperServo.position = DepositorLK.DropperPos.Closed.posValue
 
     }
 
