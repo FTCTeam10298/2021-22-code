@@ -35,7 +35,6 @@ class LankyKongTeleop: OpMode() {
 //        movement.driveSetPower(0.0, 0.0, 1.0, 0.0)
 //        sleep(1000)
 //        movement.driveSetPower(0.0, 0.0, 0.0, 1.0)
-//        sleep(1000)
     }
 
     override fun loop() {
@@ -69,9 +68,8 @@ class LankyKongTeleop: OpMode() {
 
         console.display(1, "Drive Encoders: \n ${hardware.lFDrive.currentPosition} \n ${hardware.rFDrive.currentPosition} \n ${hardware.lBDrive.currentPosition} \n ${hardware.rBDrive.currentPosition}")
         console.display(2, "Range: ${hardware.frontDistance.getDistance(DistanceUnit.INCH)}")
-        console.display(3, "Horizontal Motor currPos: ${hardware.horiMotor.currentPosition}")
-        console.display(4, "Lift Motor currPos: ${hardware.liftMotor.currentPosition}")
-        console.display(5, "Lift Motor targetPos: ${hardware.liftMotor.targetPosition}")
+        console.display(3, "X Motor currPos: ${hardware.horiMotor.currentPosition}")
+        console.display(4, "Y Motor currPos: ${hardware.liftMotor.currentPosition}")
 
 
 //        COLLECTOR
@@ -94,7 +92,7 @@ class LankyKongTeleop: OpMode() {
         }
 
 //        DEPOSITOR
-        depo.moveWithJoystick(gamepad2.left_stick_y.toDouble(), gamepad2.right_stick_x.toDouble())
+        depo.moveWithJoystick(-gamepad2.left_stick_y.toDouble(), gamepad2.right_stick_x.toDouble())
 
         if (gamepad2.right_bumper)
             hardware.dropperServo.position = DepositorLK.DropperPos.Open.posValue
