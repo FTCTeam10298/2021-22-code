@@ -3,7 +3,6 @@ package us.brainstormz.lankyKong
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.hardware.DcMotor
 import us.brainstormz.pid.PID
-import us.brainstormz.rataTony.RataTonyHardware
 import us.brainstormz.telemetryWizard.TelemetryConsole
 import us.brainstormz.utils.MathHelps
 
@@ -12,9 +11,9 @@ class DepositorLK(private val hardware: LankyKongHardware, private val console: 
     data class SlideConversions(private val countsPerMotorRev: Double = 28.0,
                                 private val gearReduction: Int = 1 / 1,
                                 private val spoolCircumferenceMM: Double = 112.0) {
-        val countsPerInch: Double = countsPerMotorRev * gearReduction / (spoolCircumferenceMM / 25.4)
+        val countsPerInch: Double = 1.0 /*countsPerMotorRev * gearReduction / (spoolCircumferenceMM / 25.4)*/
         fun countsToIn(counts: Int): Double = counts.toDouble() /** countsPerInch*/
-//        fun inToCounts(In: Double) = In / countsPerInch
+        fun inToCounts(In: Double) = In /*/ countsPerInch*/
     }
 
     data class Constraint(val constraint: (target: Double)->Boolean, val name: String)
@@ -29,7 +28,6 @@ class DepositorLK(private val hardware: LankyKongHardware, private val console: 
                     false
                 } else
                     acc
-                true
             }
         }
     }
@@ -42,23 +40,22 @@ class DepositorLK(private val hardware: LankyKongHardware, private val console: 
         Closed(0.0)
     }
     private val dropperConstraints = MovementConstraints(DropperPos.Open.posValue..DropperPos.Closed.posValue,
-                                                               listOf(Constraint({target-> target > inRobot}, ""),
-                                                                      Constraint({currentXIn > inRobot}, "")))
-
+                                                               listOf(/*Constraint({target-> target > inRobot}, ""),
+                                                                      Constraint({currentXIn > inRobot}, "")*/))
 //    X Variables
     private val xMotor = hardware.horiMotor
     private val currentXIn: Double get() = xConversion.countsToIn(xMotor.currentPosition)
     private val xPrecision = 1
-    private val xPID = PID()
+    private val xPID = PID(0.001, /*0.0001*/)
     private val xConversion = SlideConversions(countsPerMotorRev = 28.0)
-    private val xConstraints = MovementConstraints(0.0..300.0, listOf(Constraint({target-> !(target < inRobot && currentXIn > inRobot)}, ""),
+    private val xConstraints = MovementConstraints(0.0..6500.0, listOf(Constraint({target-> !(target < inRobot && currentXIn > inRobot)}, ""),
                                                                             /*Constraint({}, "")*/))
 
 //    Y Variables
     private val yMotor = hardware.liftMotor
     private val currentYIn: Double get() = yConversion.countsToIn(yMotor.currentPosition)
     private val yConversion = SlideConversions(countsPerMotorRev = 28.0)
-    private val yConstraints = MovementConstraints(0.0..400.0, listOf())
+    private val yConstraints = MovementConstraints(0.0..3300.0, listOf())
 
     fun moveToPosition(yIn: Double = currentYIn, xIn: Double = currentXIn) {
         var atPosition = false
@@ -71,14 +68,16 @@ class DepositorLK(private val hardware: LankyKongHardware, private val console: 
 
     fun moveTowardPosition(yIn: Double = currentYIn, xIn: Double = currentXIn): Boolean {
         val yAtTarget = if (yConstraints.withinConstraints(yIn))
-                            yTowardPositionInches(yIn)
+                            yTowardPosition(yIn)
                         else
                             false
 
+        console.display(7, "X within constraints: ${xConstraints.withinConstraints(xIn)}")
         val xAtTarget = if (xConstraints.withinConstraints(xIn))
                             xTowardPosition(xIn)
                         else
                             false
+        console.display(8, "X at target: ${xAtTarget}")
 
         return yAtTarget && xAtTarget
     }
@@ -86,51 +85,28 @@ class DepositorLK(private val hardware: LankyKongHardware, private val console: 
     private var lastYPos = 0
     private var lastXPos = 0
     fun moveWithJoystick(yStick: Double, xStick: Double) {
-        if (yStick == 0.0)
-            yTowardPositionCounts(lastYPos)
-        else {
-            // Ensure proper motor run mode
-            if (hardware.liftMotor.mode != DcMotor.RunMode.RUN_USING_ENCODER)
-                hardware.liftMotor.mode = DcMotor.RunMode.RUN_USING_ENCODER
 
-            // Set motor power, using reduced speed when going down
-            hardware.liftMotor.power = yStick
+        val yIn = if (yStick > 0)
+            MathHelps().scaleBetween(yStick, 0.0..1.0, currentYIn..yConstraints.limits.endInclusive)
+        else
+            MathHelps().scaleBetween(yStick, -1.0..0.0, yConstraints.limits.start..currentYIn)
 
-            // Update last used position
-            lastYPos = hardware.liftMotor.currentPosition
-        }
-
-        if (false)//(xStick == 0.0)
-            //xTowardPosition(lastXPos)
-        else {
-            // Ensure proper motor run mode
-            if (hardware.horiMotor.mode != DcMotor.RunMode.RUN_USING_ENCODER)
-                hardware.horiMotor.mode = DcMotor.RunMode.RUN_USING_ENCODER
-
-            // Set motor power
-            hardware.horiMotor.power = xStick
-
-            // Update last used position
-            lastXPos = hardware.horiMotor.currentPosition
-        }
-//        val yIn = if (yStick > 0)
-//            MathHelps().scaleBetween(yStick, 0.0..1.0, currentYIn..yConstraints.limits.endInclusive)
-//        else
-//            MathHelps().scaleBetween(yStick, -1.0..0.0, yConstraints.limits.start..currentYIn)
-//
-//        val xIn = if (xStick > 0)
-//            MathHelps().scaleBetween(xStick, 0.0..1.0, currentXIn..xConstraints.limits.endInclusive)
-//        else
-//            MathHelps().scaleBetween(xStick, -1.0..0.0, xConstraints.limits.start..currentXIn)
-//        moveTowardPosition(yIn, xIn)
+        console.display(5, "X stick: $xStick")
+        val xIn = if (xStick > 0)
+            MathHelps().scaleBetween(xStick, 0.0..1.0, currentXIn..xConstraints.limits.endInclusive)
+        else
+            MathHelps().scaleBetween(xStick, -1.0..0.0, xConstraints.limits.start..currentXIn)
+        console.display(6, "X target: ${xIn}")
+        moveTowardPosition(yIn, xIn)
     }
 
     private fun xTowardPosition(inches: Double): Boolean {
-        val targetCounts = (inches * xConversion.countsPerInch).toInt()
+        val targetCounts = (xConversion.inToCounts(inches)).toInt()
 
         val error = targetCounts - hardware.horiMotor.currentPosition
         hardware.horiMotor.power = xPID.calcPID(error.toDouble())
 
+        console.display(9, "x error: $error")
         return if (error in (-xPrecision..xPrecision)) {
             hardware.horiMotor.power = 0.0
             true
@@ -139,8 +115,8 @@ class DepositorLK(private val hardware: LankyKongHardware, private val console: 
         }
     }
 
-    private fun yTowardPositionInches(inches: Double): Boolean {
-        val targetCounts = (inches * yConversion.countsPerInch).toInt()
+    private fun yTowardPosition(inches: Double): Boolean {
+        val targetCounts = (yConversion.inToCounts(inches)).toInt()
 
         hardware.liftMotor.power = 1.0/*if (targetCounts - hardware.liftMotor.currentPosition > 0)
             1.0
@@ -148,21 +124,6 @@ class DepositorLK(private val hardware: LankyKongHardware, private val console: 
             0.5*/
 
         hardware.liftMotor.targetPosition = targetCounts
-        if (hardware.liftMotor.mode != DcMotor.RunMode.RUN_TO_POSITION)
-            hardware.liftMotor.mode = DcMotor.RunMode.RUN_TO_POSITION
-
-        return hardware.liftMotor.isBusy
-    }
-
-    private fun yTowardPositionCounts(counts: Int): Boolean {
-
-        hardware.liftMotor.power = 0.1 //FIXME: power should be function parameter
-        /*if (targetCounts - hardware.liftMotor.currentPosition > 0)
-            1.0
-        else
-            0.5*/
-
-        hardware.liftMotor.targetPosition = counts
         if (hardware.liftMotor.mode != DcMotor.RunMode.RUN_TO_POSITION)
             hardware.liftMotor.mode = DcMotor.RunMode.RUN_TO_POSITION
 

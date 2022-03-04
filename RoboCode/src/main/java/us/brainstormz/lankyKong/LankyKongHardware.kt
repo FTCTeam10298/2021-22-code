@@ -81,7 +81,7 @@ class LankyKongHardware: HardwareClass, MecanumHardware {
 
 //        Depositor
         liftMotor = exHub.getMotor(2) as DcMotorEx
-        liftMotor.direction = DcMotorSimple.Direction.REVERSE
+        liftMotor.direction = DcMotorSimple.Direction.FORWARD
         liftMotor.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
         liftMotor.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
         liftMotor.mode = DcMotor.RunMode.RUN_USING_ENCODER
