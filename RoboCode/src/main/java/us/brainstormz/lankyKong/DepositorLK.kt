@@ -46,9 +46,9 @@ class DepositorLK(private val hardware: LankyKongHardware, private val console: 
     private val xMotor = hardware.horiMotor
     private val currentXIn: Double get() = xConversion.countsToIn(xMotor.currentPosition)
     private val xPrecision = 1
-    private val xPID = PID(0.001, /*0.0001*/)
+    private val xPID = PID(kp= 0.001, kd= 0.0005)
     private val xConversion = SlideConversions(countsPerMotorRev = 28.0)
-    private val xConstraints = MovementConstraints(0.0..6500.0, listOf(Constraint({target-> !(target < inRobot && currentXIn > inRobot)}, ""),
+    private val xConstraints = MovementConstraints(10.0..6500.0, listOf(Constraint({target-> !(target < inRobot && currentXIn > inRobot)}, ""),
                                                                             /*Constraint({}, "")*/))
 
 //    Y Variables
