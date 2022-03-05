@@ -105,6 +105,21 @@ class LankyKongTeleop: OpMode() {
         else
             hardware.dropperServo.position = DepositorLK.DropperPos.Closed.posValue
 
+//        Ducc
+        val duccSide = when (AutoTeleopTransition.alliance) {
+            AutoTeleopTransition.Alliance.Red -> -1.0
+            AutoTeleopTransition.Alliance.Blue -> 1.0
+        }
+        when {
+            gamepad2.dpad_left -> {
+                hardware.duccSpinner1.power = -duccSide
+            }
+            gamepad2.dpad_right -> {
+                hardware.duccSpinner1.power = duccSide
+            }
+            else -> {
+                hardware.duccSpinner1.power = 0.0
+            }
         }
 
     }

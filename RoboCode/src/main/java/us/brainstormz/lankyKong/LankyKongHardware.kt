@@ -36,7 +36,7 @@ class LankyKongHardware: HardwareClass, MecanumHardware {
     lateinit var collector2: DcMotor
 
 //    Ducc Spinners
-//    lateinit var duccSpinner1: CRServo
+    lateinit var duccSpinner1: CRServo
 //    lateinit var duccSpinner2: CRServo
 
     val cameraName = "Webcam 1"
@@ -107,9 +107,9 @@ class LankyKongHardware: HardwareClass, MecanumHardware {
         collector2.direction = DcMotorSimple.Direction.REVERSE
         collector2.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.FLOAT
 
-//        Ducc Spinners
-//        duccSpinner1 = hwMap["duccSpinner"] as CRServo
-//        duccSpinner1.direction = DcMotorSimple.Direction.FORWARD
+//        Ducc Spiners
+        duccSpinner1 = exHub.getCRServo(1) as CRServo
+        duccSpinner1.direction = DcMotorSimple.Direction.FORWARD
 //
 //        duccSpinner2 = hwMap["duccSpinner2"] as CRServo
 //        duccSpinner2.direction = DcMotorSimple.Direction.FORWARD
