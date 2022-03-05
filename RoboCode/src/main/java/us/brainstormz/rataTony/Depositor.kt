@@ -12,8 +12,8 @@ import kotlin.math.abs
 class Depositor(private val hardware: RataTonyHardware, private val console: TelemetryConsole) {
 
     enum class DropperPos(val posValue: Double) {
-        Open(0.0),
-        Closed(0.7)
+        Open(0.7),
+        Closed(0.0)
     }
 
     private val xPID = PID(kp = 0.0019, ki = 0.0000008)
