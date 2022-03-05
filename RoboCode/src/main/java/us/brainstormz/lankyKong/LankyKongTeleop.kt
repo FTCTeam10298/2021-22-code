@@ -27,21 +27,17 @@ class LankyKongTeleop: OpMode() {
         depo = DepositorLK(hardware, console)
     }
 
-    override fun start() {
-//        movement.driveSetPower(1.0, 0.0, 0.0, 0.0)
-//        sleep(1000)
-//        movement.driveSetPower(0.0, 1.0, 0.0, 0.0)
-//        sleep(1000)
-//        movement.driveSetPower(0.0, 0.0, 1.0, 0.0)
-//        sleep(1000)
-//        movement.driveSetPower(0.0, 0.0, 0.0, 1.0)
-    }
-
     override fun loop() {
         /** TELE-OP PHASE */
         hardware.clearHubCache()
 
 //        DRONE DRIVE
+        val adjustPower = 0.2
+        val yAdjust = when {
+            gamepad2.right_bumper -> adjustPower
+            gamepad2.left_bumper -> -adjustPower
+            else -> 0.0
+        }
 
         fun isPressed(v:Float):Boolean = v > 0
         val wallRiding = if (isPressed(gamepad1.right_trigger)) 0.5 else 0.0
@@ -57,7 +53,7 @@ class LankyKongTeleop: OpMode() {
         val xInput = gamepad1.left_stick_x.toDouble()
         val rInput = -gamepad1.right_stick_x.toDouble()
 
-        val y = (yInput * driveReversed)
+        val y = (yInput + yAdjust) * driveReversed
         val x = (xInput * driveReversed) + wallRiding
         val r = rInput * .9
 
@@ -78,12 +74,22 @@ class LankyKongTeleop: OpMode() {
 
         when {
             gamepad1.right_bumper -> {
-                hardware.collector.power = forwardPower
-                hardware.collector2.power = -reversePower
+                if (driveReversed > 0) {
+                    hardware.collector.power = forwardPower
+                    hardware.collector2.power = -reversePower
+                } else {
+                    hardware.collector.power = -reversePower
+                    hardware.collector2.power = forwardPower
+                }
             }
             gamepad1.left_bumper -> {
-                hardware.collector.power = -reversePower
-                hardware.collector2.power = forwardPower
+                if (driveReversed < 0) {
+                    hardware.collector.power = forwardPower
+                    hardware.collector2.power = -reversePower
+                } else {
+                    hardware.collector.power = -reversePower
+                    hardware.collector2.power = forwardPower
+                }
             }
             else -> {
                 hardware.collector.power = 0.0
@@ -94,12 +100,12 @@ class LankyKongTeleop: OpMode() {
 //        DEPOSITOR
         depo.moveWithJoystick(-gamepad2.left_stick_y.toDouble(), gamepad2.right_stick_x.toDouble())
 
-        if (gamepad2.right_bumper)
+        if (gamepad2.right_trigger != 0f)
             hardware.dropperServo.position = DepositorLK.DropperPos.Open.posValue
         else
             hardware.dropperServo.position = DepositorLK.DropperPos.Closed.posValue
 
+        }
+
     }
-
-
 }
