@@ -42,6 +42,12 @@ class DepositorLK(private val hardware: LankyKongHardware, private val console: 
     private val dropperConstraints = MovementConstraints(DropperPos.Open.posValue..DropperPos.Closed.posValue,
                                                                listOf(/*Constraint({target-> target > inRobot}, ""),
                                                                       Constraint({currentXIn > inRobot}, "")*/))
+    enum class LiftPos(val counts: Int) {
+        LowGoal(573),
+        MidGoal(1328),
+        HighGoal(2460)
+    }
+
 //    X Variables
     private val xMotor = hardware.horiMotor
     private val currentXIn: Double get() = xConversion.countsToIn(xMotor.currentPosition)
