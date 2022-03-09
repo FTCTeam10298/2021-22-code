@@ -3,13 +3,19 @@ package us.brainstormz.lankyKong
 import com.qualcomm.hardware.lynx.LynxModule
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
+import kotlinx.coroutines.yield
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit
 import org.openftc.easyopencv.OpenCvCameraRotation
 import us.brainstormz.hardwareClasses.EncoderDriveMovement
+import us.brainstormz.localizer.EncoderLocalizer
+import us.brainstormz.localizer.PositionAndRotation
+import us.brainstormz.motion.MecanumMovement
 import us.brainstormz.openCvAbstraction.OpenCvAbstraction
 import us.brainstormz.rataTony.AutoTeleopTransition.Alliance
 import us.brainstormz.telemetryWizard.TelemetryConsole
 import us.brainstormz.telemetryWizard.TelemetryWizard
+import us.brainstormz.lankyKong.DepositorLK.DropperPos
+import us.brainstormz.lankyKong.DepositorLK.LiftPos
 
 @Autonomous(name= "Lanky Kong Auto", group= "B")
 class LankyKongAuto: LinearOpMode() {
@@ -18,7 +24,8 @@ class LankyKongAuto: LinearOpMode() {
     val wizard = TelemetryWizard(console, this)
 
     val hardware = LankyKongHardware()
-    val movement = EncoderDriveMovement(hardware, console)
+    val oldMovement = EncoderDriveMovement(hardware, console)
+    val movement = MecanumMovement(EncoderLocalizer(hardware, console), hardware, console)
     lateinit var depo: DepositorLK
 
     val opencv = OpenCvAbstraction(this)
@@ -26,6 +33,8 @@ class LankyKongAuto: LinearOpMode() {
         hardware.cachingMode = LynxModule.BulkCachingMode.OFF
         hardware.init(hardwareMap)
         depo = DepositorLK(hardware, console)
+        depo.runInLinearOpmode(this)
+        movement.linearOpMode = this
 
 //        opencv.init(hardwareMap)
 //        opencv.cameraName = hardware.cameraName
@@ -41,78 +50,20 @@ class LankyKongAuto: LinearOpMode() {
         console.display(1, "Initialization Complete")
         waitForStart()
 //        opencv.stop()
-
-//        val level: Depositor.LiftPos = when (tsePosition) {
+//        val level: DepositorLK.LiftPos = when (tsePosition) {
 //            TeamScoringElementDetector.TSEPosition.One -> Depositor.LiftPos.LowGoal
 //            TeamScoringElementDetector.TSEPosition.Two -> Depositor.LiftPos.MidGoal
 //            TeamScoringElementDetector.TSEPosition.Three -> Depositor.LiftPos.HighGoal
 //        }
-        val level: DepositorLK.LiftPos = DepositorLK.LiftPos.HighGoal
 
-//        when {
-//            wizard.wasItemChosen("Alliance", "Blue") -> {
-//                movement.driveRobotStrafe(1.0, 10.0, true)
-//                movement.driveRobotTurn(1.0, 20.0, true)
-//            }
-//            wizard.wasItemChosen("Alliance", "Red") -> {
-//                movement.driveRobotStrafe(1.0, -10.0, true)
-//                movement.driveRobotTurn(1.0, -20.0, true)
-//            }
-//        }
-//
-//        deposit(3000, level)
-//
-//        when {
-//            wizard.wasItemChosen("Alliance", "Blue") -> {
-//                movement.driveRobotTurn(1.0, -20.0, true)
-//                movement.driveRobotStrafe(1.0, -11.0, true)
-//                movement.driveRobotPosition(1.0, 36.0, true)
-//
-//            }
-//            wizard.wasItemChosen("Alliance", "Red") -> {
-//                movement.driveRobotTurn(1.0, 20.0, true)
-//                movement.driveRobotStrafe(1.0, 11.0, true)
-//                movement.driveRobotPosition(1.0, -36.0, true)
-//
-//            }
-//        }
-
-        when {
-            wizard.wasItemChosen("Alliance", "Blue") -> {
-                movement.driveRobotPosition(1.0, -40.0, true)
-            }
-            wizard.wasItemChosen("Alliance", "Red") -> {
-                movement.driveRobotPosition(1.0, 40.0, true)
-            }
-        }
-
-//        movement.driveRobotHug(1.0, -15.0 *2, true)
-
-//        cycle(Alliance.Blue, 23.0)
-////        (collect here)
-//        console.display(1, "Collecting..")
-//        sleep(2000)
-//        movement.driveRobotHug(1.0, 30.0 *2, true)
-//        movement.driveRobotPosition(1.0, 35.0, true)
-////        (deposit here)
-//        console.display(1, "Depositing...")
-//        sleep(1000)
-//        var cycles = 1
-//        console.display(2, "Complete cycles: $cycles")
-//        while (opModeIsActive()) {
-////            movement.driveRobotHug(1.0, -40.0 *2, true)
-//////        (collect here)
-////            console.display(1, "Collecting..")
-////            sleep(2000)
-////            movement.driveRobotHug(1.0, 30.0 *2, true)
-////            movement.driveRobotPosition(1.0, 35.0, true)
-//////        (deposit here)
-////            console.display(1, "Depositing...")
-////            sleep(1000)
-////
-////            cycles++
-////            console.display(2, "Complete cycles: $cycles")
-//        }
+        oldMovement.driveRobotStrafe(1.0, 15.0, true)
+        oldMovement.driveRobotTurn(1.0, 20.0, true)
+        depo.moveToPosition(LiftPos.HighGoal.counts.toDouble(), 4000.0)
+        hardware.dropperServo.position = DropperPos.Open.posValue
+        sleep(1000)
+        hardware.dropperServo.position = DropperPos.Closed.posValue
+        depo.moveToPosition(xIn = 5.0)
+        depo.moveToPosition(yIn = 10.0)
     }
 
     //    out, drop, in
@@ -138,17 +89,17 @@ class LankyKongAuto: LinearOpMode() {
 
 /**        Stage 1: Collect */
         val inchesToCollect = 40.0 *2
-        movement.driveRobotHug(1.0, (-inchesToCollect + yAdjuster) * drivePolarity, true)
+//        movement.driveRobotHug(1.0, (-inchesToCollect + yAdjuster) * drivePolarity, true)
 
 //        collectorMotor.power = inPower
-        movement.driveRobotPosition(0.3, 5.0, true)
+//        movement.driveRobotPosition(0.3, 5.0, true)
 //        collectorMotor.power = 0.0
 
 /**        Stage 2: Deposit */
         yAdjuster = inchesToCollect - hardware.frontDistance.getDistance(DistanceUnit.INCH)
 
         val inchesToDeposit = 40.0 *2
-        movement.driveRobotHug(1.0, (inchesToDeposit + yAdjuster) * drivePolarity, true)
+//        movement.driveRobotHug(1.0, (inchesToDeposit + yAdjuster) * drivePolarity, true)
 //        depo.deposit()
         sleep(1000)
 
