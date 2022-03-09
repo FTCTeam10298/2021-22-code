@@ -24,6 +24,7 @@ class LankyKongHardware: HardwareClass, MecanumHardware {
     override lateinit var rBDrive: DcMotor
 
     lateinit var frontDistance: AsyncMB1242
+    lateinit var backDistance: AsyncMB1242
 
 //    Depositor
     lateinit var liftMotor: DcMotorEx
@@ -78,6 +79,8 @@ class LankyKongHardware: HardwareClass, MecanumHardware {
 
         frontDistance = hwMap["frontDistance"] as AsyncMB1242
         frontDistance.enable()
+        backDistance = hwMap["backDistance"] as AsyncMB1242
+        backDistance.enable()
 
 //        Depositor
         liftMotor = exHub.getMotor(2) as DcMotorEx
