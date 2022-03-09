@@ -3,12 +3,9 @@ package us.brainstormz.lankyKong
 import com.qualcomm.hardware.lynx.LynxModule
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
-import kotlinx.coroutines.yield
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit
-import org.openftc.easyopencv.OpenCvCameraRotation
 import us.brainstormz.hardwareClasses.EncoderDriveMovement
 import us.brainstormz.localizer.EncoderLocalizer
-import us.brainstormz.localizer.PositionAndRotation
 import us.brainstormz.motion.MecanumMovement
 import us.brainstormz.openCvAbstraction.OpenCvAbstraction
 import us.brainstormz.rataTony.AutoTeleopTransition.Alliance
@@ -56,25 +53,30 @@ class LankyKongAuto: LinearOpMode() {
 //            TeamScoringElementDetector.TSEPosition.Three -> Depositor.LiftPos.HighGoal
 //        }
 
-        oldMovement.driveRobotStrafe(1.0, 15.0, true)
-        oldMovement.driveRobotTurn(1.0, 20.0, true)
-        depo.moveToPosition(LiftPos.HighGoal.counts.toDouble(), 4000.0)
+//        oldMovement.driveRobotStrafe(1.0, 15.0, true)
+//        oldMovement.driveRobotTurn(1.0, 20.0, true)
+        depo.moveToPosition(LiftPos.HighGoal.counts, 4000)
         hardware.dropperServo.position = DropperPos.Open.posValue
         sleep(1000)
         hardware.dropperServo.position = DropperPos.Closed.posValue
-        depo.moveToPosition(xIn = 5.0)
-        depo.moveToPosition(yIn = 10.0)
+        depo.moveToPosition(
+            yPosition = LiftPos.HighGoal.counts,
+            xPosition = depo.xFullyRetracted)
+
+        depo.moveToPosition(
+            yPosition = depo.fullyDown,
+            xPosition = depo.xFullyRetracted)
     }
 
     //    out, drop, in
     fun deposit(xCounts: Int, yLevel: DepositorLK.LiftPos) {
         depo.moveTowardPosition(yLevel.counts.toDouble(), 0.0)
         sleep(100)
-        depo.moveToPosition(yLevel.counts.toDouble(), xCounts.toDouble())
+        depo.moveToPosition(yLevel.counts, xCounts)
         depo.dropper(DepositorLK.DropperPos.Open, false)
         sleep(500)
         depo.dropper(DepositorLK.DropperPos.Closed, false)
-        depo.moveToPosition(yLevel.counts.toDouble(), 0.0)
+        depo.moveToPosition(yLevel.counts, 0)
         depo.moveTowardPosition(0.0, 0.0)
     }
 
