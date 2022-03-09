@@ -58,7 +58,7 @@ class DepositorLK(private val hardware: LankyKongHardware, private val console: 
     private val xPIDJoystick = PID(kp= 0.002)
     private var xPID = xPIDPosition
     private val xConversion = SlideConversions(countsPerMotorRev = 28.0)
-    private val xConstraints = MovementConstraints(10.0..6500.0, listOf(Constraint({target-> !(target < inRobot && currentXIn > inRobot)}, ""),
+    private val xConstraints = MovementConstraints(5.0..6500.0, listOf(Constraint({target-> !(target < inRobot && currentXIn > inRobot)}, ""),
                                                                             /*Constraint({}, "")*/))
 
 //    Y Variables
@@ -79,17 +79,22 @@ class DepositorLK(private val hardware: LankyKongHardware, private val console: 
 
 
     fun moveTowardPosition(yIn: Double = currentYIn, xIn: Double = currentXIn): Boolean {
-        val yAtTarget = if (yConstraints.withinConstraints(yIn))
-                            yTowardPosition(yIn)
+        val yWithinConstraints = yConstraints.withinConstraints(yIn)
+        val yAtTarget = if (yWithinConstraints)
+                            yTowardPosition(yIn) // shouldn't this be the other way around?  we want to move if we're /not/ within the constraints, no?
                         else
                             true
-
-        val xAtTarget = if (xConstraints.withinConstraints(xIn))
-                            xTowardPosition(xIn)
+        val xWithinConstraints = xConstraints.withinConstraints(xIn)
+        val xAtTarget = if (xWithinConstraints)
+                            xTowardPosition(xIn)  // same here
                         else
                             false
         console.display(8, "X at target: $xAtTarget \nY at target: $yAtTarget")
         console.display(9, "X current: $currentXIn \nY current: $currentYIn")
+        console.display(13, "xWithinConstraints: $xWithinConstraints")
+        console.display(14, "yWithinConstraints: $yWithinConstraints")
+
+        console.display(15, "yIn: $yIn, xIn $xIn")
 
         return yAtTarget && xAtTarget
     }
