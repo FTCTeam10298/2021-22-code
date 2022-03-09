@@ -7,7 +7,6 @@ import org.outoftheboxrobotics.neutrinoi2c.MB1242.AsyncMB1242
 import us.brainstormz.hardwareClasses.SmartLynxModule
 import us.brainstormz.hardwareClasses.HardwareClass
 import us.brainstormz.hardwareClasses.MecanumHardware
-import java.lang.Thread.sleep
 
 class LankyKongHardware: HardwareClass, MecanumHardware {
     override lateinit var hwMap: HardwareMap
@@ -30,6 +29,7 @@ class LankyKongHardware: HardwareClass, MecanumHardware {
     lateinit var liftMotor: DcMotorEx
     lateinit var horiMotor: DcMotorEx
     lateinit var dropperServo: Servo
+    lateinit var dropperColor: ColorSensor
 
 //    Collectors
     lateinit var collector: DcMotor
@@ -95,6 +95,9 @@ class LankyKongHardware: HardwareClass, MecanumHardware {
         dropperServo = exHub.getServo(0) as Servo
         dropperServo.direction = Servo.Direction.REVERSE
         dropperServo.position = DepositorLK.DropperPos.Closed.posValue
+
+        dropperColor = hwMap["dropperSensor"] as ColorSensor
+        dropperColor.enableLed(true)
 
 
 //        Collectors
