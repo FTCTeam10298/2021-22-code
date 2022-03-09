@@ -6,7 +6,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit
 import us.brainstormz.hardwareClasses.MecanumDriveTrain
 import us.brainstormz.rataTony.AutoTeleopTransition
 import us.brainstormz.telemetryWizard.TelemetryConsole
-import java.lang.Thread.sleep
 
 @TeleOp(name= "Lanky Kong Teleop", group= "B")
 class LankyKongTeleop: OpMode() {
@@ -66,11 +65,12 @@ class LankyKongTeleop: OpMode() {
         console.display(2, "Range: ${hardware.frontDistance.getDistance(DistanceUnit.INCH)}")
         console.display(3, "X Motor currPos: ${hardware.horiMotor.currentPosition}")
         console.display(4, "Y Motor currPos: ${hardware.liftMotor.currentPosition}")
+        console.display(5, "Color Sensor: \n Alpha: ${hardware.dropperColor.alpha()} \n Red: ${hardware.dropperColor.red()}")
 
 
 //        COLLECTOR
         val forwardPower = 1.0
-        val reversePower = 0.7
+        val reversePower = 0.9
 
         when {
             gamepad1.right_bumper -> {
@@ -91,11 +91,17 @@ class LankyKongTeleop: OpMode() {
                     hardware.collector2.power = forwardPower
                 }
             }
+            hardware.dropperColor.alpha() > 300 -> {
+                hardware.collector.power = -reversePower
+                hardware.collector2.power = -reversePower
+            }
             else -> {
                 hardware.collector.power = 0.0
                 hardware.collector2.power = 0.0
             }
         }
+
+
 
 //        DEPOSITOR
         depo.moveWithJoystick(-gamepad2.left_stick_y.toDouble(), gamepad2.right_stick_x.toDouble())
@@ -104,6 +110,7 @@ class LankyKongTeleop: OpMode() {
             hardware.dropperServo.position = DepositorLK.DropperPos.Open.posValue
         else
             hardware.dropperServo.position = DepositorLK.DropperPos.Closed.posValue
+
 
 //        Ducc
         val duccSide = when (AutoTeleopTransition.alliance) {
