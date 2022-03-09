@@ -62,7 +62,7 @@ class LankyKongTeleop: OpMode() {
                                (y + x + r))
 
         console.display(1, "Drive Encoders: \n ${hardware.lFDrive.currentPosition} \n ${hardware.rFDrive.currentPosition} \n ${hardware.lBDrive.currentPosition} \n ${hardware.rBDrive.currentPosition}")
-        console.display(2, "Range: ${hardware.frontDistance.getDistance(DistanceUnit.INCH)}")
+        console.display(2, "Front Range: ${hardware.frontDistance.getDistance(DistanceUnit.INCH)} \nBack Range: ${hardware.backDistance.getDistance(DistanceUnit.INCH)}")
         console.display(3, "X Motor currPos: ${hardware.horiMotor.currentPosition}")
         console.display(4, "Y Motor currPos: ${hardware.liftMotor.currentPosition}")
         console.display(5, "Color Sensor: \n Alpha: ${hardware.dropperColor.alpha()} \n Red: ${hardware.dropperColor.red()}")
