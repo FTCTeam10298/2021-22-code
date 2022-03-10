@@ -13,8 +13,9 @@ import us.brainstormz.telemetryWizard.TelemetryConsole
 import us.brainstormz.telemetryWizard.TelemetryWizard
 import us.brainstormz.lankyKong.DepositorLK.DropperPos
 import us.brainstormz.lankyKong.DepositorLK.LiftPos
+import us.brainstormz.localizer.PositionAndRotation
 
-@Autonomous(name= "Lanky Kong Auto", group= "B")
+@Autonomous(name= "Lanky Kong Auto", group= "A")
 class LankyKongAuto: LinearOpMode() {
 
     val console = TelemetryConsole(telemetry)
@@ -27,28 +28,11 @@ class LankyKongAuto: LinearOpMode() {
 
     val opencv = OpenCvAbstraction(this)
     override fun runOpMode() {
-//        hardware.cachingMode = LynxModule.BulkCachingMode.OFF
+        hardware.cachingMode = LynxModule.BulkCachingMode.OFF
         hardware.init(hardwareMap)
-
-
-        hardware.clearHubCache()
-        waitForStart()
-        object:Thread(){
-            override fun run() {
-                while(true) {
-                    hardware.dropperServo.position = DropperPos.Open.posValue
-                }
-            }
-        }.start()
-
         depo = DepositorLK(hardware, console)
         depo.runInLinearOpmode(this)
         movement.linearOpMode = this
-
-        while(true){
-            println("Sleeping...")
-            Thread.sleep(1000)
-        }
 
 //        opencv.init(hardwareMap)
 //        opencv.cameraName = hardware.cameraName
@@ -71,25 +55,26 @@ class LankyKongAuto: LinearOpMode() {
 //        }
 
         oldMovement.driveRobotStrafe(1.0, 25.0, true)
-        oldMovement.driveRobotTurn(1.0, 20.0, true)
-        depo.moveToPosition(LiftPos.HighGoal.counts, 4000)
+        val preloadTurn = 30.0
+        oldMovement.driveRobotTurn(1.0, preloadTurn, true)
+        depo.moveToPosition(LiftPos.HighGoal.counts, 4500)
         hardware.dropperServo.position = DropperPos.Open.posValue
         sleep(1000)
         hardware.dropperServo.position = DropperPos.Closed.posValue
         depo.moveToPosition(
             yPosition = LiftPos.HighGoal.counts,
             xPosition = depo.xFullyRetracted)
-
         depo.moveToPosition(
             yPosition = depo.fullyDown,
             xPosition = depo.xFullyRetracted)
-
-        oldMovement.driveRobotTurn(1.0, -20.0, true)
+        oldMovement.driveRobotTurn(1.0, -preloadTurn, true)
         oldMovement.driveRobotPosition(1.0, -25.0, true)
         oldMovement.driveRobotTurn(1.0, 90.0, true)
         oldMovement.driveRobotStrafe(1.0, -13.0, true)
+        val frontDistance = hardware.frontDistance.getDistance(DistanceUnit.INCH)
+        val targetDistance = 9.4
         hardware.duccSpinner1.power = 1.0
-        oldMovement.driveRobotPosition(0.3, 10.0,true)
+        movement.goToPosition(PositionAndRotation(x= 1.0, y= frontDistance - targetDistance), 0.0..1.0)
         hardware.duccSpinner1.power = 0.0
     }
 
