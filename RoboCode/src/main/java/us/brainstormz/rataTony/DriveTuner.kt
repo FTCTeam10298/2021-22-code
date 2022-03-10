@@ -20,7 +20,7 @@ object DriveCurves {
     val curve = BezierCurve(listOf(Point2D(1.0, 1.0), ctrlPoint, Point2D(0.0, 0.0)))
 }
 
-@TeleOp
+@TeleOp(name="DriveTuner", group="B")
 class DriveTuner: OpMode() {
 
     val hardware = RataTonyHardware()

@@ -7,7 +7,7 @@ import us.brainstormz.hardwareClasses.MecanumDriveTrain
 import us.brainstormz.rataTony.AutoTeleopTransition
 import us.brainstormz.telemetryWizard.TelemetryConsole
 
-@TeleOp(name= "Lanky Kong Teleop", group= "B")
+@TeleOp(name= "Lanky Kong Teleop", group= "A")
 class LankyKongTeleop: OpMode() {
 
     val console = TelemetryConsole(telemetry)
@@ -20,7 +20,7 @@ class LankyKongTeleop: OpMode() {
 
     var aDown = false
     var speedMode = false
-    var blockRejectCooldown = 1000
+    var blockRejectCooldown = 5000
     var timeWhenBlockIn = 0L
     var blockIn = true
 

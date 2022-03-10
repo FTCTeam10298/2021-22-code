@@ -13,7 +13,7 @@ import us.brainstormz.telemetryWizard.TelemetryConsole
 import us.brainstormz.telemetryWizard.TelemetryWizard
 import us.brainstormz.rataTony.TeamScoringElementDetector.TSEPosition
 import us.brainstormz.rataTony.Depositor.LiftPos
-@Autonomous(name="RataTony Auto", group="A")
+@Autonomous(name="RataTony Auto", group="B")
 class RataTonyAuto: LinearOpMode() {
 
     val console = TelemetryConsole(telemetry)

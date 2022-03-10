@@ -15,7 +15,7 @@ import us.brainstormz.rataTony.Depositor.LiftPos
     lift auto up
  */
 
-@TeleOp(name="RataTony TeleOp", group="A")
+@TeleOp(name="RataTony TeleOp", group="B")
 class RataTonyTeleOp: OpMode() {
 
     val console = TelemetryConsole(telemetry)
