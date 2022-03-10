@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import us.brainstormz.telemetryWizard.TelemetryConsole
 import us.brainstormz.rataTony.Depositor.LiftPos
 
-@Autonomous(name="RataTony Test", group="A")
+@Autonomous(name="RataTony Test", group="B")
 class RataTonyTest: LinearOpMode() {
 
     val console = TelemetryConsole(telemetry)

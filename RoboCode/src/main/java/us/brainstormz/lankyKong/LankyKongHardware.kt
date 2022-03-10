@@ -11,11 +11,8 @@ import us.brainstormz.hardwareClasses.MecanumHardware
 class LankyKongHardware: HardwareClass, MecanumHardware {
     override lateinit var hwMap: HardwareMap
 
-    lateinit var allHubs: List<LynxModule>
-    private lateinit var ctrlHub: SmartLynxModule
-    private lateinit var exHub: SmartLynxModule
     var cachingMode = LynxModule.BulkCachingMode.MANUAL
-
+    lateinit var allHubs: List<LynxModule>
 
 //    Drivetrain
     override lateinit var lFDrive: DcMotor
@@ -45,23 +42,17 @@ class LankyKongHardware: HardwareClass, MecanumHardware {
     override fun init(ahwMap: HardwareMap) {
         hwMap = ahwMap
         allHubs = hwMap.getAll(LynxModule::class.java)
-        allHubs.forEach { hub ->    hub.bulkCachingMode = cachingMode
-            if (hub.isParent && LynxConstants.isEmbeddedSerialNumber(hub.serialNumber))
-                ctrlHub = SmartLynxModule(hub)
-            else
-                exHub = SmartLynxModule(hub)
-        }
 
 //        Drivetrain
-        lFDrive = ctrlHub.getMotor(1) as DcMotorEx // black
-        rFDrive = ctrlHub.getMotor(0) as DcMotorEx // pink
-        lBDrive = ctrlHub.getMotor(2) as DcMotorEx // blue
-        rBDrive = ctrlHub.getMotor(3) as DcMotorEx // green
+        lFDrive = hwMap["ctrl1"] as DcMotorEx // black
+        rFDrive = hwMap["ctrl0"] as DcMotorEx // pink
+        lBDrive = hwMap["ctrl2"] as DcMotorEx // blue
+        rBDrive = hwMap["ctrl3"] as DcMotorEx // green
 
-        rFDrive.direction = DcMotorSimple.Direction.REVERSE
-        lFDrive.direction = DcMotorSimple.Direction.FORWARD
-        rBDrive.direction = DcMotorSimple.Direction.REVERSE
-        lBDrive.direction = DcMotorSimple.Direction.FORWARD
+        rFDrive.direction = DcMotorSimple.Direction.FORWARD
+        lFDrive.direction = DcMotorSimple.Direction.REVERSE
+        rBDrive.direction = DcMotorSimple.Direction.FORWARD
+        lBDrive.direction = DcMotorSimple.Direction.REVERSE
 
         rFDrive.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
         lFDrive.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
@@ -84,19 +75,19 @@ class LankyKongHardware: HardwareClass, MecanumHardware {
         backDistance.enable()
 
 //        Depositor
-        liftMotor = exHub.getMotor(2) as DcMotorEx
-        liftMotor.direction = DcMotorSimple.Direction.FORWARD
+        liftMotor = hwMap["ex2"] as DcMotorEx
+        liftMotor.direction = DcMotorSimple.Direction.REVERSE
         liftMotor.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
         liftMotor.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
         liftMotor.mode = DcMotor.RunMode.RUN_USING_ENCODER
 
-        horiMotor = exHub.getMotor(3) as DcMotorEx
-        horiMotor.direction = DcMotorSimple.Direction.FORWARD
+        horiMotor = hwMap["ex3"] as DcMotorEx
+        horiMotor.direction = DcMotorSimple.Direction.REVERSE
         horiMotor.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
         horiMotor.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
         horiMotor.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
 
-        dropperServo = exHub.getServo(0) as Servo
+        dropperServo = hwMap["0"] as Servo
         dropperServo.direction = Servo.Direction.REVERSE
         dropperServo.position = DepositorLK.DropperPos.Closed.posValue
 
@@ -106,17 +97,18 @@ class LankyKongHardware: HardwareClass, MecanumHardware {
 
 //        Collectors
 
-        collector = exHub.getMotor(0) as DcMotor
-        collector.direction = DcMotorSimple.Direction.REVERSE
+        collector = hwMap["ex0"] as DcMotor
+        collector.direction = DcMotorSimple.Direction.FORWARD
         collector.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.FLOAT
 
-        collector2 = exHub.getMotor(1) as DcMotor
-        collector2.direction = DcMotorSimple.Direction.REVERSE
+        collector2 = hwMap["ex1"] as DcMotor
+        collector2.direction = DcMotorSimple.Direction.FORWARD
         collector2.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.FLOAT
 
 //        Ducc Spiners
-        duccSpinner1 = exHub.getCRServo(1) as CRServo
+        duccSpinner1 = hwMap["1"] as CRServo
         duccSpinner1.direction = DcMotorSimple.Direction.FORWARD
+        duccSpinner1.power = 0.0
 //
 //        duccSpinner2 = hwMap["duccSpinner2"] as CRServo
 //        duccSpinner2.direction = DcMotorSimple.Direction.FORWARD
