@@ -27,7 +27,7 @@ public class SmartLynxModule {
     private LynxModule module;
 
     private LynxDcMotorController motorController;
-    private LynxServoController servoController;
+//    private LynxServoController servoController;
     private LynxAnalogInputController lynxAnalogInputController;
     private LynxDigitalChannelController lynxDigitalChannelController;
 //    private I2cDeviceSynchDevice lynxI2cSynchDevice;
@@ -40,9 +40,10 @@ public class SmartLynxModule {
 //    private HashMap<Integer, I2cChannel> cachedI2c;
 
     public SmartLynxModule(LynxModule module) {
+        this.module = module;
         try {
             motorController = new LynxDcMotorController(AppUtil.getDefContext(), module);
-            servoController = new LynxServoController(AppUtil.getDefContext(), module);
+//            servoController = new LynxServoController(AppUtil.getDefContext(), module);
             lynxAnalogInputController = new LynxAnalogInputController(AppUtil.getDefContext(), module);
             lynxDigitalChannelController = new LynxDigitalChannelController(AppUtil.getDefContext(), module);
         } catch (RobotCoreException | InterruptedException e) {
@@ -65,17 +66,28 @@ public class SmartLynxModule {
     }
 
     public ServoImplEx getServo(int port){
-        if(!cachedServos.containsKey(port)){
-            cachedServos.put(port, new ServoImplEx(servoController, port, ServoConfigurationType.getStandardServoType()));
+        try{
+            if(!cachedServos.containsKey(port)){
+               LynxServoController controller =  new LynxServoController(AppUtil.getDefContext(), module);
+                cachedServos.put(port, new ServoImplEx(controller, port, ServoConfigurationType.getStandardServoType()));
+            }
+            return cachedServos.get(port);
+        }catch(Throwable t){
+            t.printStackTrace();
+            throw new RuntimeException(t);
         }
-        return cachedServos.get(port);
     }
 
     public CRServoImplEx getCRServo(int port){
-        if(!cachedCRServos.containsKey(port)){
-            cachedCRServos.put(port, new CRServoImplEx(servoController, port, ServoConfigurationType.getStandardServoType()));
+        try{
+            if(!cachedCRServos.containsKey(port)){
+                cachedCRServos.put(port, new CRServoImplEx(new LynxServoController(AppUtil.getDefContext(), module), port, ServoConfigurationType.getStandardServoType()));
+            }
+            return cachedCRServos.get(port);
+        }catch(Throwable t){
+            t.printStackTrace();
+            throw new RuntimeException(t);
         }
-        return cachedCRServos.get(port);
     }
 
     public AnalogInput getAnalogInput(int port){

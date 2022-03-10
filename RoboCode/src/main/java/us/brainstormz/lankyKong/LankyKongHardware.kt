@@ -49,7 +49,8 @@ class LankyKongHardware: HardwareClass, MecanumHardware {
             if (hub.isParent && LynxConstants.isEmbeddedSerialNumber(hub.serialNumber))
                 ctrlHub = SmartLynxModule(hub)
             else
-                exHub = SmartLynxModule(hub) }
+                exHub = SmartLynxModule(hub)
+        }
 
 //        Drivetrain
         lFDrive = ctrlHub.getMotor(1) as DcMotorEx // black

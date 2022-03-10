@@ -18,6 +18,12 @@ class LankyKongTeleop: OpMode() {
     var isStickButtonDown = false
     var driveReversed = if (AutoTeleopTransition.alliance == AutoTeleopTransition.Alliance.Red) 1 else -1
 
+    var aDown = false
+    var speedMode = false
+    var blockRejectCooldown = 1000
+    var timeWhenBlockIn = 0L
+    var blockIn = true
+
     lateinit var depo: DepositorLK
 
     override fun init() {
@@ -71,6 +77,7 @@ class LankyKongTeleop: OpMode() {
 //        COLLECTOR
         val forwardPower = 1.0
         val reversePower = 0.9
+        val colorThreshold = 250
 
         when {
             gamepad1.right_bumper -> {
@@ -91,15 +98,29 @@ class LankyKongTeleop: OpMode() {
                     hardware.collector2.power = forwardPower
                 }
             }
-            hardware.dropperColor.alpha() > 300 -> {
-                hardware.collector.power = -reversePower
-                hardware.collector2.power = -reversePower
-            }
             else -> {
                 hardware.collector.power = 0.0
                 hardware.collector2.power = 0.0
             }
         }
+
+        when {
+            gamepad1.a && !aDown -> {speedMode = !speedMode
+                                     aDown = true}
+            !gamepad1.a -> aDown = false
+            speedMode -> {
+                if (hardware.dropperColor.alpha() > colorThreshold) {
+                    val timeSinceBlockIn = System.currentTimeMillis() - timeWhenBlockIn
+                    console.display(20, "timeSinceBlockIn: $timeSinceBlockIn")
+                    if (blockIn && timeSinceBlockIn > blockRejectCooldown) {
+                        hardware.collector.power = -reversePower
+                        hardware.collector2.power = -reversePower
+                    }
+                } else
+                    timeWhenBlockIn = System.currentTimeMillis()
+            }
+        }
+        console.display(21, "speedMode: $speedMode")
 
 
 
