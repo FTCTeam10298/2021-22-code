@@ -7,8 +7,8 @@ import us.brainstormz.hardwareClasses.MecanumDriveTrain
 import us.brainstormz.rataTony.AutoTeleopTransition
 import us.brainstormz.telemetryWizard.TelemetryConsole
 
-@TeleOp(name= "Lanky Kong Teleop", group= "B")
-class LankyKongTeleop: OpMode() {
+@TeleOp(name= "Lanky Kong Debug Test ", group= "B")
+class LankyKongDebugTest: OpMode() {
 
     val console = TelemetryConsole(telemetry)
 
@@ -132,23 +132,24 @@ class LankyKongTeleop: OpMode() {
         else
             hardware.dropperServo.position = DepositorLK.DropperPos.Closed.posValue
 
-
-//        Ducc
-        val duccSide = when (AutoTeleopTransition.alliance) {
-            AutoTeleopTransition.Alliance.Red -> -1.0
-            AutoTeleopTransition.Alliance.Blue -> 1.0
-        }
-        when {
-            gamepad2.dpad_left -> {
-                hardware.duccSpinner1.power = -duccSide
-            }
-            gamepad2.dpad_right -> {
-                hardware.duccSpinner1.power = duccSide
-            }
-            else -> {
-                hardware.duccSpinner1.power = 0.0
-            }
-        }
+//        hardware.duccSpinner1.power = 0.0
+//
+////        Ducc
+//        val duccSide = when (AutoTeleopTransition.alliance) {
+//            AutoTeleopTransition.Alliance.Red -> -1.0
+//            AutoTeleopTransition.Alliance.Blue -> 1.0
+//        }
+//        when {
+//            gamepad2.dpad_left -> {
+//                hardware.duccSpinner1.power = -duccSide
+//            }
+//            gamepad2.dpad_right -> {
+//                hardware.duccSpinner1.power = duccSide
+//            }
+//            else -> {
+//                hardware.duccSpinner1.power = 0.0
+//            }
+//        }
 
     }
 }

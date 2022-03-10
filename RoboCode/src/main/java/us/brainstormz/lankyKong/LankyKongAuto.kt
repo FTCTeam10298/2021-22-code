@@ -27,11 +27,28 @@ class LankyKongAuto: LinearOpMode() {
 
     val opencv = OpenCvAbstraction(this)
     override fun runOpMode() {
-        hardware.cachingMode = LynxModule.BulkCachingMode.OFF
+//        hardware.cachingMode = LynxModule.BulkCachingMode.OFF
         hardware.init(hardwareMap)
+
+
+        hardware.clearHubCache()
+        waitForStart()
+        object:Thread(){
+            override fun run() {
+                while(true) {
+                    hardware.dropperServo.position = DropperPos.Open.posValue
+                }
+            }
+        }.start()
+
         depo = DepositorLK(hardware, console)
         depo.runInLinearOpmode(this)
         movement.linearOpMode = this
+
+        while(true){
+            println("Sleeping...")
+            Thread.sleep(1000)
+        }
 
 //        opencv.init(hardwareMap)
 //        opencv.cameraName = hardware.cameraName
@@ -53,8 +70,8 @@ class LankyKongAuto: LinearOpMode() {
 //            TeamScoringElementDetector.TSEPosition.Three -> Depositor.LiftPos.HighGoal
 //        }
 
-//        oldMovement.driveRobotStrafe(1.0, 15.0, true)
-//        oldMovement.driveRobotTurn(1.0, 20.0, true)
+        oldMovement.driveRobotStrafe(1.0, 25.0, true)
+        oldMovement.driveRobotTurn(1.0, 20.0, true)
         depo.moveToPosition(LiftPos.HighGoal.counts, 4000)
         hardware.dropperServo.position = DropperPos.Open.posValue
         sleep(1000)
@@ -66,6 +83,14 @@ class LankyKongAuto: LinearOpMode() {
         depo.moveToPosition(
             yPosition = depo.fullyDown,
             xPosition = depo.xFullyRetracted)
+
+        oldMovement.driveRobotTurn(1.0, -20.0, true)
+        oldMovement.driveRobotPosition(1.0, -25.0, true)
+        oldMovement.driveRobotTurn(1.0, 90.0, true)
+        oldMovement.driveRobotStrafe(1.0, -13.0, true)
+        hardware.duccSpinner1.power = 1.0
+        oldMovement.driveRobotPosition(0.3, 10.0,true)
+        hardware.duccSpinner1.power = 0.0
     }
 
     //    out, drop, in

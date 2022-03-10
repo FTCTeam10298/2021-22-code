@@ -57,14 +57,14 @@ class DepositorLK(private val hardware: LankyKongHardware, private val console: 
 //    X Variables
     private val xMotor = hardware.horiMotor
     val currentXIn get() = xMotor.currentPosition
-    private val xPrecision = 15
-    private val xPIDPosition = PID(kp= 0.000954, ki= 0.0000001)
+    private val xPrecision = 100
+    private val xPIDPosition = PID(kp= 0.00095455, ki= 0.0000000015)
     private val xPIDJoystick = PID(kp= 0.002)
     private var xPID = xPIDPosition
 //    private val xConversion = SlideConversions(countsPerMotorRev = 28.0)
     val xConstraints = MovementConstraints(5.0..6500.0, listOf(Constraint({target-> !(target < inRobot && currentXIn > inRobot)}, ""),
                                                                             /*Constraint({}, "")*/))
-    val xFullyRetracted = /*xConstraints.limits.start.toInt()*/ 200
+    val xFullyRetracted = /*xConstraints.limits.start.toInt()*/ 50
 
 //    Y Variables
     private val yMotor = hardware.liftMotor
@@ -89,6 +89,30 @@ class DepositorLK(private val hardware: LankyKongHardware, private val console: 
         return moveTowardPosition(yPosition =yPosition.toDouble(), xPosition = xPosition.toDouble())
     }
     fun moveTowardPosition(yPosition: Double, xPosition: Double): Boolean {
+        val yAtTarget = positionAndHold(
+            inches = yConstraints.validOrFail(yPosition),
+            motor = hardware.liftMotor,
+            tolerance = yPrecision,
+            name = "lift",
+            console = console)
+
+        val xAtTarget = positionAndHold(
+            inches  = xConstraints.validOrFail(xPosition),
+            motor = hardware.horiMotor,
+//            pid = xPID,
+            tolerance = xPrecision,
+            name = "extension",
+            console = console)
+
+        console.display(8, "X at target: $xAtTarget \nY at target: $yAtTarget")
+        console.display(9, "X current: $currentXIn \nY current: $currentYIn")
+
+        console.display(15, "yIn: $yPosition, xIn $xPosition")
+
+        return yAtTarget && xAtTarget
+    }
+
+    fun moveTowardPositionJoystick(yPosition: Double, xPosition: Double): Boolean {
         val yAtTarget = positionAndHold(
             inches = yConstraints.validOrFail(yPosition),
             motor = hardware.liftMotor,
@@ -135,7 +159,7 @@ class DepositorLK(private val hardware: LankyKongHardware, private val console: 
         }
 
         console.display(11, "X moving: $xMoving")
-        moveTowardPosition(yIn, xIn)
+        moveTowardPositionJoystick(yIn, xIn)
     }
 
 
