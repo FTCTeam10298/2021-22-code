@@ -74,7 +74,7 @@ class LankyKongAuto: LinearOpMode() {
 //                        val initDistance = 38
 //                        movement.driveRobotPosition(1.0, (initFrontDistance - initDistance), false)
                         val preloadStrafe = 25.0
-                        val preloadTurn = -44.0
+                        val preloadTurn = -46.0
 
                         synchronousDeposit(
                             liftHeight = LiftPos.HighGoal.counts,
@@ -114,9 +114,7 @@ class LankyKongAuto: LinearOpMode() {
                         val targetDistance = 9
                         movement.driveRobotPosition(1.0, frontDistance-targetDistance, true)
                         hardware.duccSpinner1.power = 1.0
-                        sleep(1000)
-                        hardware.duccSpinner1.power = 0.1
-                        sleep(2000)
+                        sleep(3000)
                         hardware.duccSpinner1.power = 0.0
 //                        Park
                         movement.driveRobotPosition(1.0, -15.0, true)
