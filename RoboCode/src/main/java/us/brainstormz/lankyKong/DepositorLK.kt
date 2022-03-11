@@ -73,7 +73,7 @@ class DepositorLK(private val hardware: LankyKongHardware, private val console: 
     val currentYIn get() = yMotor.currentPosition
     private val yPrecision = 15
 //    private val yConversion = SlideConversions(countsPerMotorRev = 28.0)
-    val yConstraints = MovementConstraints(0.0..3300.0, listOf())
+    val yConstraints = MovementConstraints(0.0..3700.0, listOf())
     val fullyDown = 10
 
     fun moveToPosition(yPosition: Int, xPosition: Int) {

@@ -31,7 +31,7 @@ class LankyKongHardware: HardwareClass, MecanumHardware {
     lateinit var dropperColor: ColorSensor
 
 //    Collectors
-    val colorThreshold = 250
+    val colorThreshold = 400
     val collectorJamAmps = 7.5
     lateinit var collector: DcMotorEx
     lateinit var collector2: DcMotorEx
@@ -89,7 +89,7 @@ class LankyKongHardware: HardwareClass, MecanumHardware {
         horiMotor.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
         horiMotor.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
         horiMotor.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
-        horiMotor.setCurrentAlert(3.0, CurrentUnit.AMPS)
+        horiMotor.setCurrentAlert(2.5, CurrentUnit.AMPS)
 
         dropperServo = hwMap["0"] as Servo
         dropperServo.direction = Servo.Direction.REVERSE
