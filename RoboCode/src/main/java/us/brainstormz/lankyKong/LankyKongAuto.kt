@@ -74,7 +74,7 @@ class LankyKongAuto: LinearOpMode() {
 //                        val initDistance = 38
 //                        movement.driveRobotPosition(1.0, (initFrontDistance - initDistance), false)
                         val preloadStrafe = 25.0
-                        val preloadTurn = -46.0
+                        val preloadTurn = -50.0
 
                         synchronousDeposit(
                             liftHeight = LiftPos.HighGoal.counts,
@@ -118,36 +118,6 @@ class LankyKongAuto: LinearOpMode() {
                         hardware.duccSpinner1.power = 0.0
 //                        Park
                         movement.driveRobotPosition(1.0, -15.0, true)
-////        collect ducc
-//                        hardware.collector.power = 1.0
-//                        movement.driveRobotStrafe(1.0, 8.0, true)
-//                        movement.driveRobotTurn(1.0,-50.0, true)
-//                        movement.driveRobotPosition(1.0, 20.0, true)
-//                        movement.driveRobotStrafe(1.0, -5.0, true)
-//                        hardware.collector2.power = 1.0
-//
-////        Deliver Ducc
-//                        movement.driveRobotTurn(1.0,10.0, true)
-//                        movement.driveRobotStrafe(1.0, -5.0, false)
-//                        movement.driveRobotPosition(1.0, -10.0, true)
-//                        hardware.collector.power = 0.0
-//                        hardware.collector2.power = 0.0
-//                        val backDistance = hardware.backDistance.getDistance(DistanceUnit.INCH)
-//                        val hubLineup = 27
-//                        movement.driveRobotPosition(1.0, -(backDistance-hubLineup), true)
-////        same as at the top
-//                        movement.driveRobotStrafe(0.8, 25.0, true)
-//                        movement.driveRobotTurn(1.0, preloadTurn, true)
-//                        depo.moveToPosition(LiftPos.HighGoal.counts, 4500)
-//                        hardware.dropperServo.position = DropperPos.Open.posValue
-//                        sleep(100)
-//                        hardware.dropperServo.position = DropperPos.Closed.posValue
-//                        depo.moveToPosition(
-//                            yPosition = LiftPos.HighGoal.counts,
-//                            xPosition = depo.xFullyRetracted)
-//                        depo.moveTowardPosition(
-//                            yPosition = depo.fullyDown,
-//                            xPosition = depo.xFullyRetracted)
                     }
                 }
             }
@@ -227,12 +197,11 @@ class LankyKongAuto: LinearOpMode() {
 //        start lowering
         depo.moveToPosition(
             yPosition = hardware.liftMotor.currentPosition,
-            xPosition = depo.outWhileMovingPos)
-//        lift down but out
-        depo.moveTowardPosition(
-            yPosition = depo.preOutLiftPos,
-            xPosition = depo.outWhileMovingPos)
+            xPosition = depo.xFullyRetracted+200)
 
+        depo.moveTowardPosition(
+            yPosition = depo.preOutLiftPos + 200,
+            xPosition = depo.xFullyRetracted+200)
 //        do an action while its going down
         syncAction()
 
