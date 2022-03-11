@@ -3,18 +3,13 @@ package us.brainstormz.lankyKong
 import com.qualcomm.hardware.lynx.LynxModule
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
-import com.qualcomm.robotcore.util.Range
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit
 import us.brainstormz.hardwareClasses.EncoderDriveMovement
-import us.brainstormz.localizer.EncoderLocalizer
-import us.brainstormz.motion.MecanumMovement
 import us.brainstormz.openCvAbstraction.OpenCvAbstraction
-import us.brainstormz.rataTony.AutoTeleopTransition.Alliance
 import us.brainstormz.telemetryWizard.TelemetryConsole
 import us.brainstormz.telemetryWizard.TelemetryWizard
 import us.brainstormz.lankyKong.DepositorLK.DropperPos
 import us.brainstormz.lankyKong.DepositorLK.LiftPos
-import us.brainstormz.localizer.PositionAndRotation
 
 @Autonomous(name= "Lanky Kong Auto", group= "A")
 class LankyKongAuto: LinearOpMode() {
@@ -23,17 +18,18 @@ class LankyKongAuto: LinearOpMode() {
     val wizard = TelemetryWizard(console, this)
 
     val hardware = LankyKongHardware()
-    val oldMovement = EncoderDriveMovement(hardware, console)
-    val movement = MecanumMovement(EncoderLocalizer(hardware, console), hardware, console)
+    val movement = EncoderDriveMovement(hardware, console)
     lateinit var depo: DepositorLK
 
     val opencv = OpenCvAbstraction(this)
+
+    var distanceInWarehouse = 0.0
+
     override fun runOpMode() {
         hardware.cachingMode = LynxModule.BulkCachingMode.OFF
         hardware.init(hardwareMap)
         depo = DepositorLK(hardware, console)
         depo.runInLinearOpmode(this)
-        movement.linearOpMode = this
 
 //        opencv.init(hardwareMap)
 //        opencv.cameraName = hardware.cameraName
@@ -42,8 +38,8 @@ class LankyKongAuto: LinearOpMode() {
 //        opencv.onNewFrame(tseDetector::processFrame)
 
         wizard.newMenu("Alliance", "Which alliance are we on?", listOf("Blue", "Red"), "StartPos", firstMenu = true)
-        wizard.newMenu("StartPos", "Which are we closer to?", listOf("Warehouse" to null, "Ducc" to "ParkLocation"))
-        wizard.newMenu("ParkLocation", "Where to park?", listOf("Warehouse", "Storage Unit"))
+        wizard.newMenu("StartPos", "Which are we closer to?", listOf("Warehouse", "Ducc"))
+//        wizard.newMenu("ParkLocation", "Where to park?", listOf("Warehouse", "Storage Unit"))
 //        wizard.summonWizard(gamepad1)
 
         var initBackDistance = 0.0
@@ -57,9 +53,11 @@ class LankyKongAuto: LinearOpMode() {
 
         console.display(1, "Initialization Complete")
         waitForStart()
+        val startTime = System.currentTimeMillis()
 
-        val initDistance = 26.8
-        oldMovement.driveRobotPosition(1.0, -(initBackDistance - initDistance), false)
+
+//        val initDistance = 26.8
+//        oldMovement.driveRobotPosition(1.0, -(initBackDistance - initDistance), false)
 
 //        opencv.stop()
 //        val level: DepositorLK.LiftPos = when (tsePosition) {
@@ -67,75 +65,191 @@ class LankyKongAuto: LinearOpMode() {
 //            TeamScoringElementDetector.TSEPosition.Two -> Depositor.LiftPos.MidGoal
 //            TeamScoringElementDetector.TSEPosition.Three -> Depositor.LiftPos.HighGoal
 //        }
+        when {
+            true/*wizard.wasItemChosen("Alliance", "Red")*/ -> {
+                when {
+                    true/*wizard.wasItemChosen("StartPos", "Warehouse")*/ -> {
 
-        oldMovement.driveRobotStrafe(0.8, 25.0, true)
-        val preloadTurn = 30.0
-        oldMovement.driveRobotTurn(1.0, preloadTurn, true)
-        depo.moveToPosition(LiftPos.HighGoal.counts, 4500)
+                        val initDistance = 38
+                        movement.driveRobotPosition(1.0, (initFrontDistance - initDistance), false)
+                        movement.driveRobotStrafe(0.8, 25.0, true)
+                        val preloadTurn = -45.0
+                        movement.driveRobotTurn(1.0, preloadTurn, true)
+                        depo.moveToPosition(200, 5)
+                        depo.moveToPosition(LiftPos.HighGoal.counts, 5000)
+                        hardware.dropperServo.position = DropperPos.Open.posValue
+                        sleep(100)
+                        hardware.dropperServo.position = DropperPos.Closed.posValue
+                        depo.moveToPosition(
+                            yPosition = LiftPos.HighGoal.counts,
+                            xPosition = depo.xFullyRetracted)
+                        depo.moveToPosition(
+                            yPosition = depo.fullyDown,
+                            xPosition = depo.xFullyRetracted)
+                        movement.driveRobotTurn(1.0, -preloadTurn, true)
+                        movement.driveRobotStrafe(0.8, -28.0, true)
+//                        collect block
+                        collect()
+
+//                        Cycles
+                        val cycleTime = 6
+                        while (System.currentTimeMillis() - startTime > 20 - cycleTime && opModeIsActive()) {
+//                            align to wall
+                            movement.driveRobotStrafe(1.0, -5.0, false)
+
+//                            drive to hub while extending
+                            synchronousDeposit(
+                                liftHeight = LiftPos.HighGoal.counts,
+                                extensionLength = 6500,
+                                syncAction = {
+                                    movement.driveRobotStrafe(1.0, -5.0, false)
+                                    movement.driveRobotPosition(1.0, -50.0, true)
+                                })
+
+//                            drive to warehouse while retracting
+                            synchronousRetract {
+                                movement.driveRobotStrafe(0.7, -5.0, false)
+                                movement.driveRobotPosition(1.0, 25.0, true) }
+
+//                            collect
+                            collect()
+                        }
+                    }
+                    wizard.wasItemChosen("StartPos", "Ducc") -> {
+//                        deliver preload
+                        movement.driveRobotStrafe(0.8, 25.0, true)
+                        val preloadTurn = 30.0
+                        movement.driveRobotTurn(1.0, preloadTurn, true)
+                        depo.moveToPosition(LiftPos.HighGoal.counts, 4500)
+                        hardware.dropperServo.position = DropperPos.Open.posValue
+                        sleep(100)
+                        hardware.dropperServo.position = DropperPos.Closed.posValue
+                        depo.moveToPosition(
+                            yPosition = LiftPos.HighGoal.counts,
+                            xPosition = depo.xFullyRetracted)
+                        depo.moveToPosition(
+                            yPosition = depo.fullyDown,
+                            xPosition = depo.xFullyRetracted)
+//        Spin ducc
+                        movement.driveRobotTurn(1.0, -preloadTurn, true)
+                        movement.driveRobotPosition(1.0, -25.0, true)
+                        movement.driveRobotTurn(1.0, 90.0, true)
+                        movement.driveRobotStrafe(1.0, -13.0, false)
+                        sleep(700)
+                        val frontDistance = hardware.frontDistance.getDistance(DistanceUnit.INCH)
+                        val targetDistance = 9
+                        movement.driveRobotPosition(1.0, frontDistance-targetDistance, true)
+                        hardware.duccSpinner1.power = 1.0
+                        sleep(1000)
+                        hardware.duccSpinner1.power = 0.1
+                        sleep(2000)
+                        hardware.duccSpinner1.power = 0.0
+//        collect ducc
+                        hardware.collector.power = 1.0
+                        movement.driveRobotStrafe(1.0, 8.0, true)
+                        movement.driveRobotTurn(1.0,-50.0, true)
+                        movement.driveRobotPosition(1.0, 20.0, true)
+                        movement.driveRobotStrafe(1.0, -5.0, true)
+                        hardware.collector2.power = 1.0
+
+//        Deliver Ducc
+                        movement.driveRobotTurn(1.0,10.0, true)
+                        movement.driveRobotStrafe(1.0, -5.0, false)
+                        movement.driveRobotPosition(1.0, -10.0, true)
+                        hardware.collector.power = 0.0
+                        hardware.collector2.power = 0.0
+                        val backDistance = hardware.backDistance.getDistance(DistanceUnit.INCH)
+                        val hubLineup = 27
+                        movement.driveRobotPosition(1.0, -(backDistance-hubLineup), true)
+//        same as at the top
+                        movement.driveRobotStrafe(0.8, 25.0, true)
+                        movement.driveRobotTurn(1.0, preloadTurn, true)
+                        depo.moveToPosition(LiftPos.HighGoal.counts, 4500)
+                        hardware.dropperServo.position = DropperPos.Open.posValue
+                        sleep(100)
+                        hardware.dropperServo.position = DropperPos.Closed.posValue
+                        depo.moveToPosition(
+                            yPosition = LiftPos.HighGoal.counts,
+                            xPosition = depo.xFullyRetracted)
+                        depo.moveTowardPosition(
+                            yPosition = depo.fullyDown,
+                            xPosition = depo.xFullyRetracted)
+                    }
+                }
+            }
+            wizard.wasItemChosen("Alliance", "Blue") -> {
+                when {
+                    wizard.wasItemChosen("StartPos", "Warehouse") -> {
+
+                    }
+                    wizard.wasItemChosen("StartPos", "Ducc") -> {
+
+                    }
+                }
+            }
+        }
+    }
+    fun synchronousDeposit(liftHeight: Int, extensionLength: Int, syncAction: ()->Unit) {
+
+//        start raising depo
+        depo.moveToPosition(depo.preOutLiftPos.coerceAtMost(liftHeight), depo.xFullyRetracted)
+        depo.moveTowardPosition(liftHeight, depo.outWhileMovingPos.coerceAtMost(extensionLength))
+
+//        do an action while it's going up
+        syncAction()
+
+//        move fully out
+        depo.moveToPosition(liftHeight, extensionLength)
+
+//        drop
         hardware.dropperServo.position = DropperPos.Open.posValue
         sleep(100)
         hardware.dropperServo.position = DropperPos.Closed.posValue
+
+    }
+
+    fun synchronousRetract(syncAction: ()->Unit) {
+//        start lowering
         depo.moveToPosition(
-            yPosition = LiftPos.HighGoal.counts,
-            xPosition = depo.xFullyRetracted)
-        depo.moveToPosition(
+            yPosition = hardware.liftMotor.currentPosition,
+            xPosition = depo.outWhileMovingPos)
+
+        depo.moveTowardPosition(
             yPosition = depo.fullyDown,
             xPosition = depo.xFullyRetracted)
 
-//        Spin ducc
-        oldMovement.driveRobotTurn(1.0, -preloadTurn, true)
-        oldMovement.driveRobotPosition(1.0, -25.0, true)
-        oldMovement.driveRobotTurn(1.0, 90.0, true)
-        oldMovement.driveRobotStrafe(1.0, -13.0, false)
-        sleep(700)
-        val frontDistance = hardware.frontDistance.getDistance(DistanceUnit.INCH)
-        val targetDistance = 9
-        oldMovement.driveRobotPosition(1.0, frontDistance-targetDistance, true)
-        hardware.duccSpinner1.power = 1.0
-        sleep(1000)
-//        hardware.duccSpinner1.power = 0.5
-//        sleep(500)
-        hardware.duccSpinner1.power = 0.1
-        sleep(2000)
-        /*
-        val startTime = System.currentTimeMillis()
-        while(System.currentTimeMillis() - startTime > 4000) {
-            val dTime = System.currentTimeMillis() - startTime
-            val timeToPower = Range.scale(dTime.toDouble(), 0.0, 4.0, 1.0, 0.0)
-            hardware.duccSpinner1.power = timeToPower
-        }*/
-        hardware.duccSpinner1.power = 0.0
+//        do an action while its going down
+        syncAction()
 
-//        collect ducc
+//        make sure it's down
+        if (!isDepoHome())
+            depo.moveToPosition(
+                yPosition = depo.fullyDown,
+                xPosition = depo.xFullyRetracted)
+    }
+
+    fun collect() {
         hardware.collector.power = 1.0
-        oldMovement.driveRobotStrafe(1.0, 8.0, true)
-        oldMovement.driveRobotTurn(1.0,-50.0, true)
-        oldMovement.driveRobotPosition(1.0, 20.0, true)
-        oldMovement.driveRobotStrafe(1.0, -5.0, true)
-        hardware.collector2.power = 1.0
-
-//        Deliver Ducc
-        oldMovement.driveRobotTurn(1.0,10.0, true)
-        oldMovement.driveRobotStrafe(1.0, -5.0, false)
-        oldMovement.driveRobotPosition(1.0, -10.0, true)
+        while (hardware.dropperColor.alpha() < hardware.colorThreshold && opModeIsActive()){
+            if (hardware.collector.isOverCurrent) {
+                hardware.collector.power = -1.0
+                sleep(700)
+                hardware.collector.power = 1.0
+            }
+            movement.driveRobotPosition(1.0, 3.0, false)
+        }
+        hardware.collector.power = -1.0
+        hardware.collector2.power = -1.0
+        sleep(700)
+        distanceInWarehouse = hardware.frontDistance.getDistance(DistanceUnit.INCH)
         hardware.collector.power = 0.0
         hardware.collector2.power = 0.0
-        val backDistance = hardware.backDistance.getDistance(DistanceUnit.INCH)
-        val hubLineup = 27
-        oldMovement.driveRobotPosition(1.0, -(backDistance-hubLineup), true)
-//        same as at the top
-        oldMovement.driveRobotStrafe(0.8, 25.0, true)
-        oldMovement.driveRobotTurn(1.0, preloadTurn, true)
-        depo.moveToPosition(LiftPos.HighGoal.counts, 4500)
-        hardware.dropperServo.position = DropperPos.Open.posValue
-        sleep(100)
-        hardware.dropperServo.position = DropperPos.Closed.posValue
-        depo.moveToPosition(
-            yPosition = LiftPos.HighGoal.counts,
-            xPosition = depo.xFullyRetracted)
-        depo.moveToPosition(
+
+    }
+
+    fun isDepoHome(): Boolean {
+        return depo.moveTowardPosition(
             yPosition = depo.fullyDown,
             xPosition = depo.xFullyRetracted)
     }
-
 }
