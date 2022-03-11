@@ -5,10 +5,6 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import org.openftc.easyopencv.OpenCvCameraRotation
 import us.brainstormz.openCvAbstraction.OpenCvAbstraction
 import us.brainstormz.hardwareClasses.EncoderDriveMovement
-import us.brainstormz.hardwareClasses.JamesEncoderMovement
-import us.brainstormz.localizer.EncoderLocalizer
-import us.brainstormz.localizer.PositionAndRotation
-import us.brainstormz.motion.MecanumMovement
 import us.brainstormz.telemetryWizard.TelemetryConsole
 import us.brainstormz.telemetryWizard.TelemetryWizard
 import us.brainstormz.rataTony.TeamScoringElementDetector.TSEPosition

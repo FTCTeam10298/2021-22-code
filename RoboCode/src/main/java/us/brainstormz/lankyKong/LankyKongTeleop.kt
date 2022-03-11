@@ -5,32 +5,33 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit
 import us.brainstormz.hardwareClasses.MecanumDriveTrain
-import us.brainstormz.rataTony.AutoTeleopTransition
-import us.brainstormz.telemetryWizard.TelemetryConsole
+import us.brainstormz.telemetryWizard.GlobalConsole
 
 @TeleOp(name= "Lanky Kong Teleop", group= "A")
 class LankyKongTeleop: OpMode() {
 
-    val console = TelemetryConsole(telemetry)
+    val console = GlobalConsole.newConsole(telemetry)
 
     val hardware = LankyKongHardware() /** Change Depending on robot */
     val movement = MecanumDriveTrain(hardware)
 
     var isStickButtonDown = false
-    var driveReversed = if (AutoTeleopTransition.alliance == AutoTeleopTransition.Alliance.Red) 1 else -1
+    var driveReversed = if (AutoTeleopTransitionLK.alliance == AutoTeleopTransitionLK.Alliance.Red) 1 else -1
 
     var aDown = false
     var speedMode = false
-    var blockRejectCooldown = 5000
-    var timeWhenBlockIn = 0L
+    var blockRejectCooldown = 1000
+    var timeWhenBlockIn = System.currentTimeMillis()
     var eject = false
+    var blockIsNew = false
+    var timeSinceBlockIn = 0L
 
     lateinit var depo: DepositorLK
 
     override fun init() {
         /** INIT PHASE */
         hardware.init(hardwareMap)
-        depo = DepositorLK(hardware, console)
+        depo = DepositorLK(hardware)
     }
 
     override fun loop() {
@@ -68,19 +69,14 @@ class LankyKongTeleop: OpMode() {
                                (y - x - r),
                                (y + x + r))
 
-        console.display(1, "Drive Encoders: \n ${hardware.lFDrive.currentPosition} \n ${hardware.rFDrive.currentPosition} \n ${hardware.lBDrive.currentPosition} \n ${hardware.rBDrive.currentPosition}")
-        console.display(2, "Front Range: ${hardware.frontDistance.getDistance(DistanceUnit.INCH)} \nBack Range: ${hardware.backDistance.getDistance(DistanceUnit.INCH)}")
-        console.display(3, "X Motor currPos: ${hardware.horiMotor.currentPosition}")
-        console.display(4, "Y Motor currPos: ${hardware.liftMotor.currentPosition}")
-        console.display(5, "Color Sensor: \n Alpha: ${hardware.dropperColor.alpha()} \n Red: ${hardware.dropperColor.red()}")
-        console.display(6, "Current: ${hardware.collector.getCurrent(CurrentUnit.AMPS)}")
 
 //        COLLECTOR
         val forwardPower = 1.0
         val reversePower = 0.9
 
+        val liftIsDownEnough = hardware.liftMotor.currentPosition < depo.preOutLiftPos
         when {
-            gamepad1.right_bumper -> {
+            gamepad1.right_bumper && liftIsDownEnough -> {
                 if (driveReversed > 0) {
                     hardware.collector.power = forwardPower
                     hardware.collector2.power = -reversePower
@@ -89,20 +85,20 @@ class LankyKongTeleop: OpMode() {
                     hardware.collector2.power = forwardPower
                 }
             }
-            gamepad1.left_bumper -> {
-                if (driveReversed < 0) {
-                    hardware.collector.power = forwardPower
-                    hardware.collector2.power = -reversePower
-                } else {
+            gamepad1.left_bumper && liftIsDownEnough -> {
+                if (driveReversed > 0) {
                     hardware.collector.power = -reversePower
                     hardware.collector2.power = forwardPower
+                } else {
+                    hardware.collector.power = forwardPower
+                    hardware.collector2.power = -reversePower
                 }
             }
             gamepad1.b -> {
                 hardware.collector.power = -reversePower
                 hardware.collector2.power = -reversePower
             }
-            speedMode && eject -> {
+            speedMode && eject && liftIsDownEnough -> {
                 hardware.collector.power = -reversePower
                 hardware.collector2.power = -reversePower
             }
@@ -112,26 +108,35 @@ class LankyKongTeleop: OpMode() {
             }
         }
 
+
         val blockInDropper = hardware.dropperColor.alpha() > hardware.colorThreshold
         when {
             gamepad1.x && !aDown -> {speedMode = !speedMode
                                      aDown = true}
             !gamepad1.x -> aDown = false
-            blockInDropper -> {
-                val timeSinceBlockIn = System.currentTimeMillis() - timeWhenBlockIn
-                console.display(22, "timeSinceBlockIn: $timeSinceBlockIn")
-                eject = timeSinceBlockIn < blockRejectCooldown
-            }
-            !blockInDropper -> {
-                timeWhenBlockIn = System.currentTimeMillis()
-            }
         }
-        console.display(21, "speedMode: $speedMode \nBlock in dropper: $blockInDropper \nEject: $eject")
+
+        if (blockInDropper) {
+            if (blockIsNew)
+                timeWhenBlockIn = System.currentTimeMillis()
+
+            if (eject)
+                timeSinceBlockIn = System.currentTimeMillis() - timeWhenBlockIn
+
+            eject = timeSinceBlockIn < blockRejectCooldown
+
+            blockIsNew = false
+        } else {
+            eject = false
+            blockIsNew = true
+            timeSinceBlockIn = 0L
+        }
 
 
 
 //        DEPOSITOR
-        depo.moveWithJoystick(-gamepad2.left_stick_y.toDouble(), gamepad2.right_stick_x.toDouble())
+        val goHome = gamepad2.right_stick_y > 0.3
+        depo.moveWithJoystick(-gamepad2.left_stick_y.toDouble(), gamepad2.right_stick_x.toDouble(), goHome)
 
         when {
             gamepad2.a -> hardware.dropperServo.position = 1.0
@@ -141,9 +146,9 @@ class LankyKongTeleop: OpMode() {
 
 
 //        Ducc
-        val duccSide = when (AutoTeleopTransition.alliance) {
-            AutoTeleopTransition.Alliance.Red -> -1.0
-            AutoTeleopTransition.Alliance.Blue -> 1.0
+        val duccSide = when (AutoTeleopTransitionLK.alliance) {
+            AutoTeleopTransitionLK.Alliance.Red -> -1.0
+            AutoTeleopTransitionLK.Alliance.Blue -> 1.0
         }
         when {
             gamepad2.dpad_left -> {
@@ -157,5 +162,11 @@ class LankyKongTeleop: OpMode() {
             }
         }
 
+        console.display(1, "Drive Encoders: \n ${hardware.lFDrive.currentPosition} \n ${hardware.rFDrive.currentPosition} \n ${hardware.lBDrive.currentPosition} \n ${hardware.rBDrive.currentPosition}")
+        console.display(2, "Front Range: ${hardware.frontDistance.getDistance(DistanceUnit.INCH)} \nBack Range: ${hardware.backDistance.getDistance(DistanceUnit.INCH)}")
+        console.display(3, "X Motor currPos: ${hardware.horiMotor.currentPosition} \nY Motor currPos: ${hardware.liftMotor.currentPosition}")
+        console.display(6, "Color Sensor: \n Alpha: ${hardware.dropperColor.alpha()}")
+        console.display(7, "Current: ${hardware.collector.getCurrent(CurrentUnit.AMPS)}")
+        console.display(8, "speedMode: $speedMode")
     }
 }

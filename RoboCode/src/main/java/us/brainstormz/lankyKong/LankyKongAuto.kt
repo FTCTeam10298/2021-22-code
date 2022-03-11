@@ -7,16 +7,15 @@ import com.qualcomm.robotcore.hardware.DcMotor
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit
 import us.brainstormz.hardwareClasses.EncoderDriveMovement
 import us.brainstormz.openCvAbstraction.OpenCvAbstraction
-import us.brainstormz.telemetryWizard.TelemetryConsole
 import us.brainstormz.telemetryWizard.TelemetryWizard
 import us.brainstormz.lankyKong.DepositorLK.DropperPos
 import us.brainstormz.lankyKong.DepositorLK.LiftPos
-import us.brainstormz.rataTony.AutoTeleopTransition
+import us.brainstormz.telemetryWizard.GlobalConsole
 
 @Autonomous(name= "Lanky Kong Auto", group= "A")
 class LankyKongAuto: LinearOpMode() {
 
-    val console = TelemetryConsole(telemetry)
+    val console = GlobalConsole.newConsole(telemetry)
     val wizard = TelemetryWizard(console, this)
 
     val hardware = LankyKongHardware()
@@ -30,7 +29,7 @@ class LankyKongAuto: LinearOpMode() {
     override fun runOpMode() {
         hardware.cachingMode = LynxModule.BulkCachingMode.OFF
         hardware.init(hardwareMap)
-        depo = DepositorLK(hardware, console)
+        depo = DepositorLK(hardware)
         depo.runInLinearOpmode(this)
 
 //        opencv.init(hardwareMap)
@@ -68,9 +67,9 @@ class LankyKongAuto: LinearOpMode() {
 //            TeamScoringElementDetector.TSEPosition.Three -> Depositor.LiftPos.HighGoal
 //        }
         when {
-            true/*wizard.wasItemChosen("Alliance", "Red")*/ -> {
+            wizard.wasItemChosen("Alliance", "Red") -> {
                 when {
-                    true/*wizard.wasItemChosen("StartPos", "Warehouse")*/ -> {
+                    wizard.wasItemChosen("StartPos", "Warehouse") -> {
 
 //                        val initDistance = 38
 //                        movement.driveRobotPosition(1.0, (initFrontDistance - initDistance), false)
@@ -92,10 +91,10 @@ class LankyKongAuto: LinearOpMode() {
                         movement.driveRobotPosition(1.0, 25.0, true)
 
 //                        collect a block
-                        collect(AutoTeleopTransition.Alliance.Red)
+                        collect(AutoTeleopTransitionLK.Alliance.Red)
 
 //                        Cycle
-                        cycle(AutoTeleopTransition.Alliance.Red, startTime)
+                        cycle(AutoTeleopTransitionLK.Alliance.Red, startTime)
                     }
                     wizard.wasItemChosen("StartPos", "Ducc") -> {
 //                        deliver preload
@@ -126,36 +125,38 @@ class LankyKongAuto: LinearOpMode() {
                         hardware.duccSpinner1.power = 0.1
                         sleep(2000)
                         hardware.duccSpinner1.power = 0.0
-//        collect ducc
-                        hardware.collector.power = 1.0
-                        movement.driveRobotStrafe(1.0, 8.0, true)
-                        movement.driveRobotTurn(1.0,-50.0, true)
-                        movement.driveRobotPosition(1.0, 20.0, true)
-                        movement.driveRobotStrafe(1.0, -5.0, true)
-                        hardware.collector2.power = 1.0
-
-//        Deliver Ducc
-                        movement.driveRobotTurn(1.0,10.0, true)
-                        movement.driveRobotStrafe(1.0, -5.0, false)
-                        movement.driveRobotPosition(1.0, -10.0, true)
-                        hardware.collector.power = 0.0
-                        hardware.collector2.power = 0.0
-                        val backDistance = hardware.backDistance.getDistance(DistanceUnit.INCH)
-                        val hubLineup = 27
-                        movement.driveRobotPosition(1.0, -(backDistance-hubLineup), true)
-//        same as at the top
-                        movement.driveRobotStrafe(0.8, 25.0, true)
-                        movement.driveRobotTurn(1.0, preloadTurn, true)
-                        depo.moveToPosition(LiftPos.HighGoal.counts, 4500)
-                        hardware.dropperServo.position = DropperPos.Open.posValue
-                        sleep(100)
-                        hardware.dropperServo.position = DropperPos.Closed.posValue
-                        depo.moveToPosition(
-                            yPosition = LiftPos.HighGoal.counts,
-                            xPosition = depo.xFullyRetracted)
-                        depo.moveTowardPosition(
-                            yPosition = depo.fullyDown,
-                            xPosition = depo.xFullyRetracted)
+//        Park
+                        movement.driveRobotPosition(1.0, -15.0, true)
+////        collect ducc
+//                        hardware.collector.power = 1.0
+//                        movement.driveRobotStrafe(1.0, 8.0, true)
+//                        movement.driveRobotTurn(1.0,-50.0, true)
+//                        movement.driveRobotPosition(1.0, 20.0, true)
+//                        movement.driveRobotStrafe(1.0, -5.0, true)
+//                        hardware.collector2.power = 1.0
+//
+////        Deliver Ducc
+//                        movement.driveRobotTurn(1.0,10.0, true)
+//                        movement.driveRobotStrafe(1.0, -5.0, false)
+//                        movement.driveRobotPosition(1.0, -10.0, true)
+//                        hardware.collector.power = 0.0
+//                        hardware.collector2.power = 0.0
+//                        val backDistance = hardware.backDistance.getDistance(DistanceUnit.INCH)
+//                        val hubLineup = 27
+//                        movement.driveRobotPosition(1.0, -(backDistance-hubLineup), true)
+////        same as at the top
+//                        movement.driveRobotStrafe(0.8, 25.0, true)
+//                        movement.driveRobotTurn(1.0, preloadTurn, true)
+//                        depo.moveToPosition(LiftPos.HighGoal.counts, 4500)
+//                        hardware.dropperServo.position = DropperPos.Open.posValue
+//                        sleep(100)
+//                        hardware.dropperServo.position = DropperPos.Closed.posValue
+//                        depo.moveToPosition(
+//                            yPosition = LiftPos.HighGoal.counts,
+//                            xPosition = depo.xFullyRetracted)
+//                        depo.moveTowardPosition(
+//                            yPosition = depo.fullyDown,
+//                            xPosition = depo.xFullyRetracted)
                     }
                 }
             }
@@ -171,10 +172,10 @@ class LankyKongAuto: LinearOpMode() {
             }
         }
     }
-    fun cycle(alliance: AutoTeleopTransition.Alliance, startTime: Long) {
+    fun cycle(alliance: AutoTeleopTransitionLK.Alliance, startTime: Long) {
         val allianceMultiplier = when(alliance) {
-            AutoTeleopTransition.Alliance.Red -> 1
-            AutoTeleopTransition.Alliance.Blue -> -1
+            AutoTeleopTransitionLK.Alliance.Red -> 1
+            AutoTeleopTransitionLK.Alliance.Blue -> -1
         }
 
         /**
@@ -251,12 +252,12 @@ class LankyKongAuto: LinearOpMode() {
                 xPosition = depo.xFullyRetracted)
     }
 
-    fun collect(alliance: AutoTeleopTransition.Alliance) {
+    fun collect(alliance: AutoTeleopTransitionLK.Alliance) {
         var allianceMultiplier = 1
         var collectorMotor = hardware.collector
         var forwardDistanceSensor = hardware.frontDistance
 
-        if (AutoTeleopTransition.alliance == AutoTeleopTransition.Alliance.Blue) {
+        if (AutoTeleopTransitionLK.alliance == AutoTeleopTransitionLK.Alliance.Blue) {
             allianceMultiplier = -1
             collectorMotor = hardware.collector2
             forwardDistanceSensor = hardware.backDistance

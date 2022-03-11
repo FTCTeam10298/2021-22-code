@@ -2,9 +2,7 @@ package us.brainstormz.lankyKong
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit
 import us.brainstormz.hardwareClasses.MecanumDriveTrain
-import us.brainstormz.rataTony.AutoTeleopTransition
 import us.brainstormz.telemetryWizard.TelemetryConsole
 
 @TeleOp(name= "Lanky Kong Debug Test ", group= "B")
@@ -16,7 +14,7 @@ class LankyKongDebugTest: OpMode() {
     val movement = MecanumDriveTrain(hardware)
 
     var isStickButtonDown = false
-    var driveReversed = if (AutoTeleopTransition.alliance == AutoTeleopTransition.Alliance.Red) 1 else -1
+    var driveReversed = if (AutoTeleopTransitionLK.alliance == AutoTeleopTransitionLK.Alliance.Red) 1 else -1
 
     var aDown = false
     var speedMode = false
@@ -29,7 +27,7 @@ class LankyKongDebugTest: OpMode() {
     override fun init() {
         /** INIT PHASE */
         hardware.init(hardwareMap)
-        depo = DepositorLK(hardware, console)
+        depo = DepositorLK(hardware)
     }
 
     override fun loop() {
@@ -125,7 +123,7 @@ class LankyKongDebugTest: OpMode() {
 
 
 //        DEPOSITOR
-        depo.moveWithJoystick(-gamepad2.left_stick_y.toDouble(), gamepad2.right_stick_x.toDouble())
+        depo.moveWithJoystick(-gamepad2.left_stick_y.toDouble(), gamepad2.right_stick_x.toDouble(), false)
 
         if (gamepad2.right_trigger != 0f)
             hardware.dropperServo.position = DepositorLK.DropperPos.Open.posValue
