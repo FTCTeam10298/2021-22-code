@@ -23,7 +23,7 @@ class LankyKongTeleop: OpMode() {
     var speedMode = false
     var blockRejectCooldown = 5000
     var timeWhenBlockIn = 0L
-    var blockIn = true
+    var eject = false
 
     lateinit var depo: DepositorLK
 
@@ -98,39 +98,46 @@ class LankyKongTeleop: OpMode() {
                     hardware.collector2.power = forwardPower
                 }
             }
+            gamepad1.b -> {
+                hardware.collector.power = -reversePower
+                hardware.collector2.power = -reversePower
+            }
+            speedMode && eject -> {
+                hardware.collector.power = -reversePower
+                hardware.collector2.power = -reversePower
+            }
             else -> {
                 hardware.collector.power = 0.0
                 hardware.collector2.power = 0.0
             }
         }
 
+        val blockInDropper = hardware.dropperColor.alpha() > hardware.colorThreshold
         when {
-            gamepad1.a && !aDown -> {speedMode = !speedMode
+            gamepad1.x && !aDown -> {speedMode = !speedMode
                                      aDown = true}
-            !gamepad1.a -> aDown = false
-            speedMode -> {
-                if (hardware.dropperColor.alpha() > hardware.colorThreshold) {
-                    val timeSinceBlockIn = System.currentTimeMillis() - timeWhenBlockIn
-                    console.display(20, "timeSinceBlockIn: $timeSinceBlockIn")
-                    if (blockIn && timeSinceBlockIn > blockRejectCooldown) {
-                        hardware.collector.power = -reversePower
-                        hardware.collector2.power = -reversePower
-                    }
-                } else
-                    timeWhenBlockIn = System.currentTimeMillis()
+            !gamepad1.x -> aDown = false
+            blockInDropper -> {
+                val timeSinceBlockIn = System.currentTimeMillis() - timeWhenBlockIn
+                console.display(22, "timeSinceBlockIn: $timeSinceBlockIn")
+                eject = timeSinceBlockIn < blockRejectCooldown
+            }
+            !blockInDropper -> {
+                timeWhenBlockIn = System.currentTimeMillis()
             }
         }
-        console.display(21, "speedMode: $speedMode")
+        console.display(21, "speedMode: $speedMode \nBlock in dropper: $blockInDropper \nEject: $eject")
 
 
 
 //        DEPOSITOR
         depo.moveWithJoystick(-gamepad2.left_stick_y.toDouble(), gamepad2.right_stick_x.toDouble())
 
-        if (gamepad2.right_trigger != 0f)
-            hardware.dropperServo.position = DepositorLK.DropperPos.Open.posValue
-        else
-            hardware.dropperServo.position = DepositorLK.DropperPos.Closed.posValue
+        when {
+            gamepad2.a -> hardware.dropperServo.position = 1.0
+            gamepad2.right_trigger != 0f -> hardware.dropperServo.position = DepositorLK.DropperPos.Open.posValue
+            else -> hardware.dropperServo.position = DepositorLK.DropperPos.Closed.posValue
+        }
 
 
 //        Ducc
