@@ -4,10 +4,12 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorEx
 import us.brainstormz.pid.PID
+import us.brainstormz.telemetryWizard.GlobalConsole
 import us.brainstormz.telemetryWizard.TelemetryConsole
 import us.brainstormz.utils.MathHelps
 
-class DepositorLK(private val hardware: LankyKongHardware, private val console: TelemetryConsole) {
+class DepositorLK(private val hardware: LankyKongHardware) {
+    private val console = GlobalConsole.console
 
     enum class Axis { X, Y }
     data class SlideConversions(private val countsPerMotorRev: Double = 28.0,
@@ -110,10 +112,10 @@ class DepositorLK(private val hardware: LankyKongHardware, private val console: 
                 console = console)
 
 
-        console.display(8, "X at target: $xAtTarget \nY at target: $yAtTarget")
-        console.display(9, "X current: $currentXIn \nY current: $currentYIn")
-
-        console.display(15, "yIn: $yPosition, xIn $xPosition")
+//        console.display(8, "X at target: $xAtTarget \nY at target: $yAtTarget")
+//        console.display(9, "X current: $currentXIn \nY current: $currentYIn")
+//
+//        console.display(15, "yIn: $yPosition, xIn $xPosition")
 
         return yAtTarget && xAtTarget
     }
@@ -132,11 +134,11 @@ class DepositorLK(private val hardware: LankyKongHardware, private val console: 
             pid = xPID,
             tolerance = xPrecision,
             console = console)
-
-        console.display(8, "X at target: $xAtTarget \nY at target: $yAtTarget")
-        console.display(9, "X current: $currentXIn \nY current: $currentYIn")
-
-        console.display(15, "yIn: $yPosition, xIn $xPosition")
+//
+//        console.display(8, "X at target: $xAtTarget \nY at target: $yAtTarget")
+//        console.display(9, "X current: $currentXIn \nY current: $currentYIn")
+//
+//        console.display(15, "yIn: $yPosition, xIn $xPosition")
 
         return yAtTarget && xAtTarget
     }
@@ -144,27 +146,48 @@ class DepositorLK(private val hardware: LankyKongHardware, private val console: 
     private var lastYPos = 0
     private var xMoving = 0.0
     private var lastXPos = 0.0
-    fun moveWithJoystick(yStick: Double, xStick: Double) {
+    fun moveWithJoystick(yStick: Double, xStick: Double, homeCondition: Boolean) {
         xPID = xPIDJoystick
+        val isLiftHighEnough = hardware.liftMotor.currentPosition > preOutLiftPos
 
-        val yIn = if (yStick > 0)
-            MathHelps().scaleBetween(yStick, 0.0..1.0, currentYIn.toDouble().coerceIn(yConstraints.limits)..yConstraints.limits.endInclusive)
-        else
-            MathHelps().scaleBetween(yStick, -1.0..0.0, yConstraints.limits.start..currentYIn.toDouble().coerceIn(yConstraints.limits))
+        val yIn = when {
+            yStick > 0 -> MathHelps().scaleBetween(yStick, 0.0..1.0, currentYIn.toDouble().coerceIn(yConstraints.limits)..yConstraints.limits.endInclusive)
+            (xStick != 0.0) && !isLiftHighEnough -> preOutLiftPos.toDouble() + 30
+            homeCondition -> {
+                if (hardware.horiMotor.currentPosition <= xFullyRetracted + 200)
+                    fullyDown.toDouble()
+                else
+                    preOutLiftPos.toDouble()
+            }
+            else -> MathHelps().scaleBetween(yStick, -1.0..0.0, yConstraints.limits.start..currentYIn.toDouble().coerceIn(yConstraints.limits))
+        }
 
-        val xIn = when {
-            xStick > 0 -> {xMoving = 0.0; MathHelps().scaleBetween(xStick, 0.0..1.0, currentXIn.toDouble().coerceIn(xConstraints.limits)..xConstraints.limits.endInclusive)}
-            xStick < 0 -> {xMoving = 0.0; MathHelps().scaleBetween(xStick, -1.0..0.0, xConstraints.limits.start..currentXIn.toDouble().coerceIn(xConstraints.limits))}
-            else -> {
-                if (xMoving < 10) {
-                    lastXPos = currentXIn.toDouble().coerceIn(xConstraints.limits)
-                    xMoving += 1
+        console.display(10, "isLiftHighEnough?: $isLiftHighEnough")
+        val xIn =
+            when {
+                xStick > 0 && isLiftHighEnough-> {
+                    xMoving = 0.0
+                    MathHelps().scaleBetween(xStick, 0.0..1.0, currentXIn.toDouble().coerceIn(xConstraints.limits)..xConstraints.limits.endInclusive)
                 }
-                lastXPos
+                xStick < 0 && isLiftHighEnough -> {
+                    xMoving = 0.0
+                    MathHelps().scaleBetween(xStick, -1.0..0.0, xConstraints.limits.start..currentXIn.toDouble().coerceIn(xConstraints.limits))
+                }
+                homeCondition -> {
+                    xMoving = 0.0
+                    xFullyRetracted.toDouble()
+                }
+                else -> {
+                    if (xMoving < 5) {
+                        lastXPos = currentXIn.toDouble().coerceIn(xConstraints.limits)
+                        xMoving += 1
+                    }
+                    lastXPos
             }
         }
 
-        console.display(11, "X moving: $xMoving")
+
+//        console.display(11, "X moving: $xMoving")
         moveTowardPositionJoystick(yIn, xIn)
     }
 

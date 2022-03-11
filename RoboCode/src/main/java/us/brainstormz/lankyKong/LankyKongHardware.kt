@@ -31,7 +31,7 @@ class LankyKongHardware: HardwareClass, MecanumHardware {
     lateinit var dropperColor: ColorSensor
 
 //    Collectors
-    val colorThreshold = 400
+    val colorThreshold = 700
     val collectorJamAmps = 7.5
     lateinit var collector: DcMotorEx
     lateinit var collector2: DcMotorEx
