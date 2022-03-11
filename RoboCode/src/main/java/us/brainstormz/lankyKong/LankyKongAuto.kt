@@ -160,7 +160,7 @@ class LankyKongAuto: LinearOpMode() {
 //                            drive to warehouse while retracting
             synchronousRetract {
                 alignToWall()
-                movement.driveRobotPosition(1.0, 50.0 * allianceMultiplier, true) }
+                movement.driveRobotPosition(1.0, 55.0 * allianceMultiplier, true) }
 
 //                            collect
             collect(alliance)
