@@ -194,19 +194,19 @@ class LankyKongAuto: LinearOpMode() {
     }
 
     fun synchronousRetract(syncAction: ()->Unit) {
+        val syncThread = Thread {syncAction}
+
 //        start lowering
         depo.moveToPosition(
             yPosition = hardware.liftMotor.currentPosition,
             xPosition = depo.outWhileMovingPos)
-        depo.moveTowardPosition(
+
+        syncThread.start()
+
+        depo.moveToPosition(
             yPosition = 350,
             xPosition = depo.outWhileMovingPos)
 
-        depo.moveTowardPosition(
-            yPosition = depo.preOutLiftPos + 200,
-            xPosition = depo.xFullyRetracted+200)
-//        do an action while its going down
-        syncAction()
 
         depo.moveToPosition(
             yPosition = 350,
@@ -216,6 +216,7 @@ class LankyKongAuto: LinearOpMode() {
         depo.moveToPosition(
             yPosition = depo.fullyDown,
             xPosition = depo.xFullyRetracted)
+        syncThread.join()
     }
 
     fun collect(alliance: AutoTeleopTransitionLK.Alliance) {
