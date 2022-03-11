@@ -3,6 +3,7 @@ package us.brainstormz.lankyKong
 import com.qualcomm.hardware.lynx.LynxModule
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
+import com.qualcomm.robotcore.hardware.DcMotor
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit
 import us.brainstormz.hardwareClasses.EncoderDriveMovement
 import us.brainstormz.openCvAbstraction.OpenCvAbstraction
@@ -10,6 +11,7 @@ import us.brainstormz.telemetryWizard.TelemetryConsole
 import us.brainstormz.telemetryWizard.TelemetryWizard
 import us.brainstormz.lankyKong.DepositorLK.DropperPos
 import us.brainstormz.lankyKong.DepositorLK.LiftPos
+import us.brainstormz.rataTony.AutoTeleopTransition
 
 @Autonomous(name= "Lanky Kong Auto", group= "A")
 class LankyKongAuto: LinearOpMode() {
@@ -70,50 +72,30 @@ class LankyKongAuto: LinearOpMode() {
                 when {
                     true/*wizard.wasItemChosen("StartPos", "Warehouse")*/ -> {
 
-                        val initDistance = 38
-                        movement.driveRobotPosition(1.0, (initFrontDistance - initDistance), false)
-                        movement.driveRobotStrafe(0.8, 25.0, true)
-                        val preloadTurn = -45.0
-                        movement.driveRobotTurn(1.0, preloadTurn, true)
-                        depo.moveToPosition(200, 5)
-                        depo.moveToPosition(LiftPos.HighGoal.counts, 5000)
-                        hardware.dropperServo.position = DropperPos.Open.posValue
-                        sleep(100)
-                        hardware.dropperServo.position = DropperPos.Closed.posValue
-                        depo.moveToPosition(
-                            yPosition = LiftPos.HighGoal.counts,
-                            xPosition = depo.xFullyRetracted)
-                        depo.moveToPosition(
-                            yPosition = depo.fullyDown,
-                            xPosition = depo.xFullyRetracted)
-                        movement.driveRobotTurn(1.0, -preloadTurn, true)
-                        movement.driveRobotStrafe(0.8, -28.0, true)
+//                        val initDistance = 38
+//                        movement.driveRobotPosition(1.0, (initFrontDistance - initDistance), false)
+                        val preloadStrafe = 25.0
+                        val preloadTurn = -44.0
+
+                        synchronousDeposit(
+                            liftHeight = LiftPos.HighGoal.counts,
+                            extensionLength = 5000,
+                            syncAction = {
+                                movement.driveRobotStrafe(0.8, preloadStrafe, true)
+                                movement.driveRobotTurn(1.0, preloadTurn, true) })
+
+                        synchronousRetract {
+                            movement.driveRobotTurn(1.0, -preloadTurn, true)
+                            movement.driveRobotStrafe(0.8, -(preloadStrafe + 3), true) }
+
 //                        collect block
-                        collect()
+                        movement.driveRobotPosition(1.0, 25.0, true)
 
-//                        Cycles
-                        val cycleTime = 6
-                        while (System.currentTimeMillis() - startTime > 20 - cycleTime && opModeIsActive()) {
-//                            align to wall
-                            movement.driveRobotStrafe(1.0, -5.0, false)
+//                        collect a block
+                        collect(AutoTeleopTransition.Alliance.Red)
 
-//                            drive to hub while extending
-                            synchronousDeposit(
-                                liftHeight = LiftPos.HighGoal.counts,
-                                extensionLength = 6500,
-                                syncAction = {
-                                    movement.driveRobotStrafe(1.0, -5.0, false)
-                                    movement.driveRobotPosition(1.0, -50.0, true)
-                                })
-
-//                            drive to warehouse while retracting
-                            synchronousRetract {
-                                movement.driveRobotStrafe(0.7, -5.0, false)
-                                movement.driveRobotPosition(1.0, 25.0, true) }
-
-//                            collect
-                            collect()
-                        }
+//                        Cycle
+                        cycle(AutoTeleopTransition.Alliance.Red, startTime)
                     }
                     wizard.wasItemChosen("StartPos", "Ducc") -> {
 //                        deliver preload
@@ -189,6 +171,47 @@ class LankyKongAuto: LinearOpMode() {
             }
         }
     }
+    fun cycle(alliance: AutoTeleopTransition.Alliance, startTime: Long) {
+        val allianceMultiplier = when(alliance) {
+            AutoTeleopTransition.Alliance.Red -> 1
+            AutoTeleopTransition.Alliance.Blue -> -1
+        }
+
+        /**
+         * Cycles
+         * */
+        val cycleTime = 10
+        var remainingTime = System.currentTimeMillis() - startTime
+        while (remainingTime > 30 - cycleTime && opModeIsActive()) {
+//                            align to wall
+            alignToWall()
+//                            drive to hub while extending
+            synchronousDeposit(
+                liftHeight = LiftPos.HighGoal.counts,
+                extensionLength = 6500,
+                syncAction = {
+                    alignToWall()
+                    val targetDistance = 67
+                    movement.driveRobotPosition(1.0, (distanceInWarehouse - targetDistance) * allianceMultiplier, true)
+                })
+
+//                            drive to warehouse while retracting
+            synchronousRetract {
+                alignToWall()
+                movement.driveRobotPosition(1.0, 50.0 * allianceMultiplier, true) }
+
+//                            collect
+            collect(alliance)
+
+            remainingTime = System.currentTimeMillis() - startTime
+            console.display(4, "Remaining Time: $remainingTime")
+        }
+    }
+
+    fun alignToWall() {
+        movement.driveRobotStrafe(1.0, -5.0, false)
+    }
+
     fun synchronousDeposit(liftHeight: Int, extensionLength: Int, syncAction: ()->Unit) {
 
 //        start raising depo
@@ -203,7 +226,7 @@ class LankyKongAuto: LinearOpMode() {
 
 //        drop
         hardware.dropperServo.position = DropperPos.Open.posValue
-        sleep(100)
+        sleep(200)
         hardware.dropperServo.position = DropperPos.Closed.posValue
 
     }
@@ -228,20 +251,34 @@ class LankyKongAuto: LinearOpMode() {
                 xPosition = depo.xFullyRetracted)
     }
 
-    fun collect() {
-        hardware.collector.power = 1.0
-        while (hardware.dropperColor.alpha() < hardware.colorThreshold && opModeIsActive()){
-            if (hardware.collector.isOverCurrent) {
-                hardware.collector.power = -1.0
-                sleep(700)
-                hardware.collector.power = 1.0
-            }
-            movement.driveRobotPosition(1.0, 3.0, false)
+    fun collect(alliance: AutoTeleopTransition.Alliance) {
+        var allianceMultiplier = 1
+        var collectorMotor = hardware.collector
+        var forwardDistanceSensor = hardware.frontDistance
+
+        if (AutoTeleopTransition.alliance == AutoTeleopTransition.Alliance.Blue) {
+            allianceMultiplier = -1
+            collectorMotor = hardware.collector2
+            forwardDistanceSensor = hardware.backDistance
         }
+
+        collectorMotor.power = 1.0
+        movement.driveSetMode(DcMotor.RunMode.RUN_USING_ENCODER)
+        val creepPower = 0.1 * allianceMultiplier
+        while (hardware.dropperColor.alpha() < hardware.colorThreshold && opModeIsActive()){
+            movement.drivePowerAll(creepPower)
+            if (collectorMotor.isOverCurrent) {
+                collectorMotor.power = -1.0
+                sleep(700)
+                collectorMotor.power = 1.0
+                movement.drivePowerAll(0.0)
+            }
+        }
+        movement.drivePowerAll(0.0)
         hardware.collector.power = -1.0
         hardware.collector2.power = -1.0
-        sleep(700)
-        distanceInWarehouse = hardware.frontDistance.getDistance(DistanceUnit.INCH)
+        sleep(800)
+        distanceInWarehouse = forwardDistanceSensor.getDistance(DistanceUnit.INCH)
         hardware.collector.power = 0.0
         hardware.collector2.power = 0.0
 
