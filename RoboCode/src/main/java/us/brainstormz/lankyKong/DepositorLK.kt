@@ -54,6 +54,9 @@ class DepositorLK(private val hardware: LankyKongHardware, private val console: 
         HighGoal(2500)
     }
 
+    val preOutLiftPos = 200
+    val outWhileMovingPos = 1000
+
 //    X Variables
     private val xMotor = hardware.horiMotor
     val currentXIn get() = xMotor.currentPosition
@@ -61,10 +64,9 @@ class DepositorLK(private val hardware: LankyKongHardware, private val console: 
     private val xPIDPosition = PID(kp= 0.00095455, ki= 0.0000000015)
     private val xPIDJoystick = PID(kp= 0.002)
     private var xPID = xPIDPosition
-//    private val xConversion = SlideConversions(countsPerMotorRev = 28.0)
+    val xFullyRetracted = 30
     val xConstraints = MovementConstraints(5.0..6500.0, listOf(Constraint({target-> !(target < inRobot && currentXIn > inRobot)}, ""),
                                                                             /*Constraint({}, "")*/))
-    val xFullyRetracted = /*xConstraints.limits.start.toInt()*/ 50
 
 //    Y Variables
     private val yMotor = hardware.liftMotor
@@ -76,7 +78,7 @@ class DepositorLK(private val hardware: LankyKongHardware, private val console: 
 
     fun moveToPosition(yPosition: Int, xPosition: Int) {
 //        throw Exception("tune the pid")
-        xPID = xPIDPosition
+//        xPID = xPIDPosition
         var atPosition = false
 
         while (!atPosition && opmode.opModeIsActive()) {

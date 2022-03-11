@@ -3,6 +3,7 @@ package us.brainstormz.lankyKong
 import com.qualcomm.hardware.lynx.LynxModule
 import com.qualcomm.robotcore.hardware.*
 import com.qualcomm.robotcore.hardware.configuration.LynxConstants
+import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit
 import org.outoftheboxrobotics.neutrinoi2c.MB1242.AsyncMB1242
 import us.brainstormz.hardwareClasses.SmartLynxModule
 import us.brainstormz.hardwareClasses.HardwareClass
@@ -30,7 +31,8 @@ class LankyKongHardware: HardwareClass, MecanumHardware {
     lateinit var dropperColor: ColorSensor
 
 //    Collectors
-    lateinit var collector: DcMotor
+    val colorThreshold = 250
+    lateinit var collector: DcMotorEx
     lateinit var collector2: DcMotor
 
 //    Ducc Spinners
@@ -96,10 +98,10 @@ class LankyKongHardware: HardwareClass, MecanumHardware {
 
 
 //        Collectors
-
-        collector = hwMap["ex0"] as DcMotor
+        collector = hwMap["ex0"] as DcMotorEx
         collector.direction = DcMotorSimple.Direction.FORWARD
         collector.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.FLOAT
+        collector.setCurrentAlert(7.0, CurrentUnit.AMPS)
 
         collector2 = hwMap["ex1"] as DcMotor
         collector2.direction = DcMotorSimple.Direction.FORWARD

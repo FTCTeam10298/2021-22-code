@@ -30,7 +30,7 @@ class MecanumMovement(override val localizer: Localizer, override val hardware: 
         localizer.startNewMovement()
         console.display(1, "Target position: $target")
         while (linearOpMode.opModeIsActive()) {
-            console.display(3, "Current position: ${localizer.currentPositionAndRotation()}")
+//            console.display(3, "Current position: ${localizer.currentPositionAndRotation()}")
             localizer.recalculatePositionAndRotation()
             val targetReached = moveTowardTarget(target, powerRange)
 
@@ -51,7 +51,7 @@ class MecanumMovement(override val localizer: Localizer, override val hardware: 
 
 //        calculate distance error
         val distanceError = hypot(posError.x, posError.y)
-        console.display(7, "Distance error: $distanceError")
+//        console.display(7, "Distance error: $distanceError")
         console.display(8, "Overall error: $posError")
 
         // Check to see if we've reached the target
@@ -70,7 +70,7 @@ class MecanumMovement(override val localizer: Localizer, override val hardware: 
         )
         val speedR: Double = movementPID.calcPID(posError.r)
 
-        console.display(11, "Speed X: $speedX, Y: $speedY, R: $speedR")
+//        console.display(11, "Speed X: $speedX, Y: $speedY, R: $speedR")
         setSpeedAll(speedX, speedY, speedR, powerRange.start, powerRange.endInclusive)
 //        setSpeedAll(0.0, 0.0, 0.0, powerRange.start, powerRange.endInclusive)
 

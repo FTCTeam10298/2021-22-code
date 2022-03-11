@@ -2,6 +2,7 @@ package us.brainstormz.lankyKong
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
+import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit
 import us.brainstormz.hardwareClasses.MecanumDriveTrain
 import us.brainstormz.rataTony.AutoTeleopTransition
@@ -72,12 +73,11 @@ class LankyKongTeleop: OpMode() {
         console.display(3, "X Motor currPos: ${hardware.horiMotor.currentPosition}")
         console.display(4, "Y Motor currPos: ${hardware.liftMotor.currentPosition}")
         console.display(5, "Color Sensor: \n Alpha: ${hardware.dropperColor.alpha()} \n Red: ${hardware.dropperColor.red()}")
-
+        console.display(6, "Current: ${hardware.collector.getCurrent(CurrentUnit.AMPS)}")
 
 //        COLLECTOR
         val forwardPower = 1.0
         val reversePower = 0.9
-        val colorThreshold = 250
 
         when {
             gamepad1.right_bumper -> {
@@ -109,7 +109,7 @@ class LankyKongTeleop: OpMode() {
                                      aDown = true}
             !gamepad1.a -> aDown = false
             speedMode -> {
-                if (hardware.dropperColor.alpha() > colorThreshold) {
+                if (hardware.dropperColor.alpha() > hardware.colorThreshold) {
                     val timeSinceBlockIn = System.currentTimeMillis() - timeWhenBlockIn
                     console.display(20, "timeSinceBlockIn: $timeSinceBlockIn")
                     if (blockIn && timeSinceBlockIn > blockRejectCooldown) {
