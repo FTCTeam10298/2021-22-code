@@ -41,7 +41,7 @@ class LankyKongAuto: LinearOpMode() {
         wizard.newMenu("Alliance", "Which alliance are we on?", listOf("Blue", "Red"), "StartPos", firstMenu = true)
         wizard.newMenu("StartPos", "Which are we closer to?", listOf("Warehouse", "Ducc"))
 //        wizard.newMenu("ParkLocation", "Where to park?", listOf("Warehouse", "Storage Unit"))
-//        wizard.summonWizard(gamepad1)
+        wizard.summonWizard(gamepad1)
 
         var initBackDistance = 0.0
         var initFrontDistance = 0.0
@@ -101,10 +101,10 @@ class LankyKongAuto: LinearOpMode() {
                         val preloadTurn = 30.0
                         synchronousDeposit(LiftPos.HighGoal.counts, 4500, syncAction = {
                             movement.driveRobotStrafe(0.8, 25.0, true)
-                        movement.driveRobotTurn(1.0, preloadTurn, true)
+                            movement.driveRobotTurn(1.0, preloadTurn, true)
                         })
                         synchronousRetract{}
-//        Spin ducc
+//                        Spin ducc
                         movement.driveRobotTurn(1.0, -preloadTurn, true)
                         movement.driveRobotPosition(1.0, -25.0, true)
                         movement.driveRobotTurn(1.0, 90.0, true)
@@ -118,7 +118,7 @@ class LankyKongAuto: LinearOpMode() {
                         hardware.duccSpinner1.power = 0.1
                         sleep(2000)
                         hardware.duccSpinner1.power = 0.0
-//        Park
+//                        Park
                         movement.driveRobotPosition(1.0, -15.0, true)
 ////        collect ducc
 //                        hardware.collector.power = 1.0
@@ -230,19 +230,18 @@ class LankyKongAuto: LinearOpMode() {
         depo.moveToPosition(
             yPosition = hardware.liftMotor.currentPosition,
             xPosition = depo.outWhileMovingPos)
-
+//        lift down but out
         depo.moveTowardPosition(
-            yPosition = depo.fullyDown,
-            xPosition = depo.xFullyRetracted)
+            yPosition = depo.preOutLiftPos,
+            xPosition = depo.outWhileMovingPos)
 
 //        do an action while its going down
         syncAction()
 
 //        make sure it's down
-        if (!isDepoHome())
-            depo.moveToPosition(
-                yPosition = depo.fullyDown,
-                xPosition = depo.xFullyRetracted)
+        depo.moveToPosition(
+            yPosition = depo.fullyDown,
+            xPosition = depo.xFullyRetracted)
     }
 
     fun collect(alliance: AutoTeleopTransitionLK.Alliance) {
