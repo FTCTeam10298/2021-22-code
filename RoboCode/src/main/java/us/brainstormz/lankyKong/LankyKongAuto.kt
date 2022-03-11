@@ -98,19 +98,12 @@ class LankyKongAuto: LinearOpMode() {
                     }
                     wizard.wasItemChosen("StartPos", "Ducc") -> {
 //                        deliver preload
-                        movement.driveRobotStrafe(0.8, 25.0, true)
                         val preloadTurn = 30.0
+                        synchronousDeposit(LiftPos.HighGoal.counts, 4500, syncAction = {
+                            movement.driveRobotStrafe(0.8, 25.0, true)
                         movement.driveRobotTurn(1.0, preloadTurn, true)
-                        depo.moveToPosition(LiftPos.HighGoal.counts, 4500)
-                        hardware.dropperServo.position = DropperPos.Open.posValue
-                        sleep(100)
-                        hardware.dropperServo.position = DropperPos.Closed.posValue
-                        depo.moveToPosition(
-                            yPosition = LiftPos.HighGoal.counts,
-                            xPosition = depo.xFullyRetracted)
-                        depo.moveToPosition(
-                            yPosition = depo.fullyDown,
-                            xPosition = depo.xFullyRetracted)
+                        })
+                        synchronousRetract{}
 //        Spin ducc
                         movement.driveRobotTurn(1.0, -preloadTurn, true)
                         movement.driveRobotPosition(1.0, -25.0, true)
