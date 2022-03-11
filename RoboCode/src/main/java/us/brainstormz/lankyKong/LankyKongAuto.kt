@@ -197,13 +197,20 @@ class LankyKongAuto: LinearOpMode() {
 //        start lowering
         depo.moveToPosition(
             yPosition = hardware.liftMotor.currentPosition,
-            xPosition = depo.xFullyRetracted+200)
+            xPosition = depo.outWhileMovingPos)
+        depo.moveTowardPosition(
+            yPosition = 350,
+            xPosition = depo.outWhileMovingPos)
 
         depo.moveTowardPosition(
             yPosition = depo.preOutLiftPos + 200,
             xPosition = depo.xFullyRetracted+200)
 //        do an action while its going down
         syncAction()
+
+        depo.moveToPosition(
+            yPosition = 350,
+            xPosition = depo.xFullyRetracted)
 
 //        make sure it's down
         depo.moveToPosition(
