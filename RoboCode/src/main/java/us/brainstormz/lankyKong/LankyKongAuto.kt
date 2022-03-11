@@ -95,7 +95,10 @@ class LankyKongAuto: LinearOpMode() {
                         sleep(3000)
                         hardware.duccSpinner1.power = 0.0
 //                        Park
-                        movement.driveRobotPosition(1.0, -15.0, true)
+                        val target = -25.0
+                        val disantsFormWall = hardware.frontDistance.getDistance(DistanceUnit.INCH)
+                        movement.driveRobotPosition(1.0, target + disantsFormWall, true)
+//                        movement.driveRobotPosition(1.0, -15.0, true)
                     }
                 }
             }
