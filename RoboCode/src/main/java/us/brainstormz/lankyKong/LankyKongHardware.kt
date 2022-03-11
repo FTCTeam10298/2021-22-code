@@ -32,8 +32,9 @@ class LankyKongHardware: HardwareClass, MecanumHardware {
 
 //    Collectors
     val colorThreshold = 250
+    val collectorJamAmps = 7.5
     lateinit var collector: DcMotorEx
-    lateinit var collector2: DcMotor
+    lateinit var collector2: DcMotorEx
 
 //    Ducc Spinners
     lateinit var duccSpinner1: CRServo
@@ -88,6 +89,7 @@ class LankyKongHardware: HardwareClass, MecanumHardware {
         horiMotor.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
         horiMotor.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
         horiMotor.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
+        horiMotor.setCurrentAlert(3.0, CurrentUnit.AMPS)
 
         dropperServo = hwMap["0"] as Servo
         dropperServo.direction = Servo.Direction.REVERSE
@@ -101,11 +103,12 @@ class LankyKongHardware: HardwareClass, MecanumHardware {
         collector = hwMap["ex0"] as DcMotorEx
         collector.direction = DcMotorSimple.Direction.FORWARD
         collector.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.FLOAT
-        collector.setCurrentAlert(7.0, CurrentUnit.AMPS)
+        collector.setCurrentAlert(collectorJamAmps, CurrentUnit.AMPS)
 
-        collector2 = hwMap["ex1"] as DcMotor
+        collector2 = hwMap["ex1"] as DcMotorEx
         collector2.direction = DcMotorSimple.Direction.FORWARD
         collector2.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.FLOAT
+        collector2.setCurrentAlert(collectorJamAmps, CurrentUnit.AMPS)
 
 //        Ducc Spiners
         duccSpinner1 = hwMap["1"] as CRServo

@@ -55,7 +55,7 @@ class DepositorLK(private val hardware: LankyKongHardware, private val console: 
     }
 
     val preOutLiftPos = 200
-    val outWhileMovingPos = 1000
+    val outWhileMovingPos = 1700
 
 //    X Variables
     private val xMotor = hardware.horiMotor
@@ -64,7 +64,7 @@ class DepositorLK(private val hardware: LankyKongHardware, private val console: 
     private val xPIDPosition = PID(kp= 0.00095455, ki= 0.0000000015)
     private val xPIDJoystick = PID(kp= 0.002)
     private var xPID = xPIDPosition
-    val xFullyRetracted = 30
+    val xFullyRetracted = 20
     val xConstraints = MovementConstraints(5.0..6500.0, listOf(Constraint({target-> !(target < inRobot && currentXIn > inRobot)}, ""),
                                                                             /*Constraint({}, "")*/))
 
@@ -98,13 +98,17 @@ class DepositorLK(private val hardware: LankyKongHardware, private val console: 
             name = "lift",
             console = console)
 
-        val xAtTarget = positionAndHold(
-            inches  = xConstraints.validOrFail(xPosition),
-            motor = hardware.horiMotor,
-//            pid = xPID,
-            tolerance = xPrecision,
-            name = "extension",
-            console = console)
+        val xAtTarget = if (hardware.horiMotor.isOverCurrent)
+            true
+        else
+            positionAndHold(
+                inches  = xConstraints.validOrFail(xPosition),
+                motor = hardware.horiMotor,
+                //            pid = xPID,
+                tolerance = xPrecision,
+                name = "extension",
+                console = console)
+
 
         console.display(8, "X at target: $xAtTarget \nY at target: $yAtTarget")
         console.display(9, "X current: $currentXIn \nY current: $currentYIn")
