@@ -175,13 +175,14 @@ class LankyKongAuto: LinearOpMode() {
     }
 
     fun synchronousDeposit(liftHeight: Int, extensionLength: Int, syncAction: ()->Unit) {
+        val syncThread = Thread {syncAction}
 
+        syncThread.start()
 //        start raising depo
         depo.moveToPosition(depo.preOutLiftPos.coerceAtMost(liftHeight), depo.xFullyRetracted)
-        depo.moveTowardPosition(liftHeight, depo.outWhileMovingPos.coerceAtMost(extensionLength))
+        depo.moveToPosition(liftHeight, depo.outWhileMovingPos.coerceAtMost(extensionLength))
 
-//        do an action while it's going up
-        syncAction()
+        syncThread.join()
 
 //        move fully out
         depo.moveToPosition(liftHeight, extensionLength)
@@ -190,7 +191,6 @@ class LankyKongAuto: LinearOpMode() {
         hardware.dropperServo.position = DropperPos.Open.posValue
         sleep(200)
         hardware.dropperServo.position = DropperPos.Closed.posValue
-
     }
 
     fun synchronousRetract(syncAction: ()->Unit) {
