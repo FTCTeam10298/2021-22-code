@@ -76,11 +76,11 @@ class LankyKongAuto: LinearOpMode() {
          * */
 
         when {
-            wizard.wasItemChosen("Alliance", "Red") -> {
+            true/*wizard.wasItemChosen("Alliance", "Red")*/ -> {
                 val alliance = AutoTeleopTransitionLK.Alliance.Red
                 AutoTeleopTransitionLK.alliance = alliance
                 when {
-                    wizard.wasItemChosen("StartPos", "Warehouse") -> {
+                    true/*wizard.wasItemChosen("StartPos", "Warehouse")*/ -> {
 
 //                        val initDistance = 38
 //                        movement.driveRobotPosition(1.0, (initFrontDistance - initDistance), false)
@@ -116,11 +116,11 @@ class LankyKongAuto: LinearOpMode() {
                     }
                 }
             }
-            true/*wizard.wasItemChosen("Alliance", "Blue")*/ -> {
+            wizard.wasItemChosen("Alliance", "Blue") -> {
                 val alliance = AutoTeleopTransitionLK.Alliance.Blue
                 AutoTeleopTransitionLK.alliance = alliance
                 when {
-                    true/*wizard.wasItemChosen("StartPos", "Warehouse")*/ -> {
+                    wizard.wasItemChosen("StartPos", "Warehouse") -> {
                         scorePreload(alliance, StartPos.Warehouse, level)
                         preCycle(alliance)
                         cycle(alliance, autoStartTime)
@@ -167,8 +167,8 @@ class LankyKongAuto: LinearOpMode() {
             AutoTeleopTransitionLK.Alliance.Blue -> -1
         }
         val extensionLength = when(level) {
-            LiftPos.LowGoal -> 4000
-            LiftPos.MidGoal -> 4500
+            LiftPos.LowGoal -> 3900
+            LiftPos.MidGoal -> 3900
             LiftPos.HighGoal -> 4600
         }
         val startPosMultiplier = when(startPos) {
@@ -178,15 +178,19 @@ class LankyKongAuto: LinearOpMode() {
 
         val preloadStrafe = 25.0
         val preloadTurn = startPosMultiplier * if (alliance == AutoTeleopTransitionLK.Alliance.Blue && startPos == StartPos.Warehouse)
-            35.0
+            20.0
         else
             42.5
+
+        if (level != LiftPos.HighGoal)
+            movement.driveRobotStrafe(0.8, preloadStrafe, true)
 
         synchronousDeposit(
             liftHeight = level.counts,
             extensionLength = extensionLength,
             syncAction = {
-                movement.driveRobotStrafe(0.8, preloadStrafe, true)
+                if (level == LiftPos.HighGoal)
+                    movement.driveRobotStrafe(0.8, preloadStrafe, true)
                 movement.driveRobotTurn(1.0, preloadTurn * allianceMultiplier, true) })
 
         if (startPos != StartPos.Ducc) {
@@ -214,6 +218,7 @@ class LankyKongAuto: LinearOpMode() {
         var allianceMultiplier = 1
         var mainCollector = hardware.collector
         var secondaryCollector = hardware.collector2
+        val cycleDistanceBlueOffset = 3.0
         when (alliance) {
             AutoTeleopTransitionLK.Alliance.Red -> {
                 allianceMultiplier = 1
@@ -227,12 +232,11 @@ class LankyKongAuto: LinearOpMode() {
             }
         }
 
-
         /**
          * Cycles
          * */
         val autoTime = 30_000
-        val cycleTime = 11_000
+        val cycleTime = 10_500
         fun remainingTime() = Math.max(0, autoTime - (System.currentTimeMillis() - startTime))
         while ((remainingTime() > cycleTime) && opModeIsActive()) {
 
@@ -242,7 +246,7 @@ class LankyKongAuto: LinearOpMode() {
                 extensionLength = 6500,
                 syncAction = {
                     alignToWall()
-                    val targetDistance = 67
+                    val targetDistance = 67 - cycleDistanceBlueOffset
                     mainCollector.power = -1.0
                     secondaryCollector.power = 0.0
                     movement.driveRobotPosition(1.0, (distanceInWarehouse - targetDistance) * allianceMultiplier, true)
@@ -252,7 +256,8 @@ class LankyKongAuto: LinearOpMode() {
 //            drive to warehouse while retracting
             synchronousRetract(initLiftPos = LiftPos.HighGoal.counts) {
                 alignToWall(5.0)
-                movement.driveRobotPosition(1.0, 53.0 * allianceMultiplier, true) }
+                val distanceToWarehouse = 53.0 - cycleDistanceBlueOffset
+                movement.driveRobotPosition(1.0, distanceToWarehouse * allianceMultiplier, true) }
 
 //            collect
             collect(alliance)
@@ -276,6 +281,7 @@ class LankyKongAuto: LinearOpMode() {
 
 //        start raising depo
         depo.moveToPosition(depo.preOutLiftPos.coerceAtMost(liftHeight), hardware.horiMotor.currentPosition + 20)
+        depo.moveToPosition(depo.preOutLiftPos.coerceAtMost(liftHeight), 600)
         depo.moveToPosition(liftHeight, depo.outWhileMovingPos.coerceAtMost(extensionLength))
 
         syncThread.join()
@@ -307,7 +313,7 @@ class LankyKongAuto: LinearOpMode() {
 
         depo.moveToPosition(
             yPosition = 350,
-            xPosition = depo.safePosition)
+            xPosition = depo.safeXPosition)
 
         depo.moveToPosition(
             yPosition = 350,
