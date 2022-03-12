@@ -20,7 +20,7 @@ class TseDetectorLK(private val console: TelemetryConsole) {
     private val regions = listOf(
         TSEPosition.One to Rect(Point(100.0, 240.0), Point(0.0, 100.0)),
         TSEPosition.Two to Rect(Point(210.0, 100.0), Point(110.0, 240.0)),
-        TSEPosition.Three to Rect(Point(220.0, 100.0), Point(240.0, 240.0))
+        TSEPosition.Three to Rect(Point(220.0, 100.0), Point(300.0, 240.0))
     )
 
     private val colors = listOf(

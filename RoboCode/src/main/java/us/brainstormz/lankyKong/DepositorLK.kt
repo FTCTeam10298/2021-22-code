@@ -51,13 +51,13 @@ class DepositorLK(private val hardware: LankyKongHardware) {
                                                                listOf(/*Constraint({target-> target > inRobot}, ""),
                                                                       Constraint({currentXIn > inRobot}, "")*/))
     enum class LiftPos(val counts: Int) {
-        LowGoal(573),
-        MidGoal(1328),
+        LowGoal(300),
+        MidGoal(1100),
         HighGoal(2500)
     }
 
     val preOutLiftPos = 200
-    val outWhileMovingPos = 1700
+    val outWhileMovingPos = 3000
 
 //    X Variables
     val safePosition = 400
