@@ -76,7 +76,7 @@ class LankyKongAuto: LinearOpMode() {
                     }
                     wizard.wasItemChosen("StartPos", "Ducc") -> {
 //                        deliver preload
-                        val preloadTurn = 30.0
+                        val preloadTurn = 42.0
                         synchronousDeposit(LiftPos.HighGoal.counts, 4500, syncAction = {
                             movement.driveRobotStrafe(0.8, 25.0, true)
                             movement.driveRobotTurn(1.0, preloadTurn, true)
