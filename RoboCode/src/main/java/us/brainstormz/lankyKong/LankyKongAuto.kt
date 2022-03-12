@@ -223,7 +223,7 @@ class LankyKongAuto: LinearOpMode() {
             yPosition = hardware.liftMotor.currentPosition,
             xPosition = depo.outWhileMovingPos)
 
-        syncThread.start()
+//        syncThread.start()
         syncAction()
 
         depo.moveToPosition(
@@ -239,7 +239,7 @@ class LankyKongAuto: LinearOpMode() {
         depo.moveToPosition(
             yPosition = depo.fullyDown,
             xPosition = depo.xFullyRetracted)
-        syncThread.join()
+//        syncThread.join()
     }
 
     fun collect(alliance: AutoTeleopTransitionLK.Alliance) {
