@@ -101,16 +101,19 @@ class DepositorLK(private val hardware: LankyKongHardware) {
             name = "lift",
             console = console)
 
-        val xAtTarget = if (hardware.horiMotor.isOverCurrent)
+        val xAtTarget = if (hardware.horiMotor.isOverCurrent) {
+            println("\n\nI'm stuck because I'm over current!!!!\n")
             true
-        else
+        }else {
             positionAndHold(
-                inches  = xConstraints.validOrFail(xPosition),
+                inches = xConstraints.validOrFail(xPosition),
                 motor = hardware.horiMotor,
                 //            pid = xPID,
                 tolerance = xPrecision,
                 name = "extension",
-                console = console)
+                console = console
+            )
+        }
 
 
 //        console.display(8, "X at target: $xAtTarget \nY at target: $yAtTarget")

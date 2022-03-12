@@ -77,23 +77,12 @@ class LankyKongAuto: LinearOpMode() {
          * Auto Sequence
          * */
 
-        var cycles = 1
-        while (opModeIsActive()) {
-            console.display(3, "Cycles: $cycles")
-            synchronousDeposit(
-                liftHeight = LiftPos.HighGoal.counts,
-                extensionLength = 4500) {}
-            synchronousRetract(initLiftPos = LiftPos.HighGoal.counts) {}
-            sleep(500)
-            cycles++
-        }
-
         when {
-            /*true*/wizard.wasItemChosen("Alliance", "Red") -> {
+            true/*wizard.wasItemChosen("Alliance", "Red")*/ -> {
                 val alliance = AutoTeleopTransitionLK.Alliance.Red
                 AutoTeleopTransitionLK.alliance = alliance
                 when {
-                    /*true*/wizard.wasItemChosen("StartPos", "Warehouse") -> {
+                    true/*wizard.wasItemChosen("StartPos", "Warehouse")*/ -> {
 
 //                        val initDistance = 38
 //                        movement.driveRobotPosition(1.0, (initFrontDistance - initDistance), false)
@@ -181,7 +170,7 @@ class LankyKongAuto: LinearOpMode() {
         val extensionLength = when(level) {
             LiftPos.LowGoal -> 4000
             LiftPos.MidGoal -> 4500
-            LiftPos.HighGoal -> 4800
+            LiftPos.HighGoal -> 4650
         }
         val startPosMultiplier = when(startPos) {
             StartPos.Warehouse -> -1
@@ -189,7 +178,7 @@ class LankyKongAuto: LinearOpMode() {
         }
 
         val preloadStrafe = 25.0
-        val preloadTurn = 47.5 * startPosMultiplier
+        val preloadTurn = 46.0 * startPosMultiplier
 
         synchronousDeposit(
             liftHeight = level.counts,
@@ -228,9 +217,10 @@ class LankyKongAuto: LinearOpMode() {
         /**
          * Cycles
          * */
-        val cycleTime = 10
-        var remainingTime = System.currentTimeMillis() - startTime
-        while (remainingTime > 30 - cycleTime && opModeIsActive()) {
+        val autoTime = 30_000
+        val cycleTime = 10_000
+        fun remainingTime() = Math.max(0, autoTime - (System.currentTimeMillis() - startTime))
+        while ((remainingTime() > cycleTime) && opModeIsActive()) {
 
 //            drive to hub while extending
             synchronousDeposit(
@@ -252,8 +242,7 @@ class LankyKongAuto: LinearOpMode() {
 //            collect
             collect(alliance)
 
-            remainingTime = System.currentTimeMillis() - startTime
-            console.display(4, "Remaining Time: $remainingTime")
+            console.display(4, "Remaining Time: ${remainingTime()}")
         }
     }
 
@@ -286,16 +275,19 @@ class LankyKongAuto: LinearOpMode() {
     }
 
     fun synchronousRetract(initLiftPos: Int, syncAction: ()->Unit) {
-        val syncThread = Thread {
-            console.display(11, "Thread running.")
-            syncAction()
-        }
 
-//        start lowering
         depo.moveToPosition(
             yPosition = initLiftPos,
             xPosition = depo.outWhileMovingPos)
 
+        val syncThread = Thread {
+            if(depo.currentXIn > depo.outWhileMovingPos){
+                println("\n\nWARNING!!!!\nI expected > ${depo.outWhileMovingPos} but it was ${depo.currentXIn}\n\n")
+            }
+
+            console.display(11, "Thread running.")
+            syncAction()
+        }
         syncThread.start()
 
         depo.moveToPosition(
@@ -339,7 +331,7 @@ class LankyKongAuto: LinearOpMode() {
                 collectorMotor.power = -1.0
                 sleep(700)
                 collectorMotor.power = 1.0
-                movement.drivePowerAll(0.0)
+                movement.driveSetPower(-(creepPower + strafePower), -creepPower, -creepPower, -(creepPower + strafePower))
             }
         }
         movement.drivePowerAll(0.0)
