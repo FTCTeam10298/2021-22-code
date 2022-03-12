@@ -89,7 +89,7 @@ class LankyKongHardware: HardwareClass, MecanumHardware {
         horiMotor.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
         horiMotor.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
         horiMotor.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
-        horiMotor.setCurrentAlert(3.5, CurrentUnit.AMPS)
+        horiMotor.setCurrentAlert(3.8, CurrentUnit.AMPS)
 
         dropperServo = hwMap["0"] as Servo
         dropperServo.direction = Servo.Direction.REVERSE
