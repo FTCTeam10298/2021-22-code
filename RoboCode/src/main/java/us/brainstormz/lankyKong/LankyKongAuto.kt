@@ -131,7 +131,7 @@ class LankyKongAuto: LinearOpMode() {
                         movement.driveRobotPosition(1.0,5.0,true)
                         movement.driveRobotTurn(1.0,-90.0,true)
                         movement.driveRobotStrafe(1.0,-6.0,true)
-                        val target = 25.0
+                        val target = 20.0
                         val disantsFormWall = hardware.backDistance.getDistance(DistanceUnit.INCH)
                         movement.driveRobotPosition(1.0, target + disantsFormWall, true)
 //                        movement.driveRobotPosition(1.0, -15.0, true)
