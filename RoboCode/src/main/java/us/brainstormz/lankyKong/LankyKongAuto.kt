@@ -76,12 +76,24 @@ class LankyKongAuto: LinearOpMode() {
         /**
          * Auto Sequence
          * */
+
+        var cycles = 1
+        while (opModeIsActive()) {
+            console.display(3, "Cycles: $cycles")
+            synchronousDeposit(
+                liftHeight = LiftPos.HighGoal.counts,
+                extensionLength = 4500) {}
+            synchronousRetract(initLiftPos = LiftPos.HighGoal.counts) {}
+            sleep(500)
+            cycles++
+        }
+
         when {
-            true/*wizard.wasItemChosen("Alliance", "Red")*/ -> {
+            /*true*/wizard.wasItemChosen("Alliance", "Red") -> {
                 val alliance = AutoTeleopTransitionLK.Alliance.Red
                 AutoTeleopTransitionLK.alliance = alliance
                 when {
-                    true/*wizard.wasItemChosen("StartPos", "Warehouse")*/ -> {
+                    /*true*/wizard.wasItemChosen("StartPos", "Warehouse") -> {
 
 //                        val initDistance = 38
 //                        movement.driveRobotPosition(1.0, (initFrontDistance - initDistance), false)
@@ -259,7 +271,7 @@ class LankyKongAuto: LinearOpMode() {
         syncThread.start()
 
 //        start raising depo
-        depo.moveToPosition(depo.preOutLiftPos.coerceAtMost(liftHeight), depo.xFullyRetracted)
+        depo.moveToPosition(depo.preOutLiftPos.coerceAtMost(liftHeight), hardware.horiMotor.currentPosition + 20)
         depo.moveToPosition(liftHeight, depo.outWhileMovingPos.coerceAtMost(extensionLength))
 
         syncThread.join()
@@ -269,7 +281,7 @@ class LankyKongAuto: LinearOpMode() {
 
 //        drop
         hardware.dropperServo.position = DropperPos.Open.posValue
-        sleep(200)
+        sleep(250)
         hardware.dropperServo.position = DropperPos.Closed.posValue
     }
 
