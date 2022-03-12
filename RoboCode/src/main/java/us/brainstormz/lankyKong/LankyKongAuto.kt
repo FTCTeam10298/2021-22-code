@@ -110,7 +110,30 @@ class LankyKongAuto: LinearOpMode() {
                         cycleAuto(alliance, startTime)
                     }
                     wizard.wasItemChosen("StartPos", "Ducc") -> {
-
+//                        deliver preload
+                        val preloadTurn = 42.0
+                        synchronousDeposit(LiftPos.HighGoal.counts, 4500, syncAction = {
+                            movement.driveRobotStrafe(0.8, 25.0, true)
+                            movement.driveRobotTurn(1.0, preloadTurn, true)
+                        })
+                        synchronousRetract{}
+//                        Spin ducc
+                        movement.driveRobotTurn(1.0, -preloadTurn, true)
+                        movement.driveRobotPosition(1.0, -25.0, true)
+                        movement.driveRobotTurn(1.0, 90.0, true)
+                        movement.driveRobotStrafe(1.0, -13.0, false)
+                        sleep(700)
+                        val frontDistance = hardware.frontDistance.getDistance(DistanceUnit.INCH)
+                        val targetDistance = 9
+                        movement.driveRobotPosition(1.0, frontDistance-targetDistance, true)
+                        hardware.duccSpinner1.power = 1.0
+                        sleep(3000)
+                        hardware.duccSpinner1.power = 0.0
+//                        Park
+                        val target = -25.0
+                        val disantsFormWall = hardware.frontDistance.getDistance(DistanceUnit.INCH)
+                        movement.driveRobotPosition(1.0, target + disantsFormWall, true)
+//                        movement.driveRobotPosition(1.0, -15.0, true)
                     }
                 }
             }
