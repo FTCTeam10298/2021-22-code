@@ -120,12 +120,9 @@ class LankyKongAuto: LinearOpMode() {
 //                        Spin ducc
                         movement.driveRobotTurn(1.0, -preloadTurn, true)
                         movement.driveRobotPosition(1.0, -25.0, true)
-                        movement.driveRobotTurn(1.0, 90.0, true)
-                        movement.driveRobotStrafe(1.0, -13.0, false)
+                        movement.driveRobotPosition(1.0, -13.0, false)
                         sleep(700)
-                        val frontDistance = hardware.frontDistance.getDistance(DistanceUnit.INCH)
-                        val targetDistance = 9
-                        movement.driveRobotPosition(1.0, frontDistance-targetDistance, true)
+                        movement.driveRobotStrafe(1.0, 4.0, true)
                         hardware.duccSpinner1.power = 1.0
                         sleep(3000)
                         hardware.duccSpinner1.power = 0.0
