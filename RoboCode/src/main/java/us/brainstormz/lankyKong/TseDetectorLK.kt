@@ -17,10 +17,24 @@ class TseDetectorLK(private val console: TelemetryConsole) {
 
     private val tseThreshold = 135
 
+    lateinit var alliance: AutoTeleopTransitionLK.Alliance
+    private val redPlaces = listOf(Rect(Point(100.0, 240.0), Point(0.0, 100.0)),
+        Rect(Point(210.0, 100.0), Point(110.0, 240.0)),
+        Rect(Point(220.0, 100.0), Point(300.0, 240.0)))
+
+    private val bluePlaces = listOf(Rect(Point(100.0, 240.0), Point(0.0, 100.0)),
+        Rect(Point(210.0, 100.0), Point(110.0, 240.0)),
+        Rect(Point(220.0, 100.0), Point(300.0, 240.0)))
+
+    private val actualPlaces = when (alliance) {
+        AutoTeleopTransitionLK.Alliance.Red -> redPlaces
+        AutoTeleopTransitionLK.Alliance.Blue -> bluePlaces
+    }
+
     private val regions = listOf(
-        TSEPosition.One to Rect(Point(100.0, 240.0), Point(0.0, 100.0)),
-        TSEPosition.Two to Rect(Point(210.0, 100.0), Point(110.0, 240.0)),
-        TSEPosition.Three to Rect(Point(220.0, 100.0), Point(300.0, 240.0))
+        TSEPosition.One to actualPlaces[1],
+        TSEPosition.Two to actualPlaces[2],
+        TSEPosition.Three to actualPlaces[3]
     )
 
     private val colors = listOf(
@@ -40,6 +54,7 @@ class TseDetectorLK(private val console: TelemetryConsole) {
 
     private lateinit var submats: List<Pair<TSEPosition, Mat>>
     private lateinit var cbFrame: Mat
+
     fun processFrame(frame: Mat): Mat {
 
         cbFrame = inputToCb(frame)
@@ -50,11 +65,24 @@ class TseDetectorLK(private val console: TelemetryConsole) {
 
         var result = TSEPosition.Three
         var prevColor = 0
-        submats.forEach {
-            val color = colorInRect(it.second)
-            if (color > prevColor) {
-                prevColor = color
-                result = it.first
+        when (alliance){
+            AutoTeleopTransitionLK.Alliance.Blue -> {
+                submats.forEach {
+                    if (it.first != TSEPosition.Three) {
+                        val color = colorInRect(it.second)
+                        if (color >= tseThreshold)
+                            result = it.first
+                    }
+                }
+            }
+            AutoTeleopTransitionLK.Alliance.Red -> {
+                submats.forEach {
+                    val color = colorInRect(it.second)
+                    if (color > prevColor) {
+                        prevColor = color
+                        result = it.first
+                    }
+                }
             }
         }
 

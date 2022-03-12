@@ -43,11 +43,17 @@ class LankyKongAuto: LinearOpMode() {
         opencv.internalCamera = false
         opencv.cameraName = hardware.cameraName
         opencv.cameraOrientation = OpenCvCameraRotation.SIDEWAYS_LEFT
-        opencv.onNewFrame(tseDetector::processFrame)
 
         wizard.newMenu("Alliance", "Which alliance are we on?", listOf("Blue", "Red"), "StartPos", firstMenu = true)
         wizard.newMenu("StartPos", "Which are we closer to?", listOf("Warehouse", "Ducc"))
         wizard.summonWizard(gamepad1)
+
+        tseDetector.alliance = if (wizard.wasItemChosen("Alliance", "Blue"))
+            AutoTeleopTransitionLK.Alliance.Blue
+        else
+            AutoTeleopTransitionLK.Alliance.Red
+
+        opencv.onNewFrame(tseDetector::processFrame)
 
         var initBackDistance = 0.0
         var initFrontDistance = 0.0
@@ -76,11 +82,11 @@ class LankyKongAuto: LinearOpMode() {
          * */
 
         when {
-            true/*wizard.wasItemChosen("Alliance", "Red")*/ -> {
+            wizard.wasItemChosen("Alliance", "Red") -> {
                 val alliance = AutoTeleopTransitionLK.Alliance.Red
                 AutoTeleopTransitionLK.alliance = alliance
                 when {
-                    true/*wizard.wasItemChosen("StartPos", "Warehouse")*/ -> {
+                    wizard.wasItemChosen("StartPos", "Warehouse") -> {
 
 //                        val initDistance = 38
 //                        movement.driveRobotPosition(1.0, (initFrontDistance - initDistance), false)
@@ -123,7 +129,7 @@ class LankyKongAuto: LinearOpMode() {
                     wizard.wasItemChosen("StartPos", "Warehouse") -> {
                         scorePreload(alliance, StartPos.Warehouse, level)
                         preCycle(alliance)
-                        cycle(alliance, autoStartTime)
+//                        cycle(alliance, autoStartTime)
                     }
                     wizard.wasItemChosen("StartPos", "Ducc") -> {
 //                        deliver preload
@@ -167,7 +173,7 @@ class LankyKongAuto: LinearOpMode() {
             AutoTeleopTransitionLK.Alliance.Blue -> -1
         }
         val extensionLength = when(level) {
-            LiftPos.LowGoal -> 3900
+            LiftPos.LowGoal -> 3800
             LiftPos.MidGoal -> 3900
             LiftPos.HighGoal -> 4600
         }
