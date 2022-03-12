@@ -178,7 +178,7 @@ class LankyKongAuto: LinearOpMode() {
 
         val preloadStrafe = 25.0
         val preloadTurn = startPosMultiplier * if (alliance == AutoTeleopTransitionLK.Alliance.Blue && startPos == StartPos.Warehouse)
-            20.0
+            34.0
         else
             42.5
 

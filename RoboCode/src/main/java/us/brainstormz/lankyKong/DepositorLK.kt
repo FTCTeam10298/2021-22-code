@@ -51,7 +51,7 @@ class DepositorLK(private val hardware: LankyKongHardware) {
                                                                listOf(/*Constraint({target-> target > inRobot}, ""),
                                                                       Constraint({currentXIn > inRobot}, "")*/))
     enum class LiftPos(val counts: Int) {
-        LowGoal(300),
+        LowGoal(350),
         MidGoal(1100),
         HighGoal(2500)
     }
