@@ -39,11 +39,6 @@ class LankyKongAuto: LinearOpMode() {
         depo = DepositorLK(hardware)
         depo.runInLinearOpmode(this)
 
-        tseDetector.alliance = if (wizard.wasItemChosen("Alliance", "Blue"))
-            AutoTeleopTransitionLK.Alliance.Blue
-        else
-            AutoTeleopTransitionLK.Alliance.Red
-
         opencv.init(hardwareMap)
         opencv.internalCamera = false
         opencv.cameraName = hardware.cameraName
@@ -52,6 +47,11 @@ class LankyKongAuto: LinearOpMode() {
         wizard.newMenu("Alliance", "Which alliance are we on?", listOf("Blue", "Red"), "StartPos", firstMenu = true)
         wizard.newMenu("StartPos", "Which are we closer to?", listOf("Warehouse", "Ducc"))
         wizard.summonWizard(gamepad1)
+
+        tseDetector.alliance = if (wizard.wasItemChosen("Alliance", "Blue"))
+            AutoTeleopTransitionLK.Alliance.Blue
+        else
+            AutoTeleopTransitionLK.Alliance.Red
 
         opencv.onNewFrame(tseDetector::processFrame)
 
