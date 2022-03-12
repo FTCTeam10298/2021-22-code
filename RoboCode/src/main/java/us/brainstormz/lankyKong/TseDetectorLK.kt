@@ -17,7 +17,7 @@ class TseDetectorLK(private val console: TelemetryConsole) {
 
     private val tseThreshold = 135
 
-    var alliance: AutoTeleopTransitionLK.Alliance = AutoTeleopTransitionLK.Alliance.Blue
+    lateinit var alliance: AutoTeleopTransitionLK.Alliance
     private val redPlaces = listOf(Rect(Point(100.0, 240.0), Point(0.0, 100.0)),
         Rect(Point(210.0, 100.0), Point(110.0, 240.0)),
         Rect(Point(220.0, 100.0), Point(300.0, 240.0)))
@@ -32,9 +32,9 @@ class TseDetectorLK(private val console: TelemetryConsole) {
     }
 
     private val regions = listOf(
-        TSEPosition.One to actualPlaces[0],
-        TSEPosition.Two to actualPlaces[1],
-        TSEPosition.Three to actualPlaces[2]
+        TSEPosition.One to actualPlaces[1],
+        TSEPosition.Two to actualPlaces[2],
+        TSEPosition.Three to actualPlaces[3]
     )
 
     private val colors = listOf(
