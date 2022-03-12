@@ -12,7 +12,6 @@ import us.brainstormz.telemetryWizard.TelemetryWizard
 import us.brainstormz.lankyKong.DepositorLK.DropperPos
 import us.brainstormz.lankyKong.DepositorLK.LiftPos
 import us.brainstormz.telemetryWizard.GlobalConsole
-import java.lang.Exception
 
 @Autonomous(name= "Lanky Kong Auto", group= "A")
 class LankyKongAuto: LinearOpMode() {
@@ -48,7 +47,6 @@ class LankyKongAuto: LinearOpMode() {
 
         wizard.newMenu("Alliance", "Which alliance are we on?", listOf("Blue", "Red"), "StartPos", firstMenu = true)
         wizard.newMenu("StartPos", "Which are we closer to?", listOf("Warehouse", "Ducc"))
-//        wizard.newMenu("ParkLocation", "Where to park?", listOf("Warehouse", "Storage Unit"))
         wizard.summonWizard(gamepad1)
 
         var initBackDistance = 0.0
@@ -62,7 +60,7 @@ class LankyKongAuto: LinearOpMode() {
 
         console.display(1, "Initialization Complete")
         waitForStart()
-        val startTime = System.currentTimeMillis()
+        val autoStartTime = System.currentTimeMillis()
 
         val tsePosition = tseDetector.position
         opencv.stop()
@@ -78,17 +76,17 @@ class LankyKongAuto: LinearOpMode() {
          * */
 
         when {
-            true/*wizard.wasItemChosen("Alliance", "Red")*/ -> {
+            wizard.wasItemChosen("Alliance", "Red") -> {
                 val alliance = AutoTeleopTransitionLK.Alliance.Red
                 AutoTeleopTransitionLK.alliance = alliance
                 when {
-                    true/*wizard.wasItemChosen("StartPos", "Warehouse")*/ -> {
+                    wizard.wasItemChosen("StartPos", "Warehouse") -> {
 
 //                        val initDistance = 38
 //                        movement.driveRobotPosition(1.0, (initFrontDistance - initDistance), false)
                         scorePreload(alliance, StartPos.Warehouse, level)
                         preCycle(alliance)
-                        cycle(alliance, startTime)
+                        cycle(alliance, autoStartTime)
                     }
                     wizard.wasItemChosen("StartPos", "Ducc") -> {
 //                        deliver preload
@@ -123,8 +121,9 @@ class LankyKongAuto: LinearOpMode() {
                 AutoTeleopTransitionLK.alliance = alliance
                 when {
                     wizard.wasItemChosen("StartPos", "Warehouse") -> {
-                        throw Exception("code this first")
+                        scorePreload(alliance, StartPos.Warehouse, level)
                         preCycle(alliance)
+                        cycle(alliance, autoStartTime)
                     }
                     wizard.wasItemChosen("StartPos", "Ducc") -> {
 //                        deliver preload
