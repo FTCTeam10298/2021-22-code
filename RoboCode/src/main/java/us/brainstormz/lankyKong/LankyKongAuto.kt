@@ -72,31 +72,7 @@ class LankyKongAuto: LinearOpMode() {
                 AutoTeleopTransitionLK.alliance = alliance
                 when {
                     wizard.wasItemChosen("StartPos", "Warehouse") -> {
-
-//                        val initDistance = 38
-//                        movement.driveRobotPosition(1.0, (initFrontDistance - initDistance), false)
-                        val preloadStrafe = 25.0
-                        val preloadTurn = -50.0
-
-                        synchronousDeposit(
-                            liftHeight = LiftPos.HighGoal.counts,
-                            extensionLength = 5000,
-                            syncAction = {
-                                movement.driveRobotStrafe(0.8, preloadStrafe, true)
-                                movement.driveRobotTurn(1.0, preloadTurn, true) })
-
-                        synchronousRetract {
-                            movement.driveRobotTurn(1.0, -preloadTurn, true)
-                            movement.driveRobotStrafe(0.8, -(preloadStrafe + 3), true) }
-
-//                        collect block
-                        movement.driveRobotPosition(1.0, 25.0, true)
-
-//                        collect a block
-                        collect(alliance)
-
-//                        Cycle
-                        cycle(alliance, startTime)
+                        cycleAuto(alliance, startTime)
                     }
                     wizard.wasItemChosen("StartPos", "Ducc") -> {
 //                        deliver preload
@@ -128,30 +104,7 @@ class LankyKongAuto: LinearOpMode() {
                 AutoTeleopTransitionLK.alliance = alliance
                 when {
                     wizard.wasItemChosen("StartPos", "Warehouse") -> {
-//                        val initDistance = 38
-//                        movement.driveRobotPosition(1.0, (initFrontDistance - initDistance), false)
-                        val preloadStrafe = 25.0
-                        val preloadTurn = 50.0
-
-                        synchronousDeposit(
-                            liftHeight = LiftPos.HighGoal.counts,
-                            extensionLength = 5000,
-                            syncAction = {
-                                movement.driveRobotStrafe(0.8, preloadStrafe, true)
-                                movement.driveRobotTurn(1.0, preloadTurn, true) })
-
-                        synchronousRetract {
-                            movement.driveRobotTurn(1.0, -preloadTurn, true)
-                            movement.driveRobotStrafe(0.8, -(preloadStrafe + 3), true) }
-
-//                        collect block
-                        movement.driveRobotPosition(1.0, -25.0, true)
-
-//                        collect a block
-                        collect(alliance)
-
-//                        Cycle
-                        cycle(alliance, startTime)
+                        cycleAuto(alliance, startTime)
                     }
                     wizard.wasItemChosen("StartPos", "Ducc") -> {
 
@@ -159,6 +112,39 @@ class LankyKongAuto: LinearOpMode() {
                 }
             }
         }
+    }
+
+    fun cycleAuto(alliance: AutoTeleopTransitionLK.Alliance, startTime: Long) {
+        val allianceMultiplier = when(alliance) {
+            AutoTeleopTransitionLK.Alliance.Red -> 1
+            AutoTeleopTransitionLK.Alliance.Blue -> -1
+        }
+
+//        val initDistance = 38
+//        movement.driveRobotPosition(1.0, (initFrontDistance - initDistance), false)
+        val preloadStrafe = 25.0
+        val preloadTurn = -50.0
+
+        synchronousDeposit(
+            liftHeight = LiftPos.HighGoal.counts,
+            extensionLength = 5000,
+            syncAction = {
+                movement.driveRobotStrafe(0.8, preloadStrafe, true)
+                movement.driveRobotTurn(1.0, preloadTurn * allianceMultiplier, true) })
+
+        synchronousRetract {
+            movement.driveRobotTurn(1.0, -preloadTurn * allianceMultiplier, true)
+            movement.driveRobotStrafe(0.8, -(preloadStrafe + 3), true) }
+
+//        collect block
+        val preCollectMovement = 25.0
+        movement.driveRobotPosition(1.0, preCollectMovement * allianceMultiplier, true)
+
+//        collect a block
+        collect(alliance)
+
+//        Cycle
+        cycle(alliance, startTime)
     }
 
     /**
