@@ -60,6 +60,7 @@ class DepositorLK(private val hardware: LankyKongHardware) {
     val outWhileMovingPos = 1700
 
 //    X Variables
+    val safePosition = 400
     private val xMotor = hardware.horiMotor
     val currentXIn get() = xMotor.currentPosition
     private val xPrecision = 100
