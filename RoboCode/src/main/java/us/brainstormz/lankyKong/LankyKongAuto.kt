@@ -225,7 +225,9 @@ class LankyKongAuto: LinearOpMode() {
     }
 
     fun synchronousRetract(syncAction: ()->Unit) {
-        val syncThread = Thread {syncAction}
+        val syncThread = Thread {
+            console.display(11, "Thread running.")
+        }
 
 //        start lowering
         depo.moveToPosition(
@@ -233,6 +235,7 @@ class LankyKongAuto: LinearOpMode() {
             xPosition = depo.outWhileMovingPos)
 
         syncThread.start()
+        syncAction()
 
         depo.moveToPosition(
             yPosition = 350,
